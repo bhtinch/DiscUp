@@ -1,0 +1,6 @@
+framework module Pods_DiscUP {
+  umbrella header "Pods-DiscUP-umbrella.h"
+
+  export *
+  module * { export * }
+}
