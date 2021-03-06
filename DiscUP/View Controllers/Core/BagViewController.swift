@@ -163,7 +163,7 @@ extension BagViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "discCell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "discCell", for: indexPath) as? BaggedDiscTableViewCell else { return UITableViewCell() }
         
         cell.textLabel?.text = discs[indexPath.row].model
         cell.detailTextLabel?.text = discs[indexPath.row].make

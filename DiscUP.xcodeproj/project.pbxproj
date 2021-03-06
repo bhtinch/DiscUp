@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		62492A9625F2C20A00A24A05 /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 62492A9525F2C20A00A24A05 /* Login.storyboard */; };
 		62492A9925F2CC7900A24A05 /* BagManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62492A9825F2CC7900A24A05 /* BagManager.swift */; };
+		62492AA125F2F80300A24A05 /* BaggedDiscTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62492AA025F2F80300A24A05 /* BaggedDiscTableViewCell.swift */; };
 		62518D4D25F1648400A6753B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62518D4C25F1648400A6753B /* AppDelegate.swift */; };
 		62518D4F25F1648400A6753B /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62518D4E25F1648400A6753B /* SceneDelegate.swift */; };
 		62518D5425F1648400A6753B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 62518D5225F1648400A6753B /* Main.storyboard */; };
@@ -46,6 +47,7 @@
 		346F05CA14D0A82C1D2C41C4 /* Pods-DiscUP.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DiscUP.debug.xcconfig"; path = "Target Support Files/Pods-DiscUP/Pods-DiscUP.debug.xcconfig"; sourceTree = "<group>"; };
 		62492A9525F2C20A00A24A05 /* Login.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		62492A9825F2CC7900A24A05 /* BagManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BagManager.swift; sourceTree = "<group>"; };
+		62492AA025F2F80300A24A05 /* BaggedDiscTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaggedDiscTableViewCell.swift; sourceTree = "<group>"; };
 		62518D4925F1648400A6753B /* DiscUP.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DiscUP.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		62518D4C25F1648400A6753B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		62518D4E25F1648400A6753B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -111,6 +113,22 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		62492A9E25F2F7CB00A24A05 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				62492A9F25F2F7D000A24A05 /* TV Cells */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		62492A9F25F2F7D000A24A05 /* TV Cells */ = {
+			isa = PBXGroup;
+			children = (
+				62492AA025F2F80300A24A05 /* BaggedDiscTableViewCell.swift */,
+			);
+			path = "TV Cells";
+			sourceTree = "<group>";
+		};
 		62518D4025F1648400A6753B = {
 			isa = PBXGroup;
 			children = (
@@ -132,6 +150,7 @@
 		62518D4B25F1648400A6753B /* DiscUP */ = {
 			isa = PBXGroup;
 			children = (
+				62492A9E25F2F7CB00A24A05 /* Views */,
 				62C04EB625F2A58E00D4F4B6 /* Models */,
 				62C04EB525F2A58400D4F4B6 /* Firebase */,
 				62C04EB425F2A56B00D4F4B6 /* Helpers */,
@@ -381,6 +400,7 @@
 				62C04F0125F2A97E00D4F4B6 /* CreateNewBagViewController.swift in Sources */,
 				62C04ED825F2A81600D4F4B6 /* ProfileViewController.swift in Sources */,
 				62C04EF525F2A8D800D4F4B6 /* DiscWantListViewController.swift in Sources */,
+				62492AA125F2F80300A24A05 /* BaggedDiscTableViewCell.swift in Sources */,
 				62C04EC825F2A64800D4F4B6 /* Storage.swift in Sources */,
 				62492A9925F2CC7900A24A05 /* BagManager.swift in Sources */,
 				62C04ED525F2A80C00D4F4B6 /* HomeViewController.swift in Sources */,
