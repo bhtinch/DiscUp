@@ -8,38 +8,53 @@ import FirebaseAuth
 import Foundation
 
 class AuthManager {
-    static let shared = AuthManager()
     
     /// Attempt to register a new user with Firebase Authentication
-    func registerNewUserWith(email: String, password: String, completion: @escaping (Bool) -> Void) {
+    static func registerNewUserWith(email: String, password: String, completion: @escaping (Bool) -> Void) {
         
         Auth.auth().createUser(withEmail: email, password: password) { (authResult, error) in
             
             guard error == nil,
-                  let userID = authResult?.user.uid else { return completion(false) }
+                  let userID = authResult?.user.uid else {
+                DispatchQueue.main.async {
+                    completion(false)
+                }
+                return
+            }
             
             UserDB.shared.insertNewUserWith(userID: userID, email: email) { (test) in
                 if test {
                     print("New Firebase User added to the user database.")
-                    return completion(true)
+                    DispatchQueue.main.async {
+                        return completion(true)
+                    }
                 } else {
-                    //  ERROR
+                    DispatchQueue.main.async {
+                        return completion(false)
+                    }
                 }
             }
         }
     }
     
     /// Attempt to login firebase user
-    func loginUserWith(email: String, password: String, completion: @escaping (Bool) -> Void) {
+    static func loginUserWith(email: String, password: String, completion: @escaping (Bool) -> Void) {
         Auth.auth().signIn(withEmail: email, password: password) { (authResult, error) in
-            guard error == nil, authResult != nil else { return completion(false) }
+            guard error == nil, authResult != nil else {
+                DispatchQueue.main.async {
+                    completion(false)
+                }
+                return
+            }
             
-            return completion(true)
+            DispatchQueue.main.async {
+                return completion(true)
+            }
         }
     }
     
     /// Attempt to logout firebase user
-    func logoutUser() {
+    static func logoutUser() {
         do {
             try Auth.auth().signOut()
             print("firebase user logged out")
@@ -48,7 +63,7 @@ class AuthManager {
         }
     }
     
-    func deleteUser(){
+    static func deleteUser(){
         //  NEEDS IMPLEMENTATION
     }
 }   //  End of Class

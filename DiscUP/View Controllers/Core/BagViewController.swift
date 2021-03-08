@@ -13,7 +13,6 @@ class BagViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     //  MARK: - Properties
-    static let shared = BagViewController()
     var userID = Auth.auth().currentUser?.uid ?? "No User"
     var discs: [Disc] = []
     var discIDs: [String] = []
@@ -31,7 +30,6 @@ class BagViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("viewWillAppear")
         fetchBag(bagID: bagID)
     }
     
@@ -102,11 +100,8 @@ class BagViewController: UIViewController {
                 switch result {
                 case .success(let disc):
                     self.discs.append(disc)
-                    print(self.discs[0].model)
                     if uid == self.discIDs.last {
-                        DispatchQueue.main.async {
-                            self.tableView.reloadData()
-                        }
+                        self.tableView.reloadData()
                     }
                     
                 case .failure(let error):

@@ -8,9 +8,7 @@
 import UIKit
 
 class CreateNewBagViewController: UIViewController {
-    
-    static let shared = CreateNewBagViewController()
-    
+       
     //  MARK: - outlets
     @IBOutlet weak var bagNameTextField: UITextField!
     @IBOutlet weak var bagBrandTextField: UITextField!

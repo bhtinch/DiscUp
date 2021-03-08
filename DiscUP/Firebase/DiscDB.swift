@@ -87,7 +87,7 @@ class DiscDB {
         
         self.dbRef.observeSingleEvent(of: .value) { (snap) in
             for child in snap.children.allObjects {
-                guard let childSnap = child as? DataSnapshot else { return }
+                guard let childSnap = child as? DataSnapshot else { return completion([]) }
                 
                 let discModel = childSnap.childSnapshot(forPath: DiscKeys.model).value as? String ?? ""
                 let discBrand = childSnap.childSnapshot(forPath: DiscKeys.brand).value as? String ?? ""

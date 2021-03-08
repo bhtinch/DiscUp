@@ -17,7 +17,7 @@ class SettingsViewController: UIViewController {
     
 //    //  MARK: - Actions
 //    @IBAction func logOutButtonTapped(_ sender: Any) {
-//        AuthManager.shared.logoutUser()
+//        AuthManager.logoutUser()
 //        self.userID = "No User"
 //        self.handleNotAuthenticated()
 //    }

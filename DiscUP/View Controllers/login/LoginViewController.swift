@@ -114,7 +114,7 @@ class LoginViewController: UIViewController {
         
         guard let password = passwordField.text, !password.isEmpty else { return }
         
-        AuthManager.shared.loginUserWith(email: email, password: password) { (success) in
+        AuthManager.loginUserWith(email: email, password: password) { (success) in
             DispatchQueue.main.async {
                 if success {
                     //  user logged in

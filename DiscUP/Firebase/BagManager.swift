@@ -26,37 +26,44 @@ class BagManager {
         
         database.child(pathString).observeSingleEvent(of: .value) { (snapshot) in
             
+            var bagID = ""
+            
             if snapshot.hasChildren() == false {
-                return completion(.failure(NetworkError.noData))
+                DispatchQueue.main.async {
+                    completion(.failure(NetworkError.noData))
+                }
+                return
             }
             
             for child in snapshot.children.allObjects {
                 guard let childSnap = child as? DataSnapshot,
-                      let test = childSnap.childSnapshot(forPath: BagKeys.isDefault).value as? Bool else { return completion(.failure(NetworkError.databaseError)) }
+                      let test = childSnap.childSnapshot(forPath: BagKeys.isDefault).value as? Bool else {
+                    DispatchQueue.main.async {
+                        completion(.failure(NetworkError.databaseError))
+                    }
+                    return
+                }
                 if test {
-                    let bagID = childSnap.key
-                    let name = childSnap.childSnapshot(forPath: BagKeys.name).value as? String ?? ""
-                    let brand = childSnap.childSnapshot(forPath: BagKeys.brand).value as? String ?? ""
-                    let model = childSnap.childSnapshot(forPath: BagKeys.model).value as? String ?? ""
-                    let color = childSnap.childSnapshot(forPath: BagKeys.color).value as? String ?? ""
-                    let isDefault = childSnap.childSnapshot(forPath: BagKeys.isDefault).value as? Bool ?? false
-                    
-                    let NSdiscIDs = childSnap.childSnapshot(forPath: BagKeys.discIDs).value as? NSDictionary
-                    
-                    let discIDs = NSdiscIDs as? Dictionary<String, String> ?? Dictionary()
-                                        
-                    let bag = Bag(name: name, brand: brand, model: model, color: color, discIDs: discIDs, isDefault: isDefault, uuidString: bagID)
-                    return completion(.success(bag))
+                    bagID = childSnap.key
                 }
             }
             
             database.child(pathString).queryLimited(toFirst: 1).observeSingleEvent(of: .value) { (snap) in
-                print(snap.key)
                 for child in snap.children {
                     guard let childSnap = child as? DataSnapshot else { return completion(.failure(NetworkError.databaseError)) }
-                    let key = childSnap.key as String
+                    bagID = childSnap.key as String
+                }
+            }
+            
+            database.child(pathString).child(bagID).observeSingleEvent(of: .value) { (snap) in
+                for child in snap.children  {
+                    guard let childSnap = child as? DataSnapshot else {
+                        DispatchQueue.main.async {
+                            completion(.failure(NetworkError.databaseError))
+                        }
+                        return
+                    }
                     
-                    let bagID = key
                     let name = childSnap.childSnapshot(forPath: BagKeys.name).value as? String ?? ""
                     let brand = childSnap.childSnapshot(forPath: BagKeys.brand).value as? String ?? ""
                     let model = childSnap.childSnapshot(forPath: BagKeys.model).value as? String ?? ""
@@ -68,7 +75,9 @@ class BagManager {
                     
                     let bag = Bag(name: name, brand: brand, model: model, color: color, discIDs: discIDs, isDefault: isDefault, uuidString: bagID)
                     
-                    return completion(.success(bag))
+                    DispatchQueue.main.async {
+                        return completion(.success(bag))
+                    }
                 }
             }
         }
@@ -78,11 +87,12 @@ class BagManager {
         print("fetching bag with ID: \(bagID)...")
         
         let pathString = "\(UserKeys.userID)/\(UserKeys.bags)/\(bagID)"
-        print(pathString)
         
         database.child(pathString).observeSingleEvent(of: .value) { (snap) in
             if snap.exists() == false {
-                return completion(.failure(NetworkError.noData))
+                DispatchQueue.main.async {
+                    return completion(.failure(NetworkError.noData))
+                }
             } else {
                 let bagID = snap.key as String
                 let name = snap.childSnapshot(forPath: BagKeys.name).value as? String ?? ""
@@ -95,15 +105,17 @@ class BagManager {
                 let discIDs = NSdiscIDs as? Dictionary<String, String> ?? Dictionary()
                 
                 let bag = Bag(name: name, brand: brand, model: model, color: color, discIDs: discIDs, isDefault: isDefault, uuidString: bagID)
-                    
-                return completion(.success(bag))
+                
+                DispatchQueue.main.async {
+                    return completion(.success(bag))
+                }
             }
         }
     }
     
     static func createNewBagWith(name: String, brand: String, model: String, color: String, isDefault: Bool) {
         let pathString = "\(UserKeys.userID)/\(UserKeys.bags)"
-                
+        
         database.child(pathString).childByAutoId().setValue([
             BagKeys.name : name,
             BagKeys.brand : brand,
@@ -112,8 +124,16 @@ class BagManager {
             BagKeys.isDefault : isDefault,
             BagKeys.discIDs : [String]()
         ]) { (error, dbRef) in
-            dbRef.observeSingleEvent(of: .value) { (snap) in
-                print(snap.key)
+            if let _ = error {
+                DispatchQueue.main.async {
+                    print("Could not create new bag.")
+                }
+            } else {
+                DispatchQueue.main.async {
+                    dbRef.observeSingleEvent(of: .value) { (snap) in
+                        print(snap.key)
+                    }
+                }
             }
         }
     }

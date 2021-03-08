@@ -119,12 +119,12 @@ class RegistrationViewController: UIViewController {
               let confirm = confirmPasswordField.text, !confirm.isEmpty,
               password == confirm else { return }
         
-        AuthManager.shared.registerNewUserWith(email: email, password: password) { (success) in
+        AuthManager.registerNewUserWith(email: email, password: password) { (success) in
             DispatchQueue.main.async {
                 if success {
                     print("successfully registered user.")
                     
-                    AuthManager.shared.loginUserWith(email: email, password: password) { (loggedIn) in
+                    AuthManager.loginUserWith(email: email, password: password) { (loggedIn) in
                         if loggedIn {
                             print("New firebase user logged in.")
                             self.presentingViewController?.presentingViewController?.dismiss(animated: true, completion: nil)
