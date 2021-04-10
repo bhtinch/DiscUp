@@ -39,5 +39,20 @@ extension String {
     func safeDatabaseKey() -> String {
         return self.replacingOccurrences(of: "@", with: "-").replacingOccurrences(of: ".", with: "-")
     }
+    
+    func createTwoNames() -> [String] {
+        var array = self.components(separatedBy: " ")
+        
+        if array.count == 1 {
+            array.append("")
+            array.reverse()
+            return array
+            
+        } else {
+            let first = array.removeFirst()
+            let last = array.joined(separator: " ")
+            
+            return [first, last]
+        }
+    }
 }
-

@@ -29,18 +29,14 @@ class BagManager {
             var bagID = ""
             
             if snapshot.hasChildren() == false {
-                DispatchQueue.main.async {
-                    completion(.failure(NetworkError.noData))
-                }
+                DispatchQueue.main.async { completion(.failure(NetworkError.noData)) }
                 return
             }
             
             for child in snapshot.children.allObjects {
                 guard let childSnap = child as? DataSnapshot,
                       let test = childSnap.childSnapshot(forPath: BagKeys.isDefault).value as? Bool else {
-                    DispatchQueue.main.async {
-                        completion(.failure(NetworkError.databaseError))
-                    }
+                    DispatchQueue.main.async { completion(.failure(NetworkError.databaseError)) }
                     return
                 }
                 if test {
@@ -50,7 +46,10 @@ class BagManager {
             
             database.child(pathString).queryLimited(toFirst: 1).observeSingleEvent(of: .value) { (snap) in
                 for child in snap.children {
-                    guard let childSnap = child as? DataSnapshot else { return completion(.failure(NetworkError.databaseError)) }
+                    guard let childSnap = child as? DataSnapshot else {
+                        DispatchQueue.main.async { completion(.failure(NetworkError.databaseError)) }
+                        return
+                    }
                     bagID = childSnap.key as String
                 }
             }
@@ -58,9 +57,7 @@ class BagManager {
             database.child(pathString).child(bagID).observeSingleEvent(of: .value) { (snap) in
                 for child in snap.children  {
                     guard let childSnap = child as? DataSnapshot else {
-                        DispatchQueue.main.async {
-                            completion(.failure(NetworkError.databaseError))
-                        }
+                        DispatchQueue.main.async { completion(.failure(NetworkError.databaseError)) }
                         return
                     }
                     
@@ -75,9 +72,7 @@ class BagManager {
                     
                     let bag = Bag(name: name, brand: brand, model: model, color: color, discIDs: discIDs, isDefault: isDefault, uuidString: bagID)
                     
-                    DispatchQueue.main.async {
-                        return completion(.success(bag))
-                    }
+                    DispatchQueue.main.async { return completion(.success(bag)) }
                 }
             }
         }
