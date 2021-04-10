@@ -54,6 +54,14 @@ class BagViewController: UIViewController {
                     print(error)
                 case .noData:
                     self.presentCreateBagAlert()
+                case .invalidURL:
+                    print(error)
+                case .thrownError(_):
+                    print(error)
+                case .unableToDecode:
+                    print(error)
+                case .unableToLogin:
+                    print(error)
                 }
             }
         }
@@ -82,6 +90,14 @@ class BagViewController: UIViewController {
                 case .noData:
                     self.discs = []
                     self.tableView.reloadData()
+                case .invalidURL:
+                    print(error)
+                case .thrownError(_):
+                    print(error)
+                case .unableToDecode:
+                    print(error)
+                case .unableToLogin:
+                    print(error)
                 }
             }
         }

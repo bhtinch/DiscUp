@@ -15,6 +15,14 @@
 		62518D5425F1648400A6753B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 62518D5225F1648400A6753B /* Main.storyboard */; };
 		62518D5625F1648600A6753B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 62518D5525F1648600A6753B /* Assets.xcassets */; };
 		62518D5925F1648600A6753B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 62518D5725F1648600A6753B /* LaunchScreen.storyboard */; };
+		6255B5DC2622442300B3A53D /* LinkTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6255B5DB2622442300B3A53D /* LinkTableViewCell.swift */; };
+		6255B5DF2622442900B3A53D /* EventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6255B5DE2622442900B3A53D /* EventTableViewCell.swift */; };
+		6255B5E2262244C400B3A53D /* EventDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6255B5E1262244C400B3A53D /* EventDetailViewController.swift */; };
+		6255B5E5262244F100B3A53D /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6255B5E4262244F100B3A53D /* Event.swift */; };
+		6255B5E92622453A00B3A53D /* ApiController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6255B5E82622453A00B3A53D /* ApiController.swift */; };
+		6255B5EC262245A400B3A53D /* DateFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6255B5EB262245A400B3A53D /* DateFormatter.swift */; };
+		6255B5EF262245E100B3A53D /* UIClasses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6255B5EE262245E100B3A53D /* UIClasses.swift */; };
+		6255B5F32622465C00B3A53D /* ApiLogin.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6255B5F22622465C00B3A53D /* ApiLogin.plist */; };
 		62C04E8625F29B0500D4F4B6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 62C04E8525F29B0500D4F4B6 /* GoogleService-Info.plist */; };
 		62C04EB925F2A5AC00D4F4B6 /* Disc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EB825F2A5AC00D4F4B6 /* Disc.swift */; };
 		62C04EBC25F2A5B100D4F4B6 /* Bag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EBB25F2A5B100D4F4B6 /* Bag.swift */; };
@@ -28,7 +36,7 @@
 		62C04ED825F2A81600D4F4B6 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04ED725F2A81600D4F4B6 /* ProfileViewController.swift */; };
 		62C04EDB25F2A81B00D4F4B6 /* BagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EDA25F2A81B00D4F4B6 /* BagViewController.swift */; };
 		62C04EDE25F2A83000D4F4B6 /* MarketViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EDD25F2A83000D4F4B6 /* MarketViewController.swift */; };
-		62C04EE125F2A83F00D4F4B6 /* EventsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EE025F2A83F00D4F4B6 /* EventsViewController.swift */; };
+		62C04EE125F2A83F00D4F4B6 /* EventSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EE025F2A83F00D4F4B6 /* EventSearchViewController.swift */; };
 		62C04EE425F2A86700D4F4B6 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EE325F2A86700D4F4B6 /* LoginViewController.swift */; };
 		62C04EE725F2A86C00D4F4B6 /* RegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EE625F2A86C00D4F4B6 /* RegistrationViewController.swift */; };
 		62C04EEA25F2A88B00D4F4B6 /* ImagePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EE925F2A88B00D4F4B6 /* ImagePickerViewController.swift */; };
@@ -55,6 +63,14 @@
 		62518D5525F1648600A6753B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		62518D5825F1648600A6753B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		62518D5A25F1648600A6753B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6255B5DB2622442300B3A53D /* LinkTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkTableViewCell.swift; sourceTree = "<group>"; };
+		6255B5DE2622442900B3A53D /* EventTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTableViewCell.swift; sourceTree = "<group>"; };
+		6255B5E1262244C400B3A53D /* EventDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailViewController.swift; sourceTree = "<group>"; };
+		6255B5E4262244F100B3A53D /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		6255B5E82622453A00B3A53D /* ApiController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiController.swift; sourceTree = "<group>"; };
+		6255B5EB262245A400B3A53D /* DateFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatter.swift; sourceTree = "<group>"; };
+		6255B5EE262245E100B3A53D /* UIClasses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIClasses.swift; sourceTree = "<group>"; };
+		6255B5F22622465C00B3A53D /* ApiLogin.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ApiLogin.plist; sourceTree = "<group>"; };
 		62C04E8525F29B0500D4F4B6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		62C04EB825F2A5AC00D4F4B6 /* Disc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Disc.swift; sourceTree = "<group>"; };
 		62C04EBB25F2A5B100D4F4B6 /* Bag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bag.swift; sourceTree = "<group>"; };
@@ -68,7 +84,7 @@
 		62C04ED725F2A81600D4F4B6 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		62C04EDA25F2A81B00D4F4B6 /* BagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BagViewController.swift; sourceTree = "<group>"; };
 		62C04EDD25F2A83000D4F4B6 /* MarketViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketViewController.swift; sourceTree = "<group>"; };
-		62C04EE025F2A83F00D4F4B6 /* EventsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsViewController.swift; sourceTree = "<group>"; };
+		62C04EE025F2A83F00D4F4B6 /* EventSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSearchViewController.swift; sourceTree = "<group>"; };
 		62C04EE325F2A86700D4F4B6 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		62C04EE625F2A86C00D4F4B6 /* RegistrationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewController.swift; sourceTree = "<group>"; };
 		62C04EE925F2A88B00D4F4B6 /* ImagePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerViewController.swift; sourceTree = "<group>"; };
@@ -125,6 +141,8 @@
 			isa = PBXGroup;
 			children = (
 				62492AA025F2F80300A24A05 /* BaggedDiscTableViewCell.swift */,
+				6255B5DB2622442300B3A53D /* LinkTableViewCell.swift */,
+				6255B5DE2622442900B3A53D /* EventTableViewCell.swift */,
 			);
 			path = "TV Cells";
 			sourceTree = "<group>";
@@ -150,6 +168,7 @@
 		62518D4B25F1648400A6753B /* DiscUP */ = {
 			isa = PBXGroup;
 			children = (
+				6255B5E72622452800B3A53D /* PDGAapi */,
 				62492A9E25F2F7CB00A24A05 /* Views */,
 				62C04EB625F2A58E00D4F4B6 /* Models */,
 				62C04EB525F2A58400D4F4B6 /* Firebase */,
@@ -163,12 +182,21 @@
 			path = DiscUP;
 			sourceTree = "<group>";
 		};
+		6255B5E72622452800B3A53D /* PDGAapi */ = {
+			isa = PBXGroup;
+			children = (
+				6255B5E82622453A00B3A53D /* ApiController.swift */,
+			);
+			path = PDGAapi;
+			sourceTree = "<group>";
+		};
 		62C04E7025F2946700D4F4B6 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
 				62518D4C25F1648400A6753B /* AppDelegate.swift */,
 				62518D4E25F1648400A6753B /* SceneDelegate.swift */,
 				62518D5525F1648600A6753B /* Assets.xcassets */,
+				6255B5F22622465C00B3A53D /* ApiLogin.plist */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -199,6 +227,8 @@
 			children = (
 				62C04ECA25F2A6D500D4F4B6 /* Network Error.swift */,
 				62C04ECD25F2A6E400D4F4B6 /* Extensions.swift */,
+				6255B5EB262245A400B3A53D /* DateFormatter.swift */,
+				6255B5EE262245E100B3A53D /* UIClasses.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -220,6 +250,7 @@
 			children = (
 				62C04EB825F2A5AC00D4F4B6 /* Disc.swift */,
 				62C04EBB25F2A5B100D4F4B6 /* Bag.swift */,
+				6255B5E4262244F100B3A53D /* Event.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -231,7 +262,7 @@
 				62C04ED725F2A81600D4F4B6 /* ProfileViewController.swift */,
 				62C04EDA25F2A81B00D4F4B6 /* BagViewController.swift */,
 				62C04EDD25F2A83000D4F4B6 /* MarketViewController.swift */,
-				62C04EE025F2A83F00D4F4B6 /* EventsViewController.swift */,
+				62C04EE025F2A83F00D4F4B6 /* EventSearchViewController.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -264,6 +295,7 @@
 				62C04EF125F2A8B300D4F4B6 /* SettingsViewController.swift */,
 				62C04EF425F2A8D800D4F4B6 /* DiscWantListViewController.swift */,
 				62C04F0325F2A9D000D4F4B6 /* LostDiscViewController.swift */,
+				6255B5E1262244C400B3A53D /* EventDetailViewController.swift */,
 			);
 			path = Accessory;
 			sourceTree = "<group>";
@@ -328,6 +360,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				62518D5925F1648600A6753B /* LaunchScreen.storyboard in Resources */,
+				6255B5F32622465C00B3A53D /* ApiLogin.plist in Resources */,
 				62C04E8625F29B0500D4F4B6 /* GoogleService-Info.plist in Resources */,
 				62518D5625F1648600A6753B /* Assets.xcassets in Resources */,
 				62492A9625F2C20A00A24A05 /* Login.storyboard in Resources */,
@@ -390,19 +423,26 @@
 				62C04EF225F2A8B300D4F4B6 /* SettingsViewController.swift in Sources */,
 				62C04EDB25F2A81B00D4F4B6 /* BagViewController.swift in Sources */,
 				62C04EB925F2A5AC00D4F4B6 /* Disc.swift in Sources */,
+				6255B5E2262244C400B3A53D /* EventDetailViewController.swift in Sources */,
 				62518D4D25F1648400A6753B /* AppDelegate.swift in Sources */,
+				6255B5E5262244F100B3A53D /* Event.swift in Sources */,
+				6255B5EF262245E100B3A53D /* UIClasses.swift in Sources */,
 				62C04EBC25F2A5B100D4F4B6 /* Bag.swift in Sources */,
 				62C04EC525F2A63C00D4F4B6 /* DiscDB.swift in Sources */,
+				6255B5DC2622442300B3A53D /* LinkTableViewCell.swift in Sources */,
 				62C04F0425F2A9D000D4F4B6 /* LostDiscViewController.swift in Sources */,
 				62C04EDE25F2A83000D4F4B6 /* MarketViewController.swift in Sources */,
+				6255B5E92622453A00B3A53D /* ApiController.swift in Sources */,
 				62C04ECE25F2A6E400D4F4B6 /* Extensions.swift in Sources */,
 				62C04EE725F2A86C00D4F4B6 /* RegistrationViewController.swift in Sources */,
 				62C04F0125F2A97E00D4F4B6 /* CreateNewBagViewController.swift in Sources */,
 				62C04ED825F2A81600D4F4B6 /* ProfileViewController.swift in Sources */,
 				62C04EF525F2A8D800D4F4B6 /* DiscWantListViewController.swift in Sources */,
 				62492AA125F2F80300A24A05 /* BaggedDiscTableViewCell.swift in Sources */,
+				6255B5DF2622442900B3A53D /* EventTableViewCell.swift in Sources */,
 				62C04EC825F2A64800D4F4B6 /* Storage.swift in Sources */,
 				62492A9925F2CC7900A24A05 /* BagManager.swift in Sources */,
+				6255B5EC262245A400B3A53D /* DateFormatter.swift in Sources */,
 				62C04ED525F2A80C00D4F4B6 /* HomeViewController.swift in Sources */,
 				62C04EFE25F2A96D00D4F4B6 /* SwitchBagTableViewController.swift in Sources */,
 				62C04ECB25F2A6D500D4F4B6 /* Network Error.swift in Sources */,
@@ -411,7 +451,7 @@
 				62C04EBF25F2A62000D4F4B6 /* AuthManager.swift in Sources */,
 				62C04EFB25F2A94200D4F4B6 /* DiscDetailViewController.swift in Sources */,
 				62C04EF825F2A92000D4F4B6 /* DiscSearchTableViewController.swift in Sources */,
-				62C04EE125F2A83F00D4F4B6 /* EventsViewController.swift in Sources */,
+				62C04EE125F2A83F00D4F4B6 /* EventSearchViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
