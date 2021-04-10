@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>971490203366-4vl8ein7l1so7n73kpv68msq0b9h8dtq.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.971490203366-4vl8ein7l1so7n73kpv68msq0b9h8dtq</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDSLxfpvz1sifyp9jZZ7ZoqxvXyHHorinQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>971490203366</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.bentincher.DiscUP</string>
+	<key>PROJECT_ID</key>
+	<string>discup-cbb03</string>
+	<key>STORAGE_BUCKET</key>
+	<string>discup-cbb03.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:971490203366:ios:cbeb02ac02ff1f9319cd27</string>
+	<key>DATABASE_URL</key>
+	<string>https://discup-cbb03-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
