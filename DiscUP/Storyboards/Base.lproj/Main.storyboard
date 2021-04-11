@@ -29,7 +29,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="97.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="246" verticalCompressionResistancePriority="743" text="(Day Month Date)" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mnd-pm-7sA" customClass="EventDateLabel" customModule="PdgaApiTesting" customModuleProvider="target">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="246" verticalCompressionResistancePriority="743" text="(Day Month Date)" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mnd-pm-7sA" customClass="EventDateLabel" customModule="DiscUP" customModuleProvider="target">
                                                     <rect key="frame" x="8" y="5" width="62" height="87.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -60,7 +60,7 @@
                                                 <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="247" verticalHuggingPriority="245" horizontalCompressionResistancePriority="746" verticalCompressionResistancePriority="746" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="qgg-Xg-kVZ">
                                                     <rect key="frame" x="344" y="5" width="62" height="87.5"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SUY-kt-FTw" customClass="RoundedColorLabel" customModule="PdgaApiTesting" customModuleProvider="target">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SUY-kt-FTw" customClass="RoundedColorLabel" customModule="DiscUP" customModuleProvider="target">
                                                             <rect key="frame" x="0.0" y="0.0" width="62" height="17.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                             <nil key="textColor"/>
@@ -237,11 +237,11 @@
             </objects>
             <point key="canvasLocation" x="-820.28985507246387" y="133.92857142857142"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Home-->
         <scene sceneID="lNw-x5-ncG">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="UZw-wE-6NS" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="" image="house" catalog="system" id="Cbw-Wu-Sqo"/>
+                    <tabBarItem key="tabBarItem" title="Home" image="house" catalog="system" id="Cbw-Wu-Sqo"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="a3v-7R-LeR">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
@@ -382,11 +382,11 @@
             </objects>
             <point key="canvasLocation" x="-1514" y="835"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Profile-->
         <scene sceneID="ieL-zW-fX6">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="nYE-Lh-8N0" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="" id="9UP-7y-5iW">
+                    <tabBarItem key="tabBarItem" title="Profile" id="9UP-7y-5iW">
                         <imageReference key="image" image="person.fill" catalog="system" symbolScale="large"/>
                     </tabBarItem>
                     <toolbarItems/>
