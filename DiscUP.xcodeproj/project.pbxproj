@@ -32,7 +32,6 @@
 		62C04EC825F2A64800D4F4B6 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EC725F2A64800D4F4B6 /* Storage.swift */; };
 		62C04ECB25F2A6D500D4F4B6 /* Network Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04ECA25F2A6D500D4F4B6 /* Network Error.swift */; };
 		62C04ECE25F2A6E400D4F4B6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04ECD25F2A6E400D4F4B6 /* Extensions.swift */; };
-		62C04ED525F2A80C00D4F4B6 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04ED425F2A80C00D4F4B6 /* HomeViewController.swift */; };
 		62C04ED825F2A81600D4F4B6 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04ED725F2A81600D4F4B6 /* ProfileViewController.swift */; };
 		62C04EDB25F2A81B00D4F4B6 /* BagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EDA25F2A81B00D4F4B6 /* BagViewController.swift */; };
 		62C04EDE25F2A83000D4F4B6 /* MarketViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EDD25F2A83000D4F4B6 /* MarketViewController.swift */; };
@@ -40,14 +39,16 @@
 		62C04EE425F2A86700D4F4B6 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EE325F2A86700D4F4B6 /* LoginViewController.swift */; };
 		62C04EE725F2A86C00D4F4B6 /* RegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EE625F2A86C00D4F4B6 /* RegistrationViewController.swift */; };
 		62C04EEA25F2A88B00D4F4B6 /* ImagePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EE925F2A88B00D4F4B6 /* ImagePickerViewController.swift */; };
-		62C04EEE25F2A8AA00D4F4B6 /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EED25F2A8AA00D4F4B6 /* NotificationsViewController.swift */; };
 		62C04EF225F2A8B300D4F4B6 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EF125F2A8B300D4F4B6 /* SettingsViewController.swift */; };
-		62C04EF525F2A8D800D4F4B6 /* DiscWantListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EF425F2A8D800D4F4B6 /* DiscWantListViewController.swift */; };
 		62C04EF825F2A92000D4F4B6 /* DiscSearchTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EF725F2A92000D4F4B6 /* DiscSearchTableViewController.swift */; };
 		62C04EFB25F2A94200D4F4B6 /* DiscDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EFA25F2A94200D4F4B6 /* DiscDetailViewController.swift */; };
 		62C04EFE25F2A96D00D4F4B6 /* SwitchBagTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EFD25F2A96D00D4F4B6 /* SwitchBagTableViewController.swift */; };
 		62C04F0125F2A97E00D4F4B6 /* CreateNewBagViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04F0025F2A97E00D4F4B6 /* CreateNewBagViewController.swift */; };
-		62C04F0425F2A9D000D4F4B6 /* LostDiscViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04F0325F2A9D000D4F4B6 /* LostDiscViewController.swift */; };
+		62D207A2262E2B6300FF6C9F /* MyOffersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D207A1262E2B6300FF6C9F /* MyOffersViewController.swift */; };
+		62D207A5262E2B6D00FF6C9F /* MyOfferDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D207A4262E2B6D00FF6C9F /* MyOfferDetailViewController.swift */; };
+		62D207A8262E2BA200FF6C9F /* MarketItemDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D207A7262E2BA200FF6C9F /* MarketItemDetailViewController.swift */; };
+		62D207AB262E2CC700FF6C9F /* ConversationListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D207AA262E2CC700FF6C9F /* ConversationListViewController.swift */; };
+		62D207AE262E2CDD00FF6C9F /* ConversationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62D207AD262E2CDD00FF6C9F /* ConversationViewController.swift */; };
 		C97407DB3D3FB52E6859EF35 /* Pods_DiscUP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE2F152749CF7993F0402D6 /* Pods_DiscUP.framework */; };
 /* End PBXBuildFile section */
 
@@ -80,7 +81,6 @@
 		62C04EC725F2A64800D4F4B6 /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		62C04ECA25F2A6D500D4F4B6 /* Network Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Network Error.swift"; sourceTree = "<group>"; };
 		62C04ECD25F2A6E400D4F4B6 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		62C04ED425F2A80C00D4F4B6 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		62C04ED725F2A81600D4F4B6 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		62C04EDA25F2A81B00D4F4B6 /* BagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BagViewController.swift; sourceTree = "<group>"; };
 		62C04EDD25F2A83000D4F4B6 /* MarketViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketViewController.swift; sourceTree = "<group>"; };
@@ -88,14 +88,16 @@
 		62C04EE325F2A86700D4F4B6 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		62C04EE625F2A86C00D4F4B6 /* RegistrationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewController.swift; sourceTree = "<group>"; };
 		62C04EE925F2A88B00D4F4B6 /* ImagePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerViewController.swift; sourceTree = "<group>"; };
-		62C04EED25F2A8AA00D4F4B6 /* NotificationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewController.swift; sourceTree = "<group>"; };
 		62C04EF125F2A8B300D4F4B6 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
-		62C04EF425F2A8D800D4F4B6 /* DiscWantListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscWantListViewController.swift; sourceTree = "<group>"; };
 		62C04EF725F2A92000D4F4B6 /* DiscSearchTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscSearchTableViewController.swift; sourceTree = "<group>"; };
 		62C04EFA25F2A94200D4F4B6 /* DiscDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscDetailViewController.swift; sourceTree = "<group>"; };
 		62C04EFD25F2A96D00D4F4B6 /* SwitchBagTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchBagTableViewController.swift; sourceTree = "<group>"; };
 		62C04F0025F2A97E00D4F4B6 /* CreateNewBagViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNewBagViewController.swift; sourceTree = "<group>"; };
-		62C04F0325F2A9D000D4F4B6 /* LostDiscViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LostDiscViewController.swift; sourceTree = "<group>"; };
+		62D207A1262E2B6300FF6C9F /* MyOffersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyOffersViewController.swift; sourceTree = "<group>"; };
+		62D207A4262E2B6D00FF6C9F /* MyOfferDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyOfferDetailViewController.swift; sourceTree = "<group>"; };
+		62D207A7262E2BA200FF6C9F /* MarketItemDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketItemDetailViewController.swift; sourceTree = "<group>"; };
+		62D207AA262E2CC700FF6C9F /* ConversationListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationListViewController.swift; sourceTree = "<group>"; };
+		62D207AD262E2CDD00FF6C9F /* ConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationViewController.swift; sourceTree = "<group>"; };
 		9BE2F152749CF7993F0402D6 /* Pods_DiscUP.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DiscUP.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E26A72DC8CD450C3E5B44019 /* Pods-DiscUP.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DiscUP.release.xcconfig"; path = "Target Support Files/Pods-DiscUP/Pods-DiscUP.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -214,9 +216,12 @@
 		62C04E7225F2948600D4F4B6 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				62C04EEC25F2A89E00D4F4B6 /* Accessory */,
+				62D2079C262E26AF00FF6C9F /* Messages Tab */,
+				62D2079B262E26A500FF6C9F /* DiscSwap Tab */,
+				62D2079A262E269C00FF6C9F /* Discs Tab */,
+				62D20799262E268B00FF6C9F /* Profile Tab */,
+				62D20798262E266900FF6C9F /* Events Tab */,
 				62C04ED325F2A77100D4F4B6 /* login */,
-				62C04ED025F2A74A00D4F4B6 /* Core */,
 				62C04ED225F2A75A00D4F4B6 /* Temp */,
 			);
 			path = "View Controllers";
@@ -255,26 +260,10 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		62C04ED025F2A74A00D4F4B6 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				62C04ED425F2A80C00D4F4B6 /* HomeViewController.swift */,
-				62C04ED725F2A81600D4F4B6 /* ProfileViewController.swift */,
-				62C04EDA25F2A81B00D4F4B6 /* BagViewController.swift */,
-				62C04EDD25F2A83000D4F4B6 /* MarketViewController.swift */,
-				62C04EE025F2A83F00D4F4B6 /* EventSearchViewController.swift */,
-			);
-			path = Core;
-			sourceTree = "<group>";
-		};
 		62C04ED225F2A75A00D4F4B6 /* Temp */ = {
 			isa = PBXGroup;
 			children = (
 				62C04EE925F2A88B00D4F4B6 /* ImagePickerViewController.swift */,
-				62C04EF725F2A92000D4F4B6 /* DiscSearchTableViewController.swift */,
-				62C04EFA25F2A94200D4F4B6 /* DiscDetailViewController.swift */,
-				62C04EFD25F2A96D00D4F4B6 /* SwitchBagTableViewController.swift */,
-				62C04F0025F2A97E00D4F4B6 /* CreateNewBagViewController.swift */,
 			);
 			path = Temp;
 			sourceTree = "<group>";
@@ -288,16 +277,54 @@
 			path = login;
 			sourceTree = "<group>";
 		};
-		62C04EEC25F2A89E00D4F4B6 /* Accessory */ = {
+		62D20798262E266900FF6C9F /* Events Tab */ = {
 			isa = PBXGroup;
 			children = (
-				62C04EED25F2A8AA00D4F4B6 /* NotificationsViewController.swift */,
-				62C04EF125F2A8B300D4F4B6 /* SettingsViewController.swift */,
-				62C04EF425F2A8D800D4F4B6 /* DiscWantListViewController.swift */,
-				62C04F0325F2A9D000D4F4B6 /* LostDiscViewController.swift */,
+				62C04EE025F2A83F00D4F4B6 /* EventSearchViewController.swift */,
 				6255B5E1262244C400B3A53D /* EventDetailViewController.swift */,
 			);
-			path = Accessory;
+			path = "Events Tab";
+			sourceTree = "<group>";
+		};
+		62D20799262E268B00FF6C9F /* Profile Tab */ = {
+			isa = PBXGroup;
+			children = (
+				62C04ED725F2A81600D4F4B6 /* ProfileViewController.swift */,
+				62C04EF125F2A8B300D4F4B6 /* SettingsViewController.swift */,
+			);
+			path = "Profile Tab";
+			sourceTree = "<group>";
+		};
+		62D2079A262E269C00FF6C9F /* Discs Tab */ = {
+			isa = PBXGroup;
+			children = (
+				62C04EDA25F2A81B00D4F4B6 /* BagViewController.swift */,
+				62C04F0025F2A97E00D4F4B6 /* CreateNewBagViewController.swift */,
+				62C04EFD25F2A96D00D4F4B6 /* SwitchBagTableViewController.swift */,
+				62C04EF725F2A92000D4F4B6 /* DiscSearchTableViewController.swift */,
+				62C04EFA25F2A94200D4F4B6 /* DiscDetailViewController.swift */,
+			);
+			path = "Discs Tab";
+			sourceTree = "<group>";
+		};
+		62D2079B262E26A500FF6C9F /* DiscSwap Tab */ = {
+			isa = PBXGroup;
+			children = (
+				62C04EDD25F2A83000D4F4B6 /* MarketViewController.swift */,
+				62D207A1262E2B6300FF6C9F /* MyOffersViewController.swift */,
+				62D207A4262E2B6D00FF6C9F /* MyOfferDetailViewController.swift */,
+				62D207A7262E2BA200FF6C9F /* MarketItemDetailViewController.swift */,
+			);
+			path = "DiscSwap Tab";
+			sourceTree = "<group>";
+		};
+		62D2079C262E26AF00FF6C9F /* Messages Tab */ = {
+			isa = PBXGroup;
+			children = (
+				62D207AA262E2CC700FF6C9F /* ConversationListViewController.swift */,
+				62D207AD262E2CDD00FF6C9F /* ConversationViewController.swift */,
+			);
+			path = "Messages Tab";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -417,11 +444,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				62C04EEE25F2A8AA00D4F4B6 /* NotificationsViewController.swift in Sources */,
 				62C04EEA25F2A88B00D4F4B6 /* ImagePickerViewController.swift in Sources */,
+				62D207A2262E2B6300FF6C9F /* MyOffersViewController.swift in Sources */,
+				62D207AE262E2CDD00FF6C9F /* ConversationViewController.swift in Sources */,
 				62C04EC225F2A63600D4F4B6 /* UserDB.swift in Sources */,
 				62C04EF225F2A8B300D4F4B6 /* SettingsViewController.swift in Sources */,
 				62C04EDB25F2A81B00D4F4B6 /* BagViewController.swift in Sources */,
+				62D207A5262E2B6D00FF6C9F /* MyOfferDetailViewController.swift in Sources */,
 				62C04EB925F2A5AC00D4F4B6 /* Disc.swift in Sources */,
 				6255B5E2262244C400B3A53D /* EventDetailViewController.swift in Sources */,
 				62518D4D25F1648400A6753B /* AppDelegate.swift in Sources */,
@@ -429,21 +458,20 @@
 				6255B5EF262245E100B3A53D /* UIClasses.swift in Sources */,
 				62C04EBC25F2A5B100D4F4B6 /* Bag.swift in Sources */,
 				62C04EC525F2A63C00D4F4B6 /* DiscDB.swift in Sources */,
+				62D207AB262E2CC700FF6C9F /* ConversationListViewController.swift in Sources */,
 				6255B5DC2622442300B3A53D /* LinkTableViewCell.swift in Sources */,
-				62C04F0425F2A9D000D4F4B6 /* LostDiscViewController.swift in Sources */,
 				62C04EDE25F2A83000D4F4B6 /* MarketViewController.swift in Sources */,
 				6255B5E92622453A00B3A53D /* ApiController.swift in Sources */,
 				62C04ECE25F2A6E400D4F4B6 /* Extensions.swift in Sources */,
 				62C04EE725F2A86C00D4F4B6 /* RegistrationViewController.swift in Sources */,
 				62C04F0125F2A97E00D4F4B6 /* CreateNewBagViewController.swift in Sources */,
 				62C04ED825F2A81600D4F4B6 /* ProfileViewController.swift in Sources */,
-				62C04EF525F2A8D800D4F4B6 /* DiscWantListViewController.swift in Sources */,
+				62D207A8262E2BA200FF6C9F /* MarketItemDetailViewController.swift in Sources */,
 				62492AA125F2F80300A24A05 /* BaggedDiscTableViewCell.swift in Sources */,
 				6255B5DF2622442900B3A53D /* EventTableViewCell.swift in Sources */,
 				62C04EC825F2A64800D4F4B6 /* Storage.swift in Sources */,
 				62492A9925F2CC7900A24A05 /* BagManager.swift in Sources */,
 				6255B5EC262245A400B3A53D /* DateFormatter.swift in Sources */,
-				62C04ED525F2A80C00D4F4B6 /* HomeViewController.swift in Sources */,
 				62C04EFE25F2A96D00D4F4B6 /* SwitchBagTableViewController.swift in Sources */,
 				62C04ECB25F2A6D500D4F4B6 /* Network Error.swift in Sources */,
 				62C04EE425F2A86700D4F4B6 /* LoginViewController.swift in Sources */,

@@ -39,7 +39,7 @@ class BagViewController: UIViewController {
             switch result {
             case .success(let bag):
                 print("successfully fetched Bag with ID: \(bag.uuidString)")
-                self.title = bag.name
+                //self.title = bag.name
                 self.bagID = bag.uuidString
                 
                 self.discIDs = []

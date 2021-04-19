@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     //  MARK: - Outlets
@@ -13,10 +14,13 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     @IBOutlet weak var profileDefaultImage: UIImageView!
     @IBOutlet weak var tableView: UITableView!
     
+    //  MARK: - PROPERTIES
+    var userID = Auth.auth().currentUser?.uid ?? "No User"
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        handleNotAuthenticated()
         configureViews()
     }
     
@@ -27,6 +31,14 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     //  MARK: - Methods
+    func handleNotAuthenticated() {
+        if self.userID == "No User" {
+            let loginVC = LoginViewController()
+            loginVC.modalPresentationStyle = .fullScreen
+            present(loginVC, animated: false)
+        }
+    }
+    
     func configureViews() {
         tableView.delegate = self
         tableView.dataSource = self
