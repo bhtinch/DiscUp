@@ -63,8 +63,55 @@ class AuthManager {
         }
     }
     
+    /// Attempt to reauthenticate firebase user
+    static func reauthenticateUser(email: String, password: String, completion: @escaping (Bool) -> Void) {
+        
+        let credential = EmailAuthProvider.credential(withEmail: email, password: password)
+        
+        Auth.auth().currentUser?.reauthenticate(with: credential) { (_, error) in
+            if let error = error {
+                print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                DispatchQueue.main.async {
+                    return completion(false)
+                }
+            } else {
+                print("User successfully reauthenticated...")
+                DispatchQueue.main.async {
+                    completion(true)
+                }
+            }
+        }
+    }
+    
+    /// Attempt to send password reset email through Firebase Auth
+    static func sendUserPasswordResetEmail(completion: @escaping (Bool) -> Void) {
+        let email = Auth.auth().currentUser?.email ?? "no user"
+        
+        Auth.auth().sendPasswordReset(withEmail: email) { (error) in
+            if let error = error {
+                print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                completion(false)
+            }
+        }
+        
+        DispatchQueue.main.async {
+            return completion(true)
+        }
+    }
+    
     static func deleteUser(){
-        //  NEEDS IMPLEMENTATION
+        
+    }   //  NEEDS IMPLEMENTATION
+    
+    /// Presents an alert controller to inform user of action taken with phrase specified.  'OK' is the only action and dismisses the alert.
+    static func presentActionUpdateAlert(with phrase: String, sender: UIViewController) {
+        let alert = UIAlertController(title: phrase, message: nil, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: { (_) in
+            alert.dismiss(animated: true, completion: nil)
+        }))
+        
+        sender.present(alert, animated: true, completion: nil)
     }
 }   //  End of Class
 

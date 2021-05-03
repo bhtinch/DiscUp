@@ -26,10 +26,10 @@ class SwitchBagTableViewController: UITableViewController {
     
     //  MARK: - Actions
     @IBAction func createBagButtonTapped(_ sender: Any) {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "CreateNewBagViewController")
-        vc.modalPresentationStyle = .fullScreen
-        present(vc, animated: true, completion: nil)
+//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//        let vc = storyboard.instantiateViewController(withIdentifier: "CreateNewBagViewController")
+//        vc.modalPresentationStyle = .fullScreen
+//        present(vc, animated: true, completion: nil)
     }
     
     //  MARK: - Properties

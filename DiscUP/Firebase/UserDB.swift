@@ -37,9 +37,7 @@ class UserDB {
     }
     
     /// Attempts to remove the user object from the firebase User database
-    func deleteUserWith() {
-        
-    }
+    func deleteUserWith() {}    //  NEEDS IMPLEMENTATION
     
     /// Attempts to update the child data of the user object in the firebase User database; currently valid only for single level top level children
     func updateUserWith(key: String, value: Any) {
