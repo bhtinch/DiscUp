@@ -43,8 +43,6 @@ class BagManager {
                     DispatchQueue.main.async { completion(.failure(NetworkError.databaseError)) }
                     return
                 }
-                print(childSnap.key)
-                print(test)
                 
                 //  initialize bagID as first bag in case no default bag is set; the next block will override if a default is set
                 if i == 0 { bagID = childSnap.key }
@@ -56,8 +54,6 @@ class BagManager {
                 
                 i += 1
             }
-            
-            
             
             database.child(pathString).child(bagID).observeSingleEvent(of: .value) { (snap) in
                 if snap.exists() == false {

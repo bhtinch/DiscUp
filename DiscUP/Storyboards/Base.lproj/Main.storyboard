@@ -785,7 +785,9 @@
                         <outlet property="bagModelTextField" destination="n26-oC-Dcg" id="KBV-Ly-a8D"/>
                         <outlet property="bagNameTextField" destination="h0M-J2-oVx" id="03Q-7P-yoA"/>
                         <outlet property="checkedButton" destination="LqS-bB-hPh" id="J3u-uz-p2B"/>
+                        <outlet property="createButton" destination="qZp-8n-vc3" id="6zZ-La-Yve"/>
                         <outlet property="defaultStackView" destination="AH6-eJ-ntc" id="wAS-r7-9VH"/>
+                        <outlet property="headingLabel" destination="eqs-Aa-Xii" id="NUD-q4-frT"/>
                         <outlet property="uncheckedButton" destination="z58-2B-cC8" id="MAm-qf-Fa0"/>
                     </connections>
                 </viewController>
@@ -802,22 +804,47 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="switchBagCell" textLabel="xcH-Yj-lqR" style="IBUITableViewCellStyleDefault" id="kiG-QX-LFA">
-                                <rect key="frame" x="0.0" y="24.5" width="414" height="43.5"/>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="switchBagCell" id="kiG-QX-LFA" customClass="SwitchBagTableViewCell" customModule="DiscUP" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="24.5" width="414" height="34"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="kiG-QX-LFA" id="usC-Xb-w6l">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="34"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xcH-Yj-lqR">
-                                            <rect key="frame" x="20" y="0.0" width="374" height="43.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
+                                        <stackView opaque="NO" contentMode="scaleToFill" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="Bs8-Cz-pBa">
+                                            <rect key="frame" x="20.5" y="1.5" width="373" height="31"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Oqa-gs-z0Y">
+                                                    <rect key="frame" x="0.0" y="0.0" width="327" height="31"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="252" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UkP-qV-S70">
+                                                    <rect key="frame" x="343" y="0.0" width="30" height="31"/>
+                                                    <state key="normal" title="Edit"/>
+                                                    <connections>
+                                                        <action selector="editButtonTapped:" destination="kiG-QX-LFA" eventType="touchUpInside" id="lEZ-Ho-0q3"/>
+                                                    </connections>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="UkP-qV-S70" firstAttribute="height" secondItem="Bs8-Cz-pBa" secondAttribute="height" id="ZaF-Fd-qaZ"/>
+                                                <constraint firstItem="UkP-qV-S70" firstAttribute="height" secondItem="Oqa-gs-z0Y" secondAttribute="height" id="ZaP-oa-kq6"/>
+                                            </constraints>
+                                        </stackView>
                                     </subviews>
+                                    <constraints>
+                                        <constraint firstItem="Bs8-Cz-pBa" firstAttribute="height" secondItem="usC-Xb-w6l" secondAttribute="height" multiplier="0.9" id="4a1-7P-45S"/>
+                                        <constraint firstItem="Bs8-Cz-pBa" firstAttribute="width" secondItem="usC-Xb-w6l" secondAttribute="width" multiplier="0.9" id="Fzx-w8-7Zg"/>
+                                        <constraint firstItem="Bs8-Cz-pBa" firstAttribute="centerX" secondItem="usC-Xb-w6l" secondAttribute="centerX" id="i0A-K7-Wh8"/>
+                                        <constraint firstItem="Bs8-Cz-pBa" firstAttribute="centerY" secondItem="usC-Xb-w6l" secondAttribute="centerY" id="opP-Ja-IOL"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="bagNameLabel" destination="Oqa-gs-z0Y" id="1fF-6J-p1m"/>
+                                    <outlet property="editButton" destination="UkP-qV-S70" id="yQg-o6-55y"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -826,17 +853,28 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="gvC-e6-2m3">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="vxm-D7-SXf">
-                            <connections>
-                                <action selector="createBagButtonTapped:" destination="hWG-H9-oqM" id="QtD-4W-FyE"/>
-                                <segue destination="cYi-0s-EAf" kind="show" id="JkZ-YA-tg7"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="add" id="vxm-D7-SXf">
+                                <connections>
+                                    <action selector="createBagButtonTapped:" destination="hWG-H9-oqM" id="QtD-4W-FyE"/>
+                                    <segue destination="cYi-0s-EAf" kind="show" identifier="createNewBag" id="JkZ-YA-tg7"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Edit" id="ntq-R6-7Wo">
+                                <connections>
+                                    <action selector="editBagButtonTapped:" destination="hWG-H9-oqM" id="Ocw-um-jvK"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
+                    <connections>
+                        <outlet property="createBagButton" destination="vxm-D7-SXf" id="adO-7l-Vdk"/>
+                        <outlet property="editBagButton" destination="ntq-R6-7Wo" id="JhE-xR-fnU"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2it-WU-dKP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-820" y="815"/>
+            <point key="canvasLocation" x="-820.28985507246387" y="814.95535714285711"/>
         </scene>
         <!--Disc Search Table View Controller-->
         <scene sceneID="kmf-U2-Pmb">
