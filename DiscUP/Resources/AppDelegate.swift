@@ -15,8 +15,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         
-        //Database.database().isPersistenceEnabled = true
-        Database.database(url: "https://discup-users-rtdb.firebaseio.com/").isPersistenceEnabled = true
+        Database.database().isPersistenceEnabled = true
+        //Database.database(url: "https://discup-users-rtdb.firebaseio.com/").isPersistenceEnabled = true
         //UserDatabaseManager.shared.dbRef.keepSynced(true)
         //DiscDatabaseManager.shared.dbRef.keepSynced(true)
         return true

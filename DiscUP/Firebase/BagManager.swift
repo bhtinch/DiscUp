@@ -34,21 +34,36 @@ class BagManager {
                 return
             }
             
+            //  find the default bag and grab the bagID
+            var i = 0
+            
             for child in snapshot.children.allObjects {
                 guard let childSnap = child as? DataSnapshot,
                       let test = childSnap.childSnapshot(forPath: BagKeys.isDefault).value as? Bool else {
                     DispatchQueue.main.async { completion(.failure(NetworkError.databaseError)) }
                     return
                 }
+                print(childSnap.key)
+                print(test)
+                
+                //  initialize bagID as first bag in case no default bag is set; the next block will override if a default is set
+                if i == 0 { bagID = childSnap.key }
+                
                 if test {
                     bagID = childSnap.key
+                    break
                 }
+                
+                i += 1
             }
+            
+            
             
             database.child(pathString).child(bagID).observeSingleEvent(of: .value) { (snap) in
                 if snap.exists() == false {
                     DispatchQueue.main.async {
                         return completion(.failure(NetworkError.noData))
+                        
                     }
                 } else {
                     let bagID = snap.key as String
