@@ -83,7 +83,15 @@ class SwitchBagTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
+            BagManager.deleteBagWith(bagID: bags[indexPath.row][1]) { success in
+                switch success {
+                case .success(_):
+                    self.getBaglist()
+                case .failure(_):
+                    print("no bag found when attempting to delete bagID: \(self.bags[indexPath.row][1])")
+                }
+            }
+            
         }
     }
 }   //  End of Class
