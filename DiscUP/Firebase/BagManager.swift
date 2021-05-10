@@ -22,6 +22,7 @@ class BagManager {
     static let database = UserDB.shared.dbRef
     
     static func getDefaultBag(completion: @escaping (Result<Bag, NetworkError>) -> Void) {
+        print("Fetching default bag...")
         let pathString = "\(UserKeys.userID)/\(UserKeys.bags)"
         
         database.child(pathString).observeSingleEvent(of: .value) { (snapshot) in
@@ -33,46 +34,47 @@ class BagManager {
                 return
             }
             
+            //  find the default bag and grab the bagID
+            var i = 0
+            
             for child in snapshot.children.allObjects {
                 guard let childSnap = child as? DataSnapshot,
                       let test = childSnap.childSnapshot(forPath: BagKeys.isDefault).value as? Bool else {
                     DispatchQueue.main.async { completion(.failure(NetworkError.databaseError)) }
                     return
                 }
+                
+                //  initialize bagID as first bag in case no default bag is set; the next block will override if a default is set
+                if i == 0 { bagID = childSnap.key }
+                
                 if test {
                     bagID = childSnap.key
+                    break
                 }
-            }
-            
-            database.child(pathString).queryLimited(toFirst: 1).observeSingleEvent(of: .value) { (snap) in
-                for child in snap.children {
-                    guard let childSnap = child as? DataSnapshot else {
-                        DispatchQueue.main.async { completion(.failure(NetworkError.databaseError)) }
-                        return
-                    }
-                    bagID = childSnap.key as String
-                }
+                
+                i += 1
             }
             
             database.child(pathString).child(bagID).observeSingleEvent(of: .value) { (snap) in
-                for child in snap.children  {
-                    guard let childSnap = child as? DataSnapshot else {
-                        DispatchQueue.main.async { completion(.failure(NetworkError.databaseError)) }
-                        return
+                if snap.exists() == false {
+                    DispatchQueue.main.async {
+                        return completion(.failure(NetworkError.noData))
+                        
                     }
-                    
-                    let name = childSnap.childSnapshot(forPath: BagKeys.name).value as? String ?? ""
-                    let brand = childSnap.childSnapshot(forPath: BagKeys.brand).value as? String ?? ""
-                    let model = childSnap.childSnapshot(forPath: BagKeys.model).value as? String ?? ""
-                    let color = childSnap.childSnapshot(forPath: BagKeys.color).value as? String ?? ""
-                    let isDefault = childSnap.childSnapshot(forPath: BagKeys.isDefault).value as? Bool ?? false
-                    let NSdiscIDs = childSnap.childSnapshot(forPath: BagKeys.discIDs).value as? NSDictionary
+                } else {
+                    let bagID = snap.key as String
+                    let name = snap.childSnapshot(forPath: BagKeys.name).value as? String ?? ""
+                    let brand = snap.childSnapshot(forPath: BagKeys.brand).value as? String ?? ""
+                    let model = snap.childSnapshot(forPath: BagKeys.model).value as? String ?? ""
+                    let color = snap.childSnapshot(forPath: BagKeys.color).value as? String ?? ""
+                    let isDefault = snap.childSnapshot(forPath: BagKeys.isDefault).value as? Bool ?? false
+                    let NSdiscIDs = snap.childSnapshot(forPath: BagKeys.discIDs).value as? NSDictionary
                     
                     let discIDs = NSdiscIDs as? Dictionary<String, String> ?? Dictionary()
                     
                     let bag = Bag(name: name, brand: brand, model: model, color: color, discIDs: discIDs, isDefault: isDefault, uuidString: bagID)
                     
-                    DispatchQueue.main.async { return completion(.success(bag)) }
+                    return completion(.success(bag))
                 }
             }
         }
@@ -101,9 +103,7 @@ class BagManager {
                 
                 let bag = Bag(name: name, brand: brand, model: model, color: color, discIDs: discIDs, isDefault: isDefault, uuidString: bagID)
                 
-                DispatchQueue.main.async {
-                    return completion(.success(bag))
-                }
+                return completion(.success(bag))
             }
         }
     }
@@ -126,7 +126,19 @@ class BagManager {
             } else {
                 DispatchQueue.main.async {
                     dbRef.observeSingleEvent(of: .value) { (snap) in
-                        print(snap.key)
+                        let newID = snap.key
+                        
+                        if isDefault {
+                            UserDB.shared.dbRef.child(pathString).observeSingleEvent(of: .value) { (snap) in
+                                for child in snap.children {
+                                    guard let childSnap = child as? DataSnapshot else { return }
+                                    let id = childSnap.key as String
+                                    
+                                    if id == newID { continue }
+                                    database.child(pathString).child(id).child("isDefault").setValue(false)
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -141,6 +153,62 @@ class BagManager {
     static func removeDiscWith(discID: String, fromBagWith bagID: String) {
         let path = "\(UserKeys.userID)/\(UserKeys.bags)/\(bagID)/\(BagKeys.discIDs)/\(discID)"
         database.child(path).removeValue()
+    }
+    
+    static func deleteBagWith(bagID: String, completion: @escaping (Result<Bool, NetworkError>) -> Void) {
+        print("Deleting bag with ID: \(bagID)...")
+        
+        let pathString = "\(UserKeys.userID)/\(UserKeys.bags)/\(bagID)"
+        
+        database.child(pathString).observeSingleEvent(of: .value, with: { snap in
+            if snap.exists() {
+                DispatchQueue.main.async {
+                    database.child(pathString).removeValue()
+                    completion(.success(true))
+                }
+            } else {
+                DispatchQueue.main.async {
+                    completion(.failure(NetworkError.noData))
+                }
+            }
+        })
+    }
+    
+    static func editBagWith(bagID: String, name: String, brand: String, model: String, color: String, isDefault: Bool, completion: @escaping (Result<Bool, NetworkError>) -> Void) {
+        print("Attempting to edit bag with ID: \(bagID)")
+        
+        let pathString = "\(UserKeys.userID)/\(UserKeys.bags)"
+        
+        if isDefault {
+            UserDB.shared.dbRef.child(pathString).observeSingleEvent(of: .value) { (snap) in
+                for child in snap.children {
+                    guard let childSnap = child as? DataSnapshot else { return completion(.failure(NetworkError.noData)) }
+                    let id = childSnap.key as String
+                    
+                    if id == bagID { continue }
+                    database.child(pathString).child(id).child("isDefault").setValue(false)
+                }
+            }
+        }
+        
+        database.child(pathString).child(bagID).updateChildValues([
+            BagKeys.name : name,
+            BagKeys.brand : brand,
+            BagKeys.model : model,
+            BagKeys.color : color,
+            BagKeys.isDefault : isDefault
+        ]) { (error, dbRef) in
+            if let _ = error {
+                DispatchQueue.main.async {
+                    print("Could not edit bag.")
+                    completion(.failure(NetworkError.databaseError))
+                }
+            } else {
+                DispatchQueue.main.async {
+                    completion(.success(true))
+                }
+            }
+        }
     }
     
 }   //  End of Class

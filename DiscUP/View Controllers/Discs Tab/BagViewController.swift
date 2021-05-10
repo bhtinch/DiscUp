@@ -16,7 +16,7 @@ class BagViewController: UIViewController {
     var userID = Auth.auth().currentUser?.uid ?? "No User"
     var discs: [Disc] = []
     var discIDs: [String] = []
-    var bagID: String = "No Bag"
+    var bagID: String?
     
     //  MARK: - Lifecycle
     override func viewDidLoad() {
@@ -24,12 +24,11 @@ class BagViewController: UIViewController {
         print("Logged In UserID: \(userID)")
         tableView.delegate = self
         tableView.dataSource = self
-        
-        fetchDefaultBag()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        guard let bagID = bagID else { return fetchDefaultBag() }
         fetchBag(bagID: bagID)
     }
     
@@ -38,13 +37,13 @@ class BagViewController: UIViewController {
         BagManager.getDefaultBag { (result) in
             switch result {
             case .success(let bag):
-                print("successfully fetched Bag with ID: \(bag.uuidString)")
+                print("successfully fetched default Bag with ID: \(bag.uuidString)")
                 self.title = bag.name
                 self.bagID = bag.uuidString
                 
                 self.discIDs = []
-                bag.discIDs.keys.forEach {
-                    self.discIDs.append($0)
+                for id in bag.discIDs.keys {
+                    self.discIDs.append(id)
                 }
                 self.fetchDiscs()
                 
@@ -53,6 +52,7 @@ class BagViewController: UIViewController {
                 case .databaseError:
                     print(error)
                 case .noData:
+                    print(error)
                     self.presentCreateBagAlert()
                 case .invalidURL:
                     print(error)
@@ -69,35 +69,36 @@ class BagViewController: UIViewController {
     
     func fetchBag(bagID: String) {
         BagManager.getBagWith(bagID: bagID) { (result) in
-            
-            switch result {
-            case .success(let bag):
-                print("successfully fetched Bag with ID: \(bag.uuidString)")
-                self.bagID = bag.uuidString
-                
-                self.discIDs = []
-                print(self.discIDs)
-                bag.discIDs.keys.forEach {
-                    self.discIDs.append($0)
-                }
-                
-                self.fetchDiscs()
-                
-            case .failure(let error):
-                switch error {
-                case .databaseError:
-                    print(error)
-                case .noData:
-                    self.discs = []
-                    self.tableView.reloadData()
-                case .invalidURL:
-                    print(error)
-                case .thrownError(_):
-                    print(error)
-                case .unableToDecode:
-                    print(error)
-                case .unableToLogin:
-                    print(error)
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let bag):
+                    print("successfully fetched Bag with ID: \(bag.uuidString)")
+                    self.bagID = bag.uuidString
+                    
+                    self.discIDs = []
+                    
+                    bag.discIDs.keys.forEach {
+                        self.discIDs.append($0)
+                    }
+                    print(self.discIDs)
+                    self.fetchDiscs()
+                    
+                case .failure(let error):
+                    switch error {
+                    case .databaseError:
+                        print(error)
+                    case .noData:
+                        self.discs = []
+                        self.tableView.reloadData()
+                    case .invalidURL:
+                        print(error)
+                    case .thrownError(_):
+                        print(error)
+                    case .unableToDecode:
+                        print(error)
+                    case .unableToLogin:
+                        print(error)
+                    }
                 }
             }
         }
@@ -116,9 +117,7 @@ class BagViewController: UIViewController {
                 switch result {
                 case .success(let disc):
                     self.discs.append(disc)
-                    if uid == self.discIDs.last {
                         self.tableView.reloadData()
-                    }
                     
                 case .failure(let error):
                     print(error)
@@ -139,14 +138,16 @@ class BagViewController: UIViewController {
         if segue.identifier == "toDiscDetailVC" {
             guard let indexPath = tableView.indexPathForSelectedRow,
                   let destination = segue.destination as? DiscDetailViewController else { return }
-            destination.bagID = self.bagID
+            guard let bagID = bagID else { return }
+            destination.bagID = bagID
             destination.selectedDisc = discs[indexPath.row]
             destination.bagItButton.isHidden = true
         }
         
         if segue.identifier == "toDiscSearchVC" {
             guard let destination = segue.destination as? DiscSearchTableViewController else { return }
-            destination.currentBagID = self.bagID
+            guard let bagID = bagID else { return }
+            destination.currentBagID = bagID
         }
         
         if segue.identifier == "toSwitchBagTVC" {
@@ -186,6 +187,7 @@ extension BagViewController: UITableViewDelegate, UITableViewDataSource {
         if editingStyle == .delete {
             
             let discID = discIDs[indexPath.row]
+            guard let bagID = bagID else { return }
             BagManager.removeDiscWith(discID: discID, fromBagWith: bagID)
             fetchBag(bagID: bagID)
         }

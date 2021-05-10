@@ -1,26 +1,19 @@
 //
-//  SettingsViewController.swift
+//  MyOfferDetailViewController.swift
 //  DiscUP
 //
-//  Created by Benjamin Tincher on 3/5/21.
+//  Created by Benjamin Tincher on 4/19/21.
 //
 
 import UIKit
 
-class SettingsViewController: UIViewController {
+class MyOfferDetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
     }
-    
-//    //  MARK: - Actions
-//    @IBAction func logOutButtonTapped(_ sender: Any) {
-//        AuthManager.logoutUser()
-//        self.userID = "No User"
-//        self.handleNotAuthenticated()
-//    }
     
 
     /*

@@ -59,7 +59,20 @@ extension Event {
         mirror.children.forEach {
             propertyArray = []
             
-            if $0.label == "tournament_name" { } else {
+            if $0.label == "tournament_name" {
+                // do nothing
+            } else if $0.label == "tier" {
+                if let labelName = $0.label {
+                    if let label = labelDict[labelName] {
+                        propertyArray.append(label)
+                    }
+                    
+                    let value = $0.value as? Tier
+                    propertyArray.append(value?.rawValue ?? "No Information")
+                    
+                    propertiesArray.append(propertyArray)
+                }
+            } else {
                 if let labelName = $0.label {
                     if let label = labelDict[labelName] {
                         propertyArray.append(label)

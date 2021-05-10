@@ -1,13 +1,13 @@
 //
-//  NotificationsViewController.swift
+//  CoversationsViewController.swift
 //  DiscUP
 //
-//  Created by Benjamin Tincher on 3/5/21.
+//  Created by Benjamin Tincher on 4/19/21.
 //
 
 import UIKit
 
-class NotificationsViewController: UIViewController {
+class ConversationListViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()

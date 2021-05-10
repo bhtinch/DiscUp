@@ -1,13 +1,13 @@
 //
-//  DiscWantListViewController.swift
+//  MarketItemDetailViewController.swift
 //  DiscUP
 //
-//  Created by Benjamin Tincher on 3/5/21.
+//  Created by Benjamin Tincher on 4/19/21.
 //
 
 import UIKit
 
-class DiscWantListViewController: UIViewController {
+class MarketItemDetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()

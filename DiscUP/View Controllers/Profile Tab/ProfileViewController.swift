@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     //  MARK: - Outlets
@@ -13,11 +14,21 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     @IBOutlet weak var profileDefaultImage: UIImageView!
     @IBOutlet weak var tableView: UITableView!
     
-
+    //  MARK: - PROPERTIES
+    var userID = "no user"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         configureViews()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        userID = Auth.auth().currentUser?.uid ?? "no user"
+        
+        if self.userID == "no user" {
+            handleNotAuthenticated()
+        }
     }
     
     @IBAction func changeDefaultImageButtonTapped(_ sender: Any) {
@@ -27,6 +38,12 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     //  MARK: - Methods
+    func handleNotAuthenticated() {
+        let loginVC = LoginViewController()
+        loginVC.modalPresentationStyle = .fullScreen
+        present(loginVC, animated: false)
+    }
+    
     func configureViews() {
         tableView.delegate = self
         tableView.dataSource = self
@@ -50,15 +67,15 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         return cell
     }
     
-
+    
     /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destination.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
 }
