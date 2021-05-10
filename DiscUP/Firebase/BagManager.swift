@@ -111,17 +111,6 @@ class BagManager {
     static func createNewBagWith(name: String, brand: String, model: String, color: String, isDefault: Bool) {
         let pathString = "\(UserKeys.userID)/\(UserKeys.bags)"
         
-        if isDefault {
-            UserDB.shared.dbRef.child(pathString).observeSingleEvent(of: .value) { (snap) in
-                for child in snap.children {
-                    guard let childSnap = child as? DataSnapshot else { return }
-                    let bagID = childSnap.key as String
-                    
-                    database.child(pathString).child(bagID).child("isDefault").setValue(false)
-                }
-            }
-        }
-        
         database.child(pathString).childByAutoId().setValue([
             BagKeys.name : name,
             BagKeys.brand : brand,
@@ -137,7 +126,19 @@ class BagManager {
             } else {
                 DispatchQueue.main.async {
                     dbRef.observeSingleEvent(of: .value) { (snap) in
-                        print(snap.key)
+                        let newID = snap.key
+                        
+                        if isDefault {
+                            UserDB.shared.dbRef.child(pathString).observeSingleEvent(of: .value) { (snap) in
+                                for child in snap.children {
+                                    guard let childSnap = child as? DataSnapshot else { return }
+                                    let id = childSnap.key as String
+                                    
+                                    if id == newID { continue }
+                                    database.child(pathString).child(id).child("isDefault").setValue(false)
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -173,8 +174,41 @@ class BagManager {
         })
     }
     
-    static func editBagWith(BagID: String, name: String, brand: String, model: String, color: String, isDefault: Bool, completion: @escaping (Result<Bag, NetworkError>) -> Void) {
+    static func editBagWith(bagID: String, name: String, brand: String, model: String, color: String, isDefault: Bool, completion: @escaping (Result<Bool, NetworkError>) -> Void) {
+        print("Attempting to edit bag with ID: \(bagID)")
         
-    }   // NEEDS IMPLEMENTATION
+        let pathString = "\(UserKeys.userID)/\(UserKeys.bags)"
+        
+        if isDefault {
+            UserDB.shared.dbRef.child(pathString).observeSingleEvent(of: .value) { (snap) in
+                for child in snap.children {
+                    guard let childSnap = child as? DataSnapshot else { return completion(.failure(NetworkError.noData)) }
+                    let id = childSnap.key as String
+                    
+                    if id == bagID { continue }
+                    database.child(pathString).child(id).child("isDefault").setValue(false)
+                }
+            }
+        }
+        
+        database.child(pathString).child(bagID).updateChildValues([
+            BagKeys.name : name,
+            BagKeys.brand : brand,
+            BagKeys.model : model,
+            BagKeys.color : color,
+            BagKeys.isDefault : isDefault
+        ]) { (error, dbRef) in
+            if let _ = error {
+                DispatchQueue.main.async {
+                    print("Could not edit bag.")
+                    completion(.failure(NetworkError.databaseError))
+                }
+            } else {
+                DispatchQueue.main.async {
+                    completion(.success(true))
+                }
+            }
+        }
+    }
     
 }   //  End of Class

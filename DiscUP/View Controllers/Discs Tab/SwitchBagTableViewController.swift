@@ -129,11 +129,10 @@ class SwitchBagTableViewController: UITableViewController {
                 guard let destination = segue.destination as? CreateNewBagViewController,
                       let bagID = self.editBagID  else { return }
                 destination.bagID = bagID
-                destination.isNew = true
-                print(destination.bagID)
+                destination.isNew = false
             } else {
                 guard let destination = segue.destination as? CreateNewBagViewController else { return }
-                destination.isNew = false
+                destination.isNew = true
             }
         }
     }
