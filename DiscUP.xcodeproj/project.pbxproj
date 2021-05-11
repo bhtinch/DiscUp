@@ -11,6 +11,7 @@
 		6209462A2649C4C500E4C6BC /* MessagingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 620946292649C4C500E4C6BC /* MessagingManager.swift */; };
 		6209462C2649C5F600E4C6BC /* MarketDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6209462B2649C5F600E4C6BC /* MarketDB.swift */; };
 		6209462E2649C5FE00E4C6BC /* MessagingDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6209462D2649C5FE00E4C6BC /* MessagingDB.swift */; };
+		62094631264A138A00E4C6BC /* MarketCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62094630264A138A00E4C6BC /* MarketCollectionViewCell.swift */; };
 		62492A9625F2C20A00A24A05 /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 62492A9525F2C20A00A24A05 /* Login.storyboard */; };
 		62492A9925F2CC7900A24A05 /* BagManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62492A9825F2CC7900A24A05 /* BagManager.swift */; };
 		62492AA125F2F80300A24A05 /* BaggedDiscTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62492AA025F2F80300A24A05 /* BaggedDiscTableViewCell.swift */; };
@@ -63,6 +64,7 @@
 		620946292649C4C500E4C6BC /* MessagingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingManager.swift; sourceTree = "<group>"; };
 		6209462B2649C5F600E4C6BC /* MarketDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketDB.swift; sourceTree = "<group>"; };
 		6209462D2649C5FE00E4C6BC /* MessagingDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingDB.swift; sourceTree = "<group>"; };
+		62094630264A138A00E4C6BC /* MarketCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketCollectionViewCell.swift; sourceTree = "<group>"; };
 		62492A9525F2C20A00A24A05 /* Login.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		62492A9825F2CC7900A24A05 /* BagManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BagManager.swift; sourceTree = "<group>"; };
 		62492AA025F2F80300A24A05 /* BaggedDiscTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaggedDiscTableViewCell.swift; sourceTree = "<group>"; };
@@ -141,9 +143,18 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		6209462F264A135800E4C6BC /* CV Cells */ = {
+			isa = PBXGroup;
+			children = (
+				62094630264A138A00E4C6BC /* MarketCollectionViewCell.swift */,
+			);
+			path = "CV Cells";
+			sourceTree = "<group>";
+		};
 		62492A9E25F2F7CB00A24A05 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6209462F264A135800E4C6BC /* CV Cells */,
 				62492A9F25F2F7D000A24A05 /* TV Cells */,
 			);
 			path = Views;
@@ -475,6 +486,7 @@
 				6255B5E5262244F100B3A53D /* Event.swift in Sources */,
 				6255B5EF262245E100B3A53D /* UIClasses.swift in Sources */,
 				62C04EBC25F2A5B100D4F4B6 /* Bag.swift in Sources */,
+				62094631264A138A00E4C6BC /* MarketCollectionViewCell.swift in Sources */,
 				62C04EC525F2A63C00D4F4B6 /* DiscDB.swift in Sources */,
 				62D207AB262E2CC700FF6C9F /* ConversationListViewController.swift in Sources */,
 				6255B5DC2622442300B3A53D /* LinkTableViewCell.swift in Sources */,
