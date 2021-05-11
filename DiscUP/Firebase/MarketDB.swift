@@ -11,6 +11,13 @@ import Firebase
 struct MarketKeys {
     static let conversations = "conversations"
     static let owner = "owner"
+    static let headline = "headline"
+    static let manufacturer = "manufacturer"
+    static let model = "model"
+    static let plastic = "plastic"
+    static let weight = "weight"
+    static let description = "description"
+    static let images = "images"
 }
 
 class MarketDB {

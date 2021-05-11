@@ -14,6 +14,7 @@ enum NetworkError: LocalizedError {
     case thrownError(Error)
     case unableToDecode
     case unableToLogin
+    case noUser
     
     var errorDescription: String? {
         switch self {
@@ -29,6 +30,8 @@ enum NetworkError: LocalizedError {
             return "The server responded with bad data."
         case .unableToLogin:
             return "Could not login."
+        case .noUser:
+            return "No user logged in"
         }
     }
 }

@@ -15,6 +15,8 @@ struct UserKeys {
     static let racks = "Racks"
     static let email = "Email"
     static let userID = Auth.auth().currentUser?.uid ?? "No User"
+    static let offers = "offers"
+    static let conversations = "conversations"
 }
 
 class UserDB {

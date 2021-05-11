@@ -1374,8 +1374,7 @@
                                     </label>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalHuggingPriority="248" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="biC-WI-jeH">
                                         <rect key="frame" x="0.0" y="238.5" width="373" height="74"/>
-                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                        <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                        <color key="backgroundColor" systemColor="systemGray5Color"/>
                                         <color key="textColor" systemColor="labelColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -1391,10 +1390,19 @@
                                     <constraint firstItem="biC-WI-jeH" firstAttribute="width" secondItem="qFZ-ZF-y3S" secondAttribute="width" id="ucR-Et-UTz"/>
                                 </constraints>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Rjc-kV-iNq">
+                                <rect key="frame" x="83" y="112" width="20" height="22"/>
+                                <color key="tintColor" systemColor="systemRedColor"/>
+                                <state key="normal" image="xmark.circle.fill" catalog="system"/>
+                                <connections>
+                                    <action selector="deletePhotoButtonTapped:" destination="pJU-e7-MeC" eventType="touchUpInside" id="Sbk-3z-IhP"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="hMZ-Uu-sIz"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="Rjc-kV-iNq" firstAttribute="leading" secondItem="GPV-0c-6bf" secondAttribute="leading" id="5dT-RA-Rj0"/>
                             <constraint firstItem="b9d-3Y-32K" firstAttribute="top" secondItem="GPV-0c-6bf" secondAttribute="bottom" constant="24" id="DBG-Pk-oL5"/>
                             <constraint firstItem="qFZ-ZF-y3S" firstAttribute="width" secondItem="hMZ-Uu-sIz" secondAttribute="width" multiplier="0.9" id="GTo-7K-ta1"/>
                             <constraint firstItem="b9d-3Y-32K" firstAttribute="width" secondItem="lLI-Hs-aiG" secondAttribute="width" multiplier="0.9" id="Ku6-Og-FjM"/>
@@ -1403,6 +1411,7 @@
                             <constraint firstItem="qFZ-ZF-y3S" firstAttribute="centerX" secondItem="hMZ-Uu-sIz" secondAttribute="centerX" id="Q39-TG-DxR"/>
                             <constraint firstItem="qFZ-ZF-y3S" firstAttribute="top" secondItem="b9d-3Y-32K" secondAttribute="bottom" constant="24" id="VBk-YD-Ju4"/>
                             <constraint firstItem="b9d-3Y-32K" firstAttribute="centerX" secondItem="hMZ-Uu-sIz" secondAttribute="centerX" id="ZJ7-1o-Eiu"/>
+                            <constraint firstItem="Rjc-kV-iNq" firstAttribute="top" secondItem="GPV-0c-6bf" secondAttribute="top" id="nNT-qB-3d2"/>
                             <constraint firstItem="GPV-0c-6bf" firstAttribute="centerX" secondItem="hMZ-Uu-sIz" secondAttribute="centerX" id="nVL-F8-GkH"/>
                             <constraint firstItem="GPV-0c-6bf" firstAttribute="top" secondItem="hMZ-Uu-sIz" secondAttribute="top" constant="24" id="uSc-FC-K5X"/>
                         </constraints>
@@ -1416,11 +1425,18 @@
                     </navigationItem>
                     <connections>
                         <outlet property="addImageButton" destination="ZrK-pG-Woj" id="fE9-E0-29j"/>
+                        <outlet property="deletePhotoButton" destination="Rjc-kV-iNq" id="NGy-rT-vu6"/>
+                        <outlet property="descriptionTextView" destination="biC-WI-jeH" id="1vO-SY-rP7"/>
+                        <outlet property="headlineTextField" destination="IhR-TX-BnJ" id="7HP-hp-Gw3"/>
                         <outlet property="imageFourView" destination="v00-p6-nym" id="mpn-FC-jje"/>
                         <outlet property="imageOneView" destination="5Mi-PU-wfK" id="vE7-WV-DNb"/>
                         <outlet property="imageThreeView" destination="d8a-qc-PyH" id="29Q-FF-xB9"/>
                         <outlet property="imageTwoView" destination="Gd3-SA-qyD" id="fDd-I5-ABe"/>
                         <outlet property="mainImageView" destination="GPV-0c-6bf" id="iK9-kX-eqc"/>
+                        <outlet property="manufacturerTextField" destination="SVe-Ua-mQd" id="dYO-Wm-JdP"/>
+                        <outlet property="modelTextField" destination="aYY-Dq-h3Y" id="qB0-k1-tHl"/>
+                        <outlet property="plasticTextField" destination="K2I-d0-AuD" id="IgU-pF-B5G"/>
+                        <outlet property="weightTextField" destination="YGp-Bj-0KX" id="i10-sX-BU6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sTI-hl-HrJ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -1445,6 +1461,7 @@
         <image name="person.fill.questionmark" catalog="system" width="128" height="104"/>
         <image name="plus.app" catalog="system" width="128" height="114"/>
         <image name="square" catalog="system" width="128" height="114"/>
+        <image name="xmark.circle.fill" catalog="system" width="128" height="121"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
@@ -1457,8 +1474,14 @@
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
+        <systemColor name="systemGray5Color">
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
         <systemColor name="systemGreenColor">
             <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemRedColor">
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

@@ -62,6 +62,8 @@ class BagViewController: UIViewController {
                     print(error)
                 case .unableToLogin:
                     print(error)
+                case .noUser:
+                    print(error)
                 }
             }
         }
@@ -97,6 +99,8 @@ class BagViewController: UIViewController {
                     case .unableToDecode:
                         print(error)
                     case .unableToLogin:
+                        print(error)
+                    case .noUser:
                         print(error)
                     }
                 }
