@@ -28,49 +28,49 @@ class MyOfferDetailViewController: UIViewController {
     
     //  MARK: - ACTIONS
     @IBAction func addImageButtonTapped(_ sender: Any) {
-        presentImageAlert()
+        var imageCount = 0
+        images.forEach { if $0 != UIImage(systemName: "largecircle.fill.circle") {imageCount += 1} }
+        
+        if imageCount < 5 {
+            presentImageAlert()
+        }
     }
     
     @IBAction func saveButtonTapped(_ sender: Any) {
     }
     
     @IBAction func imageOneButtonTapped(_ sender: Any) {
-        print("image 1 Button Tapped")
+        featurePhotoAt(index: 1)
     }
     
     @IBAction func imageTwoButtonTapped(_ sender: Any) {
-        print("image 2 Button Tapped")
+        featurePhotoAt(index: 2)
     }
     
     @IBAction func imageThreeButtonTapped(_ sender: Any) {
-        print("image 3 Button Tapped")
+        featurePhotoAt(index: 3)
     }
     
     @IBAction func imageFourButtonTapped(_ sender: Any) {
-        print("image 4 Button Tapped")
+        featurePhotoAt(index: 4)
     }
     
     //  MARK: - METHODS
     func setupDefaultImages() {
         guard let defaultImage = UIImage(systemName: "largecircle.fill.circle") else { return }
         
-        for i in 0..<5 {
-                        
-            switch i {
-            case 0:
-                images.append(defaultImage.withTintColor(.blue))
-            case 1:
-                images.append(defaultImage.withTintColor(.orange))
-            case 2:
-                images.append(defaultImage.withTintColor(.systemIndigo))
-            case 3:
-                images.append(defaultImage.withTintColor(.cyan))
-            case 4:
-                images.append(defaultImage.withTintColor(.magenta))
-            default:
-                return
-            }
+        for _ in 0..<5 {
+            images.append(defaultImage)
         }
+    }
+    
+    func featurePhotoAt(index: Int) {
+        print("featuring photo at index \(index)")
+        
+        let feature = images.remove(at: index)
+        images.insert(feature, at: 0)
+        
+        updateViews()
     }
     
     func fetchImages() {
@@ -140,8 +140,13 @@ extension MyOfferDetailViewController: UINavigationControllerDelegate, UIImagePi
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
         
-        guard let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else { return }
-        self.images.append(image)
+        guard let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage,
+              let index = images.firstIndex(of: UIImage(systemName: "largecircle.fill.circle") ?? UIImage()) else { return }
+        
+        self.images.insert(image, at: index)
+        
+        if index == 4 { self.addImageButton.isEnabled = false }
+        
         self.updateViews()
     }
     
