@@ -17,6 +17,14 @@ class MarketManager {
     static func createNewOfferWith(item: MarketItem, completion: @escaping(Result<Bool, NetworkError>) -> Void) {
         guard let userID = userID else { return completion(.failure(NetworkError.noUser))}
         
+        var imageIDs: [String] = []
+        
+        for image in item.images {
+            imageIDs.append(image.accessibilityIdentifier ?? "\(item.id)_\(UUID().uuidString)")
+        }
+        
+        let imageIDsString = imageIDs.joined(separator: ",")
+        
         database.child(item.id).setValue([
             
             MarketKeys.owner : userID,
@@ -25,7 +33,8 @@ class MarketManager {
             MarketKeys.model : item.model,
             MarketKeys.plastic : item.plastic ?? "null",
             MarketKeys.weight : item.weight ?? 000,
-            MarketKeys.description : item.description
+            MarketKeys.description : item.description,
+            MarketKeys.imageIDs : imageIDsString
             
         ]) { error, dbRef in
             if let error = error {
@@ -36,7 +45,21 @@ class MarketManager {
             updateUserWith(userID: userID, item: item) { result in
                 switch result {
                 case .success(_):
-                    return completion(.success(true))
+                    print("Successfully updated user info with new offer.")
+                    
+                    StorageManager.uploadImagesWith(images: item.images) { result in
+                        switch result {
+                        case .success(_):
+                            
+                            print("Successfully uploaded photos to Firebase Storage.")
+                            return completion(.success(true))
+                            
+                        case .failure(let error):
+                            print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                            return completion(.failure(NetworkError.failedToUploadToStorage))
+                        }
+                    }
+                    
                 case .failure(let error):
                     print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
                     return completion(.failure(NetworkError.databaseError))
@@ -47,6 +70,7 @@ class MarketManager {
     
     static func updateUserWith(userID: String, item: MarketItem, completion: @escaping(Result<Bool, NetworkError>) -> Void) {
         let pathString = "\(userID)/\(UserKeys.offers)"
+        
         userDatabase.child(pathString).updateChildValues([
             item.id : "\(item.manufacturer) \(item.model)"
         ]) { error, _ in

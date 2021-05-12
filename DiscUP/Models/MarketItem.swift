@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 class MarketItem {
     let id: String
@@ -15,8 +16,9 @@ class MarketItem {
     let plastic: String?
     let weight: Double?
     let description: String
+    let images: [UIImage]
     
-    init(id: String = UUID().uuidString, headline: String, manufacturer: String, model: String, plastic: String?, weight: Double?, description: String) {
+    init(id: String = UUID().uuidString, headline: String, manufacturer: String, model: String, plastic: String?, weight: Double?, description: String, images: [UIImage]) {
         self.id = id
         self.headline = headline
         self.manufacturer = manufacturer
@@ -24,5 +26,6 @@ class MarketItem {
         self.plastic = plastic
         self.weight = weight
         self.description = description
+        self.images = images
     }
 }

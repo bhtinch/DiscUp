@@ -15,6 +15,8 @@ enum NetworkError: LocalizedError {
     case unableToDecode
     case unableToLogin
     case noUser
+    case failedToUploadToStorage
+    case failedToGetDownloadURL
     
     var errorDescription: String? {
         switch self {
@@ -32,6 +34,10 @@ enum NetworkError: LocalizedError {
             return "Could not login."
         case .noUser:
             return "No user logged in"
+        case .failedToUploadToStorage:
+            return "Failed to upload the media to Firebase Storage"
+        case .failedToGetDownloadURL:
+            return "Failed to get a download URL from Firebase Storage"
         }
     }
 }

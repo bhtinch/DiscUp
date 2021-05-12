@@ -26,6 +26,8 @@ class MyOfferDetailViewController: UIViewController {
     //  MARK: - PROPERTIES
     
     var images: [UIImage] = []
+    var item: MarketItem?
+    var isNew: Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -123,6 +125,8 @@ class MyOfferDetailViewController: UIViewController {
     }
     
     func saveOffer() {
+        let itemID = item?.id ?? UUID().uuidString
+        
         guard let headline = headlineTextField.text, !headline.isEmpty,
               let manufacturer = manufacturerTextField.text, !manufacturer.isEmpty,
               let model = modelTextField.text, !model.isEmpty,
@@ -135,7 +139,17 @@ class MyOfferDetailViewController: UIViewController {
             weight = Double(weightText)
         }
         
-        let item = MarketItem(headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description)
+        var uploadImages: [UIImage] = []
+        if isNew {
+            for image in images {
+                if image != UIImage(systemName: "largecircle.fill.circle") {
+                    image.accessibilityIdentifier = "\(itemID)_\(UUID().uuidString)"
+                    uploadImages.append(image)
+                }
+            }
+        }
+        
+        let item = MarketItem(id: itemID, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description, images: uploadImages)
         
         MarketManager.createNewOfferWith(item: item) { result in
             DispatchQueue.main.async {
@@ -151,15 +165,15 @@ class MyOfferDetailViewController: UIViewController {
     }
     
     /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destination.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
 }   //  End of Class
 
 extension MyOfferDetailViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {

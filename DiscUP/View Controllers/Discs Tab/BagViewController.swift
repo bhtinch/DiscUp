@@ -64,6 +64,10 @@ class BagViewController: UIViewController {
                     print(error)
                 case .noUser:
                     print(error)
+                case .failedToUploadToStorage:
+                    print(error)
+                case .failedToGetDownloadURL:
+                    print(error)
                 }
             }
         }
@@ -101,6 +105,10 @@ class BagViewController: UIViewController {
                     case .unableToLogin:
                         print(error)
                     case .noUser:
+                        print(error)
+                    case .failedToUploadToStorage:
+                        print(error)
+                    case .failedToGetDownloadURL:
                         print(error)
                     }
                 }

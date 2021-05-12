@@ -17,7 +17,7 @@ struct MarketKeys {
     static let plastic = "plastic"
     static let weight = "weight"
     static let description = "description"
-    static let images = "images"
+    static let imageIDs = "imageIDs"
 }
 
 class MarketDB {
