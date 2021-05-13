@@ -16,9 +16,10 @@ class MarketItem {
     let plastic: String?
     let weight: Double?
     let description: String
-    let images: [UIImage]
+    let imageIDs: [String]
+    let thumbImageID: String
     
-    init(id: String = UUID().uuidString, headline: String, manufacturer: String, model: String, plastic: String?, weight: Double?, description: String, images: [UIImage]) {
+    init(id: String = UUID().uuidString, headline: String, manufacturer: String, model: String, plastic: String?, weight: Double?, description: String, imageIDs: [String], thumbImageID: String) {
         self.id = id
         self.headline = headline
         self.manufacturer = manufacturer
@@ -26,6 +27,16 @@ class MarketItem {
         self.plastic = plastic
         self.weight = weight
         self.description = description
-        self.images = images
+        self.imageIDs = imageIDs
+        self.thumbImageID = thumbImageID
     }
+}
+
+struct MarketItemBasic {
+    let id: String
+    let headline: String
+    let manufacturer: String
+    let model: String
+    let plastic: String?
+    let thumbImageID: String
 }

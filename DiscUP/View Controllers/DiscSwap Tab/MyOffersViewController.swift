@@ -12,7 +12,7 @@ class MyOffersViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     
     //  MARK: - PROPERTIES
-    var items: [MarketItem] = []
+    var items: [MarketItemBasic] = []
     
     //  MARK: - LIFECYLCES
     override func viewDidLoad() {
@@ -50,7 +50,7 @@ class MyOffersViewController: UIViewController {
         if segue.identifier == "toMyOfferDetailVC" {
             guard let indexPath = collectionView.indexPathsForSelectedItems?.first,
                   let destination = segue.destination as? MyOfferDetailViewController else { return }
-            destination.item = items[indexPath.row]
+            destination.itemID = items[indexPath.row].id
         }
         
         if segue.identifier == "newOfferSegue" {
@@ -73,7 +73,18 @@ extension MyOffersViewController: UICollectionViewDelegateFlowLayout, UICollecti
         
         let item = items[indexPath.row]
         
-        cell.thumbnailImageView.image = item.images.first ?? UIImage(systemName: "largecircle.fill.circle")
+        MarketManager.fetchImageWith(imageID: item.thumbImageID) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let image):
+                    cell.thumbnailImageView.image = image
+                case .failure(_):
+                    print("Error fetching thumbImage for item with ID: \(item.id)")
+                    cell.thumbnailImageView.image = UIImage(systemName: "largecircle.fill.circle")
+                }
+            }
+        }
+                
         cell.headlineLabel.text = item.headline
         cell.sublineLabel.text = "\(item.manufacturer) \(item.model)"
         cell.bottomLabel.text = item.plastic

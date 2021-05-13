@@ -27,6 +27,7 @@ class MyOfferDetailViewController: UIViewController {
     
     var images: [UIImage] = []
     var isNew: Bool = true
+    var itemID: String?
     var item: MarketItem?
     
     //  MARK: - LIFECYLCES
@@ -39,9 +40,9 @@ class MyOfferDetailViewController: UIViewController {
         super.viewWillAppear(true)
         setupDefaultImages()
         
-        if let _ = item {
+        if let _ = itemID {
             self.isNew = false
-            self.configureImages()
+            self.fetchItem()
         }
     }
     
@@ -111,14 +112,61 @@ class MyOfferDetailViewController: UIViewController {
         updateViews()
     }
     
+    func fetchItem() {
+        guard let itemID = itemID else { return }
+        
+        MarketManager.fetchItemWith(itemID: itemID) { item in
+            DispatchQueue.main.async {
+                guard let item = item else { return print("Error fetching item details...") }
+                self.item = item
+                self.configureThumbImage()
+            }
+        }
+    }
+    
+    func configureThumbImage() {
+        guard let item = item else { return }
+        
+        MarketManager.fetchImageWith(imageID: item.thumbImageID) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let image):
+                    self.images[0] = image
+                    self.configureImages()
+                    
+                case .failure(let error):
+                    print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                    self.updateViews()
+                }
+            }
+        }
+    }
+    
     func configureImages() {
         guard let item = item else { return }
         
-        for i in 0..<item.images.count {
-            self.images.insert(item.images[i], at: i)
-        }
+        var i = 0
         
-        updateViews()
+        for id in item.imageIDs {
+            i += 1
+            
+            MarketManager.fetchImageWith(imageID: id) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    
+                    case .success(let image):
+                        self.images[i] = image
+                        
+                        if id == item.imageIDs.last {
+                            self.updateViews()
+                        }
+                    case .failure(let error):
+                        print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                        self.updateViews()
+                    }
+                }
+            }
+        }
     }
     
     func updateViews() {
@@ -151,56 +199,61 @@ class MyOfferDetailViewController: UIViewController {
     }
     
     func saveOffer() {
-        let itemID = item?.id ?? UUID().uuidString
+        //  if there is no itemID (isNew == true) set one using a random uuid
+        let itemID = itemID ?? UUID().uuidString
         
+        //  get info from textfields and textview
         guard let headline = headlineTextField.text, !headline.isEmpty,
               let manufacturer = manufacturerTextField.text, !manufacturer.isEmpty,
               let model = modelTextField.text, !model.isEmpty,
               let description = descriptionTextView.text, !description.isEmpty else { return presentAlertWith(title: "Please complete all required fields", message: nil) }
         
+        //  check that there is at least one photo provided
         guard let thumbImage = images.first, thumbImage != UIImage(systemName: "largecircle.fill.circle") else { return presentAlertWith(title: "Please provide at least one image of your item!", message: nil) }
         
         let plastic = plasticTextField.text
         
+        //  get weight String from textfield, if present, and convert to Double
         var weight: Double?
         if let weightText = weightTextField.text {
             weight = Double(weightText)
         }
         
+        //  create an array of images to add to the MarketItem object
+        var imageIDs: [String] = []
         var uploadImages: [UIImage] = []
-        if isNew {
-            for image in images {
-                if image != UIImage(systemName: "largecircle.fill.circle") {
+        
+        var saveItem: MarketItem?
+        
+        for image in images where image != images.first {
+            if image != UIImage(systemName: "largecircle.fill.circle") {
+                if image.accessibilityIdentifier == nil {
                     image.accessibilityIdentifier = "\(itemID)_\(UUID().uuidString)"
                     uploadImages.append(image)
                 }
+                guard let imageID = image.accessibilityIdentifier else { return print("no image ID!") }
+                imageIDs.append(imageID)
             }
         }
         
-        let item = MarketItem(id: itemID, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description, images: uploadImages)
+        guard let thumbImageID = imageIDs.first else { return print("no thumb image ID!")}
         
-        MarketManager.createNewOfferWith(item: item) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(_):
-                    print("successfully saved offer...")
-                    self.navigationController?.popViewController(animated: true)
-                case .failure(let error):
-                    print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+        saveItem = MarketItem(id: itemID, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description, imageIDs: imageIDs, thumbImageID: thumbImageID)
+        
+        if let updateItem = saveItem {            
+            MarketManager.update(item: updateItem, uploadImages: uploadImages) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(_):
+                        print("successfully saved offer...")
+                        self.navigationController?.popViewController(animated: true)
+                    case .failure(let error):
+                        print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                    }
                 }
             }
         }
     }
-    
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
-     }
-     */
     
 }   //  End of Class
 
