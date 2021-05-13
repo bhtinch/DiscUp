@@ -113,9 +113,9 @@ class MarketManager {
                         let imageIDsString = itemSnap.childSnapshot(forPath: MarketKeys.imageIDs).value as? String ?? ""
                         
                         let imageIDs = imageIDsString.components(separatedBy: ",")
+                        var images: [UIImage] = []
                         
                         for id in imageIDs {
-                            var images: [UIImage] = []
                             
                             StorageManager.downloadURLFor(imageID: id) { result in
                                 switch result {
