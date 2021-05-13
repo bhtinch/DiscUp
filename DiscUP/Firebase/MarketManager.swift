@@ -86,9 +86,70 @@ class MarketManager {
         
     }  //   NEEDS IMPLEMENTATION
     
-    static func fetchMyOffers() {
+    static func fetchMyOffers(completion: @escaping (Result<[MarketItem], NetworkError>) -> Void) {
+        guard let userID = userID else { return completion(.failure(NetworkError.noUser)) }
         
-    }  //   NEEDS IMPLEMENTATION
+        let pathString = "\(userID)/\(UserKeys.offers)"
+        var items: [MarketItem] = []
+        
+        userDatabase.child(pathString).observeSingleEvent(of: .value) { snap in
+            let itemCount = snap.children.allObjects.count
+            var i = 0
+            
+            for child in snap.children {
+                i += 1
+                
+                if let childSnap = child as? DataSnapshot {
+                    let itemID = childSnap.key
+                    
+                    database.child(itemID).observeSingleEvent(of: .value) { itemSnap in
+                        
+                        let description = itemSnap.childSnapshot(forPath: MarketKeys.description).value as? String ?? "(description)"
+                        let headline = itemSnap.childSnapshot(forPath: MarketKeys.headline).value as? String ?? "(headline)"
+                        let manufacturer = itemSnap.childSnapshot(forPath: MarketKeys.manufacturer).value as? String ?? "manufacturer unknown"
+                        let model = itemSnap.childSnapshot(forPath: MarketKeys.model).value as? String ?? "model unknown"
+                        let plastic = itemSnap.childSnapshot(forPath: MarketKeys.plastic).value as? String ?? "plastic unknown"
+                        let weight = itemSnap.childSnapshot(forPath: MarketKeys.weight).value as? Double ?? 000
+                        let imageIDsString = itemSnap.childSnapshot(forPath: MarketKeys.imageIDs).value as? String ?? ""
+                        
+                        let imageIDs = imageIDsString.components(separatedBy: ",")
+                        
+                        for id in imageIDs {
+                            var images: [UIImage] = []
+                            
+                            StorageManager.downloadURLFor(imageID: id) { result in
+                                switch result {
+                                case .success(let url):
+                                    
+                                    let task = URLSession.shared.dataTask(with: url) { data, response, error in
+                                        guard let data = data, error == nil else { return completion(.failure(NetworkError.databaseError)) }
+                                        
+                                        if let image = UIImage(data: data) {
+                                            images.append(image)
+                                            
+                                            if id == imageIDs.last {
+                                                let item = MarketItem(id: itemID, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description, images: images)
+                                                
+                                                items.append(item)
+                                                
+                                                if i == itemCount {
+                                                    completion(.success(items))
+                                                }
+                                            }
+                                        }
+                                    }
+                                    task.resume()
+                                    
+                                case .failure(let error):
+                                    print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     static func queryOffers() {
         

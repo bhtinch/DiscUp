@@ -27,4 +27,16 @@ class StorageManager {
         }
     }
     
+    static func downloadURLFor(imageID: String, completion: @escaping (Result<URL, NetworkError>) -> Void) {
+        storage.child(imageID).downloadURL { url, error in
+            if let error = error {
+                print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                return completion(.failure(NetworkError.failedToGetDownloadURL))
+            }
+            
+            guard let url = url else { return completion(.failure(NetworkError.failedToGetDownloadURL)) }
+            completion(.success(url))
+        }
+    }
+    
 }

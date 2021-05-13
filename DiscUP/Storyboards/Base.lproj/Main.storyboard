@@ -687,7 +687,7 @@
                                             <outlet property="headlineLabel" destination="r2h-M3-Mvp" id="G37-G3-HjI"/>
                                             <outlet property="sublineLabel" destination="E0L-I3-b79" id="cLJ-nz-wbH"/>
                                             <outlet property="thumbnailImageView" destination="Tge-6n-THX" id="RRR-Su-LrW"/>
-                                            <segue destination="pJU-e7-MeC" kind="show" identifier="toMyOfferDetailVC" id="WgR-Dl-3CG"/>
+                                            <segue destination="pJU-e7-MeC" kind="show" identifier="toMyOfferDetailVC" id="hvR-Fh-db7"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -1445,7 +1445,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="WgR-Dl-3CG"/>
+        <segue reference="hvR-Fh-db7"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="DGBasket" width="1632" height="918"/>

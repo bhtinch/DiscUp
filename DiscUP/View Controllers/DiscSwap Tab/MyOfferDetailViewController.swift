@@ -26,13 +26,23 @@ class MyOfferDetailViewController: UIViewController {
     //  MARK: - PROPERTIES
     
     var images: [UIImage] = []
-    var item: MarketItem?
     var isNew: Bool = true
+    var item: MarketItem?
     
+    //  MARK: - LIFECYLCES
     override func viewDidLoad() {
         super.viewDidLoad()
         setupDefaultImages()
-        fetchImages()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        setupDefaultImages()
+        
+        if let _ = item {
+            self.isNew = false
+            self.configureImages()
+        }
     }
     
     //  MARK: - ACTIONS
@@ -89,6 +99,7 @@ class MyOfferDetailViewController: UIViewController {
         }
         
         deletePhotoButton.isHidden = true
+        updateViews()
     }
     
     func featurePhotoAt(index: Int) {
@@ -100,7 +111,13 @@ class MyOfferDetailViewController: UIViewController {
         updateViews()
     }
     
-    func fetchImages() {
+    func configureImages() {
+        guard let item = item else { return }
+        
+        for i in 0..<item.images.count {
+            self.images.insert(item.images[i], at: i)
+        }
+        
         updateViews()
     }
     
@@ -115,6 +132,15 @@ class MyOfferDetailViewController: UIViewController {
             deletePhotoButton.isHidden = false
         } else {
             deletePhotoButton.isHidden = true
+        }
+        
+        if let item = item, isNew == false {
+            headlineTextField.text = item.headline
+            manufacturerTextField.text = item.manufacturer
+            modelTextField.text = item.model
+            plasticTextField.text = item.plastic
+            weightTextField.text = item.weight?.description
+            descriptionTextView.text = item.description
         }
     }
     
@@ -131,6 +157,8 @@ class MyOfferDetailViewController: UIViewController {
               let manufacturer = manufacturerTextField.text, !manufacturer.isEmpty,
               let model = modelTextField.text, !model.isEmpty,
               let description = descriptionTextView.text, !description.isEmpty else { return presentAlertWith(title: "Please complete all required fields", message: nil) }
+        
+        guard let thumbImage = images.first, thumbImage != UIImage(systemName: "largecircle.fill.circle") else { return presentAlertWith(title: "Please provide at least one image of your item!", message: nil) }
         
         let plastic = plasticTextField.text
         
