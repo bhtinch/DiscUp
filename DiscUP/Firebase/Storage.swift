@@ -39,4 +39,17 @@ class StorageManager {
         }
     }
     
+    static func deleteImagesWith(imageIDs: [String], completion: @escaping (Bool) -> Void) {
+        for id in imageIDs {
+            storage.child(id).delete { error in
+                if let error = error {
+                    print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                    return completion(false)
+                }
+                
+                if id == imageIDs.last { completion(true) }
+            }
+        }
+    }
+    
 }

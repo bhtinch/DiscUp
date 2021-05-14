@@ -29,6 +29,7 @@ class MyOfferDetailViewController: UIViewController {
     var isNew: Bool = true
     var itemID: String?
     var item: MarketItem?
+    var deleteImageIDs: [String] = []
     
     //  MARK: - LIFECYLCES
     override func viewDidLoad() {
@@ -131,6 +132,7 @@ class MyOfferDetailViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let image):
+                    image.accessibilityIdentifier = item.thumbImageID
                     self.images[0] = image
                     self.configureImages()
                     
@@ -143,23 +145,23 @@ class MyOfferDetailViewController: UIViewController {
     }
     
     func configureImages() {
-        guard let item = item else { return }
+        guard let item = item,
+              item.imageIDs.first != "", !item.imageIDs.isEmpty else { return updateViews() }
         
-        var i = 0
+        var i = 1
         
         for id in item.imageIDs {
-            i += 1
             
             MarketManager.fetchImageWith(imageID: id) { result in
                 DispatchQueue.main.async {
                     switch result {
                     
                     case .success(let image):
+                        image.accessibilityIdentifier = id
                         self.images[i] = image
+                        self.updateViews()
+                        i += 1
                         
-                        if id == item.imageIDs.last {
-                            self.updateViews()
-                        }
                     case .failure(let error):
                         print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
                         self.updateViews()
@@ -193,9 +195,12 @@ class MyOfferDetailViewController: UIViewController {
     }
     
     func deletePhoto() {
-        images.removeFirst()
+        let deletedImage = images.removeFirst()
         images.append(UIImage(systemName: "largecircle.fill.circle") ?? UIImage())
-        updateViews()
+        
+        if let deletedID = deletedImage.accessibilityIdentifier { self.deleteImageIDs.append(deletedID) }
+        
+        self.updateViews()
     }
     
     func saveOffer() {
@@ -210,7 +215,7 @@ class MyOfferDetailViewController: UIViewController {
         
         //  check that there is at least one photo provided
         guard let thumbImage = images.first, thumbImage != UIImage(systemName: "largecircle.fill.circle") else { return presentAlertWith(title: "Please provide at least one image of your item!", message: nil) }
-        
+                
         let plastic = plasticTextField.text
         
         //  get weight String from textfield, if present, and convert to Double
@@ -236,12 +241,18 @@ class MyOfferDetailViewController: UIViewController {
             }
         }
         
-        guard let thumbImageID = imageIDs.first else { return print("no thumb image ID!")}
+        var thumbImageID = thumbImage.accessibilityIdentifier
         
-        saveItem = MarketItem(id: itemID, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description, imageIDs: imageIDs, thumbImageID: thumbImageID)
+        if thumbImageID == nil {
+            thumbImageID = "\(itemID)_\(UUID().uuidString)"
+            thumbImage.accessibilityIdentifier = thumbImageID
+            uploadImages.append(thumbImage)
+        }
+        
+        saveItem = MarketItem(id: itemID, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description, imageIDs: imageIDs, thumbImageID: thumbImageID!)
         
         if let updateItem = saveItem {            
-            MarketManager.update(item: updateItem, uploadImages: uploadImages) { result in
+            MarketManager.update(item: updateItem, uploadImages: uploadImages, deletedImageIDs: self.deleteImageIDs) { result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(_):

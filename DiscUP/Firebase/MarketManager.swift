@@ -14,7 +14,7 @@ class MarketManager {
     static let userID = Auth.auth().currentUser?.uid
     static let userDatabase = UserDB.shared.dbRef
         
-    static func update(item: MarketItem, uploadImages: [UIImage], completion: @escaping (Result<Bool, NetworkError>) -> Void) {
+    static func update(item: MarketItem, uploadImages: [UIImage], deletedImageIDs: [String], completion: @escaping (Result<Bool, NetworkError>) -> Void) {
         guard let userID = userID else { return completion(.failure(NetworkError.noUser)) }
         
         let imageIDsString = item.imageIDs.joined(separator: ",")
@@ -37,6 +37,17 @@ class MarketManager {
                 return completion(.failure(NetworkError.databaseError))
             }
             
+            
+            if !deletedImageIDs.isEmpty {
+                StorageManager.deleteImagesWith(imageIDs: deletedImageIDs) { success in
+                    if success {
+                        print("Images successfully deleted from Firebase Storage.")
+                    } else {
+                        print("Error deleted images from Firebase Storage.")
+                    }
+                }
+            }
+                        
             updateUserWith(userID: userID, item: item) { result in
                 switch result {
                 case .success(_):
