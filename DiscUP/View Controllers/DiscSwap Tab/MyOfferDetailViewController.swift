@@ -108,6 +108,9 @@ class MyOfferDetailViewController: UIViewController {
         print("featuring photo at index \(index)")
         
         let feature = images.remove(at: index)
+        
+        if feature == UIImage(systemName: "largecircle.fill.circle") { return images.insert(feature, at: index) }
+        
         images.insert(feature, at: 0)
         
         updateViews()
