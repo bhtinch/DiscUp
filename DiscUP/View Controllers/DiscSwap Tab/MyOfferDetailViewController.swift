@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import AVFoundation
+import Photos
 
 class MyOfferDetailViewController: UIViewController {
     //  MARK: - OUTLETS
@@ -318,13 +320,65 @@ extension MyOfferDetailViewController {
         }))
         
         let takePhotoAction = UIAlertAction(title: "Take Photo", style: .default) { _ in
-            self.presentCamera()
-            alert.dismiss(animated: true, completion: nil)
+            
+            switch MediaPermissions.checkCameraPermission() {
+                case .notDetermined:
+                    AVCaptureDevice.requestAccess(for: .video) { granted in
+                        DispatchQueue.main.async {
+                            if granted {
+                                self.presentCamera()
+                                alert.dismiss(animated: true, completion: nil)
+                            } else {
+                                alert.dismiss(animated: true, completion: nil)
+                            }
+                        }
+                    }
+                    
+                case .restricted:
+                    self.presentAlertWith(title: "Your permission settings for this app does not allow taking pictures", message: "Please update the app permissions in order to take photos.")
+                    alert.dismiss(animated: true, completion: nil)
+                    
+                case .denied:
+                    self.presentAlertWith(title: "Your permission settings for this app does not allow taking pictures", message: "Please update the app permissions in order to take photos.")
+                    alert.dismiss(animated: true, completion: nil)
+                    
+                case .authorized:
+                    self.presentCamera()
+                    alert.dismiss(animated: true, completion: nil)
+                    
+                @unknown default:
+                    self.presentAlertWith(title: "Your permission settings for this app does not allow taking pictures", message: "Please update the app permissions in order to take photos.")
+                    alert.dismiss(animated: true, completion: nil)
+            }
+            
+            
         }
         
         let choosePhotoAction = UIAlertAction(title: "Choose from Gallery", style: .default) { _ in
-            self.presentPhotoPicker()
-            alert.dismiss(animated: true, completion: nil)
+            
+            switch MediaPermissions.checkMediaLibraryPermission() {
+                case .notDetermined:
+                    PHPhotoLibrary.requestAuthorization { status in
+                        DispatchQueue.main.async {
+                            switch status {
+                                case .authorized:
+                                    self.presentPhotoPicker()
+                                    alert.dismiss(animated: true, completion: nil)
+                                    
+                                default:
+                                    alert.dismiss(animated: true, completion: nil)
+                            }
+                        }
+                    }
+                    
+                case .authorized:
+                    self.presentPhotoPicker()
+                    alert.dismiss(animated: true, completion: nil)
+                    
+                default:
+                    self.presentAlertWith(title: "Your permission settings for this app does not allow taking pictures", message: "Please update the app permissions in order to take photos.")
+                    alert.dismiss(animated: true, completion: nil)
+            }
         }
         
         alert.addAction(takePhotoAction)
