@@ -8,22 +8,94 @@
 import UIKit
 
 class MyOffersViewController: UIViewController {
-
+    //  MARK: - OUTLETS
+    @IBOutlet weak var collectionView: UICollectionView!
+    
+    //  MARK: - PROPERTIES
+    var items: [MarketItemBasic] = []
+    
+    //  MARK: - LIFECYLCES
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.collectionViewLayout = UICollectionViewFlowLayout()
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        fetchMyOffers()
     }
-    */
+    
+    //  MARK: - METHODS
+    func fetchMyOffers() {
+        MarketManager.fetchMyOffers { result in
+            DispatchQueue.main.async {
+                switch result {
+                
+                case .success(let items):
+                    print("successfully fetched my offers.")
+                    self.items = items
+                    self.collectionView.reloadData()
+                    
+                case .failure(let error):
+                    print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    // MARK: - Navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toMyOfferDetailVC" {
+            guard let indexPath = collectionView.indexPathsForSelectedItems?.first,
+                  let destination = segue.destination as? MyOfferDetailViewController else { return }
+            destination.itemID = items[indexPath.row].id
+        }
+        
+        if segue.identifier == "newOfferSegue" {
+            guard let destination = segue.destination as? MyOfferDetailViewController else { return }
+            destination.isNew = true
+            destination.item = nil
+        }
+    }
 
-}
+}   //  End of Class
+
+extension MyOffersViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UICollectionViewDelegate {
+    //  MARK: - COLLECTION VIEW DATA SOURCE
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return items.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "marketItemCell", for: indexPath) as? MarketCollectionViewCell else { return UICollectionViewCell() }
+        
+        let item = items[indexPath.row]
+        
+        MarketManager.fetchImageWith(imageID: item.thumbImageID) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let image):
+                    cell.thumbnailImageView.image = image
+                case .failure(_):
+                    print("Error fetching thumbImage for item with ID: \(item.id)")
+                    cell.thumbnailImageView.image = UIImage(systemName: "largecircle.fill.circle")
+                }
+            }
+        }
+                
+        cell.headlineLabel.text = item.headline
+        cell.sublineLabel.text = "\(item.manufacturer) \(item.model)"
+        cell.bottomLabel.text = item.plastic
+        
+        return cell
+    }
+    
+    //  MARK: - COLLECTION VIEW FLOW LAYOUT
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = view.frame.width / 2
+        return CGSize(width: width * 0.9, height: width * 1.3)
+    }
+}   //  End of Extension
+
