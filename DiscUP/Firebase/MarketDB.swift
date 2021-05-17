@@ -19,6 +19,10 @@ struct MarketKeys {
     static let description = "description"
     static let imageIDs = "imageIDs"
     static let thumbImageID = "thumbImageID"
+    static let askingPrice = "askingPrice"
+    static let sellingLocation = "sellingLocation"
+    static let updatedTimestamp = "updatedTimestamp"
+    static let inputZipCode = "inputZipCode"
 }
 
 class MarketDB {

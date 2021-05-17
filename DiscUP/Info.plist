@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Uses current location to set swap item location</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Uses current location to set swap item location</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Needs access to select photos</string>
 	<key>NSCameraUsageDescription</key>

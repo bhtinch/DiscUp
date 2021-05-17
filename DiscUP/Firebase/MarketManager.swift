@@ -17,7 +17,11 @@ class MarketManager {
     static func update(item: MarketItem, uploadImages: [UIImage], deletedImageIDs: [String], completion: @escaping (Result<Bool, NetworkError>) -> Void) {
         guard let userID = userID else { return completion(.failure(NetworkError.noUser)) }
         
+        let locationArrayString = "\(item.sellingLocation.latitude),\(item.sellingLocation.longitude)"
+        
         let imageIDsString = item.imageIDs.joined(separator: ",")
+        
+        let updatedTimestamp = item.updatedTimestamp.convertToUTCString(format: .fullNumericWithTimezone)
         
         database.child(item.id).updateChildValues([
             
@@ -26,10 +30,14 @@ class MarketManager {
             MarketKeys.manufacturer : item.manufacturer,
             MarketKeys.model : item.model,
             MarketKeys.plastic : item.plastic ?? "null",
-            MarketKeys.weight : item.weight ?? 000,
+            MarketKeys.weight : item.weight ?? 0,
             MarketKeys.description : item.description,
             MarketKeys.imageIDs : imageIDsString,
-            MarketKeys.thumbImageID : item.thumbImageID
+            MarketKeys.thumbImageID : item.thumbImageID,
+            MarketKeys.askingPrice : item.askingPrice ?? 0,
+            MarketKeys.sellingLocation : locationArrayString,
+            MarketKeys.updatedTimestamp : updatedTimestamp,
+            MarketKeys.inputZipCode : item.inputZipCode
             
         ]) { error, dbRef in
             if let error = error {
@@ -161,19 +169,32 @@ class MarketManager {
             let manufacturer = itemSnap.childSnapshot(forPath: MarketKeys.manufacturer).value as? String ?? "manufacturer unknown"
             let model = itemSnap.childSnapshot(forPath: MarketKeys.model).value as? String ?? "model unknown"
             let plastic = itemSnap.childSnapshot(forPath: MarketKeys.plastic).value as? String ?? "plastic unknown"
-            let weight = itemSnap.childSnapshot(forPath: MarketKeys.weight).value as? Double ?? 000
+            var weight = itemSnap.childSnapshot(forPath: MarketKeys.weight).value as? Double
             let imageIDsString = itemSnap.childSnapshot(forPath: MarketKeys.imageIDs).value as? String ?? ""
             let thumbImageID = itemSnap.childSnapshot(forPath: MarketKeys.thumbImageID).value as? String ?? ""
+            var askingPrice = itemSnap.childSnapshot(forPath: MarketKeys.askingPrice).value as? Int
+            let sellingLocation = itemSnap.childSnapshot(forPath: MarketKeys.sellingLocation).value as? String ?? "Unknown Location"
+            let updatedTimestampString = itemSnap.childSnapshot(forPath: MarketKeys.updatedTimestamp).value as? String
+            let inputZipCode = itemSnap.childSnapshot(forPath: MarketKeys.inputZipCode).value as? String
             
             let imageIDs = imageIDsString.components(separatedBy: ",")
             
-            let item = MarketItem(id: itemID, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description, imageIDs: imageIDs, thumbImageID: thumbImageID)
+            if askingPrice == 0 { askingPrice = nil }
+            if weight == 0 { weight = nil }
+            
+            let updatedTimestamp = updatedTimestampString?.stringToLocalDate(format: .fullNumericWithTimezone) ?? Date.distantPast
+            
+            let sellingLocationArray = sellingLocation.split(separator: ",")
+            
+            let location = Location(latitude: Double(sellingLocationArray[0]) ?? 0, longitude: Double(sellingLocationArray[1]) ?? 0)
+            
+            let item = MarketItem(id: itemID, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description, imageIDs: imageIDs, thumbImageID: thumbImageID, askingPrice: askingPrice, sellingLocation: location, updatedTimestamp: updatedTimestamp, inputZipCode: inputZipCode)
             
             completion(item)
         }
     }
     
-    static func queryOffers() {
+    static func queryOffersWith(model: String, manufacturer: String) {
         
     }  //   NEEDS IMPLEMENTATION
     

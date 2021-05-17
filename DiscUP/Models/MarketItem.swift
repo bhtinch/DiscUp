@@ -18,8 +18,12 @@ class MarketItem {
     let description: String
     let imageIDs: [String]
     let thumbImageID: String
+    let askingPrice: Int?
+    let sellingLocation: Location
+    let updatedTimestamp: Date
+    let inputZipCode: String?
     
-    init(id: String = UUID().uuidString, headline: String, manufacturer: String, model: String, plastic: String?, weight: Double?, description: String, imageIDs: [String], thumbImageID: String) {
+    init(id: String = UUID().uuidString, headline: String, manufacturer: String, model: String, plastic: String?, weight: Double?, description: String, imageIDs: [String], thumbImageID: String, askingPrice: Int?, sellingLocation: Location, updatedTimestamp: Date, inputZipCode: String?) {
         self.id = id
         self.headline = headline
         self.manufacturer = manufacturer
@@ -29,6 +33,10 @@ class MarketItem {
         self.description = description
         self.imageIDs = imageIDs
         self.thumbImageID = thumbImageID
+        self.askingPrice = askingPrice
+        self.sellingLocation = sellingLocation
+        self.updatedTimestamp = updatedTimestamp
+        self.inputZipCode = inputZipCode
     }
 }
 

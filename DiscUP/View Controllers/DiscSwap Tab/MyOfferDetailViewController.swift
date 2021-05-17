@@ -8,6 +8,7 @@
 import UIKit
 import AVFoundation
 import Photos
+import CoreLocation
 
 class MyOfferDetailViewController: UIViewController {
     //  MARK: - OUTLETS
@@ -24,6 +25,9 @@ class MyOfferDetailViewController: UIViewController {
     @IBOutlet weak var plasticTextField: UITextField!
     @IBOutlet weak var weightTextField: UITextField!
     @IBOutlet weak var descriptionTextView: UITextView!
+    @IBOutlet weak var askingPriceTextField: UITextField!
+    @IBOutlet weak var zipCodeTextField: UITextField!
+    @IBOutlet weak var useLocationButton: UIButton!
     
     //  MARK: - PROPERTIES
     
@@ -32,11 +36,23 @@ class MyOfferDetailViewController: UIViewController {
     var itemID: String?
     var item: MarketItem?
     var deleteImageIDs: [String] = []
+    var usingCurrentLocation: Bool = true
+    var location: Location?
+    let locationManager = LocationManager.shared
     
     //  MARK: - LIFECYLCES
     override func viewDidLoad() {
         super.viewDidLoad()
         setupDefaultImages()
+        
+        zipCodeTextField.delegate = self
+        
+        descriptionTextView.layer.borderWidth = 1
+        descriptionTextView.layer.borderColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+        descriptionTextView.layer.cornerRadius = 6
+        
+        usingCurrentLocation = false
+        useLocationButtonTapped(self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -60,7 +76,7 @@ class MyOfferDetailViewController: UIViewController {
     }
     
     @IBAction func saveButtonTapped(_ sender: Any) {
-        saveOffer()
+        prepareToSaveOffer()
     }
     
     @IBAction func imageOneButtonTapped(_ sender: Any) {
@@ -92,6 +108,46 @@ class MyOfferDetailViewController: UIViewController {
         }))
         
         present(alert, animated: true, completion: nil)
+    }
+    
+    @IBAction func useLocationButtonTapped(_ sender: Any) {
+        print("tapped")
+        usingCurrentLocation.toggle()
+        
+        if usingCurrentLocation {
+            useLocationButton.setTitleColor(.white, for: .normal)
+            useLocationButton.backgroundColor = .link
+            zipCodeTextField.text = nil
+            zipCodeTextField.resignFirstResponder()
+        } else {
+            useLocationButton.setTitleColor(.link, for: .normal)
+            useLocationButton.backgroundColor = .white
+            return
+        }
+        
+        let status = locationManager.authorizationStatus
+        
+        switch status {
+        case .notDetermined:
+            locationManager.requestWhenInUseAuthorization()
+        case .restricted:
+            self.presentAlertWith(title: "Your permission settings for this app does not allow location capture", message: "Please update the app permissions in order to use this feature.")
+        case .denied:
+            self.presentAlertWith(title: "Your permission settings for this app does not allow location capture", message: "Please update the app permissions in order to use this feature.")
+
+        case .authorizedAlways:
+            if let latitude = locationManager.location?.coordinate.latitude,
+               let longitude = locationManager.location?.coordinate.longitude {
+                self.location = Location(latitude: latitude, longitude: longitude)
+            }
+        case .authorizedWhenInUse:
+            if let latitude = locationManager.location?.coordinate.latitude,
+               let longitude = locationManager.location?.coordinate.longitude {
+                self.location = Location(latitude: latitude, longitude: longitude)
+            }
+        @unknown default:
+            self.presentAlertWith(title: "Your permission settings for this app does not allow location capture", message: "Please update the app permissions in order to use this feature.")
+        }
     }
     
     //  MARK: - METHODS
@@ -196,6 +252,14 @@ class MyOfferDetailViewController: UIViewController {
             plasticTextField.text = item.plastic
             weightTextField.text = item.weight?.description
             descriptionTextView.text = item.description
+            askingPriceTextField.text = item.askingPrice?.description
+            
+            if item.inputZipCode == nil {
+                zipCodeTextField.text = nil
+            } else {
+                zipCodeTextField.text = item.inputZipCode!
+                useLocationButtonTapped(self)
+            }
         }
     }
     
@@ -208,7 +272,7 @@ class MyOfferDetailViewController: UIViewController {
         self.updateViews()
     }
     
-    func saveOffer() {
+    func prepareToSaveOffer() {
         //  if there is no itemID (isNew == true) set one using a random uuid
         let itemID = itemID ?? UUID().uuidString
         
@@ -220,20 +284,25 @@ class MyOfferDetailViewController: UIViewController {
         
         //  check that there is at least one photo provided
         guard let thumbImage = images.first, thumbImage != UIImage(systemName: "largecircle.fill.circle") else { return presentAlertWith(title: "Please provide at least one image of your item!", message: nil) }
-                
+        
+        //  get plastic type from text field
         let plastic = plasticTextField.text
         
-        //  get weight String from textfield, if present, and convert to Double
+        //  get weight and price String from textfield, if present, and convert to Double
         var weight: Double?
+        var askingPrice: Int?
+        
         if let weightText = weightTextField.text {
             weight = Double(weightText)
+        }
+        
+        if let priceText = askingPriceTextField.text {
+            askingPrice = Int(priceText)
         }
         
         //  create an array of images to add to the MarketItem object
         var imageIDs: [String] = []
         var uploadImages: [UIImage] = []
-        
-        var saveItem: MarketItem?
         
         for image in images where image != images.first {
             if image != UIImage(systemName: "largecircle.fill.circle") {
@@ -254,18 +323,50 @@ class MyOfferDetailViewController: UIViewController {
             uploadImages.append(thumbImage)
         }
         
-        saveItem = MarketItem(id: itemID, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description, imageIDs: imageIDs, thumbImageID: thumbImageID!)
+        //  get location from either zipCodeTextField or using current location
+        var zipCode: String?
         
-        if let updateItem = saveItem {            
-            MarketManager.update(item: updateItem, uploadImages: uploadImages, deletedImageIDs: self.deleteImageIDs) { result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(_):
-                        print("successfully saved offer...")
-                        self.navigationController?.popViewController(animated: true)
-                    case .failure(let error):
-                        print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
-                    }
+        if usingCurrentLocation == false {
+            guard let zip = zipCodeTextField.text, !zip.isEmpty else { return presentAlertWith(title: "Please enter a zip code or use select 'Use Current Location'.", message: nil) }
+            
+            guard zip.count == 5 else { return self.presentAlertWith(title: "Please enter a valid zip code.", message: nil) }
+            
+            zipCode = zip
+            
+            self.locationManager.getCoordinates(zipCode: zip) { result in
+                switch result {
+                
+                case .success(let clLocation):
+                    let location = Location(latitude: clLocation.latitude, longitude: clLocation.longitude)
+                    
+                    self.saveOffer(id: itemID, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description, imageIDs: imageIDs, thumbImageID: thumbImageID!, askingPrice: askingPrice, sellingLocation: location, inputZipCode: zipCode, uploadImages: uploadImages)
+                    
+                case .failure(let error):
+                    print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                    
+                    return self.presentAlertWith(title: "Please enter a valid zip code.", message: nil)
+                }
+            }
+        } else {
+            
+            guard let location = location else { return presentAlertWith(title: "Please enter a zip code or use select 'Use Current Location'.", message: nil) }
+                self.saveOffer(id: itemID, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description, imageIDs: imageIDs, thumbImageID: thumbImageID!, askingPrice: askingPrice, sellingLocation: location, inputZipCode: zipCode, uploadImages: uploadImages)
+        }
+    }
+    
+    func saveOffer(id: String, headline: String, manufacturer: String, model: String, plastic: String?, weight: Double?, description: String, imageIDs: [String], thumbImageID: String, askingPrice: Int?, sellingLocation: Location, inputZipCode: String?, uploadImages: [UIImage]) {
+        
+        //  create a MarketItem object from values
+        let saveItem = MarketItem(id: id, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description, imageIDs: imageIDs, thumbImageID: thumbImageID, askingPrice: askingPrice, sellingLocation: sellingLocation, updatedTimestamp: Date(), inputZipCode: inputZipCode)
+        
+        MarketManager.update(item: saveItem, uploadImages: uploadImages, deletedImageIDs: self.deleteImageIDs) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    print("successfully saved offer...")
+                    self.navigationController?.popViewController(animated: true)
+                case .failure(let error):
+                    print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
                 }
             }
         }
@@ -395,5 +496,15 @@ extension MyOfferDetailViewController {
         }))
         
         present(alert, animated: true, completion: nil)
+    }
+}   //  End of Extension
+
+extension MyOfferDetailViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField == zipCodeTextField {
+            if usingCurrentLocation {
+                useLocationButtonTapped(self)
+            }
+        }
     }
 }   //  End of Extension
