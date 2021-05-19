@@ -23,6 +23,9 @@ struct MarketKeys {
     static let sellingLocation = "sellingLocation"
     static let updatedTimestamp = "updatedTimestamp"
     static let inputZipCode = "inputZipCode"
+    static let coordinates = "coordinates"
+    static let latitude = "latitude"
+    static let longitude = "longitude"
 }
 
 class MarketDB {

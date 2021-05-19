@@ -19,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //Database.database(url: "https://discup-users-rtdb.firebaseio.com/").isPersistenceEnabled = true
         //UserDatabaseManager.shared.dbRef.keepSynced(true)
         //DiscDatabaseManager.shared.dbRef.keepSynced(true)
+                
         return true
     }
 

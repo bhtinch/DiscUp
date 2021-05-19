@@ -274,7 +274,7 @@ class MyOfferDetailViewController: UIViewController {
     
     func prepareToSaveOffer() {
         //  if there is no itemID (isNew == true) set one using a random uuid
-        let itemID = itemID ?? UUID().uuidString
+        let itemID = itemID ?? String(Date().timeIntervalSince(Date.distantPast)).replacingOccurrences(of: ".", with: "")
         
         //  get info from textfields and textview
         guard let headline = headlineTextField.text, !headline.isEmpty,

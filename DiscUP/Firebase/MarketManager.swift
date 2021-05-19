@@ -8,6 +8,7 @@
 import Foundation
 import FirebaseDatabase
 import FirebaseAuth
+import CoreLocation
 
 class MarketManager {
     static let database = MarketDB.shared.dbRef
@@ -22,6 +23,11 @@ class MarketManager {
         let imageIDsString = item.imageIDs.joined(separator: ",")
         
         let updatedTimestamp = item.updatedTimestamp.convertToUTCString(format: .fullNumericWithTimezone)
+        
+        database.child(MarketKeys.coordinates).child(item.id).updateChildValues([
+            MarketKeys.latitude : item.sellingLocation.latitude,
+            MarketKeys.longitude : item.sellingLocation.longitude
+        ])
         
         database.child(item.id).updateChildValues([
             
@@ -139,6 +145,21 @@ class MarketManager {
         }
     }
     
+    static func fetchMarketBasicItemWith(itemID: String, completion: @escaping(MarketItemBasic) -> Void) {
+        database.child(itemID).observeSingleEvent(of: .value) { itemSnap in
+            
+            let headline = itemSnap.childSnapshot(forPath: MarketKeys.headline).value as? String ?? "(headline)"
+            let manufacturer = itemSnap.childSnapshot(forPath: MarketKeys.manufacturer).value as? String ?? "manufacturer unknown"
+            let model = itemSnap.childSnapshot(forPath: MarketKeys.model).value as? String ?? "model unknown"
+            let plastic = itemSnap.childSnapshot(forPath: MarketKeys.plastic).value as? String ?? "plastic unknown"
+            let thumbImageID = itemSnap.childSnapshot(forPath: MarketKeys.thumbImageID).value as? String ?? ""
+            
+            let itemBasic = MarketItemBasic(id: itemID, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, thumbImageID: thumbImageID)
+            
+            completion(itemBasic)
+        }
+    }
+    
     static func fetchImageWith(imageID: String, completion: @escaping (Result<UIImage, NetworkError>) -> Void) {
         
         StorageManager.downloadURLFor(imageID: imageID) { result in
@@ -194,8 +215,31 @@ class MarketManager {
         }
     }
     
-    static func queryOffersWith(model: String, manufacturer: String) {
+    static func fetchOffersWithin(range: String, of location: Location, completion: @escaping(Result<[String], NetworkError>) -> Void) {
         
-    }  //   NEEDS IMPLEMENTATION
+        var itemIDs: [String] = []
+        
+        let buyerLatitude = location.latitude
+        let buyerLongitude = location.longitude
+        
+        database.child(MarketKeys.coordinates).queryOrdered(byChild: MarketKeys.latitude).queryStarting(atValue: buyerLatitude - 1 , childKey: MarketKeys.latitude).queryEnding(atValue: buyerLatitude + 1, childKey: MarketKeys.latitude).observeSingleEvent(of: .value) { snap in
+            var i = 0
+            
+            for child in snap.children {
+                i += 1
+                if let childSnap = child as? DataSnapshot {
+                    if let itemLongitude = childSnap.childSnapshot(forPath: MarketKeys.longitude).value as? Double {
+                        if itemLongitude >= buyerLongitude - 1 && itemLongitude <= buyerLongitude + 1 {
+                            itemIDs.append(childSnap.key)
+                        }
+                    }
+                }
+                
+                if i == snap.childrenCount {
+                    completion(.success(itemIDs))
+                }
+            }
+        }
+    }
     
 }   //  End of Class

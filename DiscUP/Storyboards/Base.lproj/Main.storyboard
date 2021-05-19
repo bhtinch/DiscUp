@@ -518,12 +518,33 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="NLl-6x-Oa1">
+                                <rect key="frame" x="10.5" y="88" width="393" height="34"/>
+                                <subviews>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Zip Code OR" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="CDr-Aq-D3P">
+                                        <rect key="frame" x="0.0" y="0.0" width="192.5" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" keyboardType="numberPad" textContentType="postal-code"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uNB-Mz-4vu">
+                                        <rect key="frame" x="200.5" y="0.0" width="192.5" height="34"/>
+                                        <color key="backgroundColor" systemColor="linkColor"/>
+                                        <state key="normal" title="Use Current Location 📍">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="useLocationButtonTapped:" destination="pJU-e7-MeC" eventType="touchUpInside" id="hH7-4e-HRY"/>
+                                            <action selector="useLocationButtonTapped:" destination="3dG-7S-RDf" eventType="touchUpInside" id="vON-tE-4fc"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                             <searchBar contentMode="redraw" placeholder="Search by make or model..." translatesAutoresizingMaskIntoConstraints="NO" id="dKw-rN-BKo">
-                                <rect key="frame" x="0.0" y="88" width="414" height="51"/>
+                                <rect key="frame" x="0.0" y="122" width="414" height="51"/>
                                 <textInputTraits key="textInputTraits"/>
                             </searchBar>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="xik-it-5v8">
-                                <rect key="frame" x="12" y="139" width="390" height="662"/>
+                                <rect key="frame" x="12" y="173" width="390" height="628"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="dtT-7d-zWj">
                                     <size key="itemSize" width="183" height="286"/>
@@ -594,13 +615,16 @@
                         <viewLayoutGuide key="safeArea" id="Ltg-ST-qNT"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="NLl-6x-Oa1" firstAttribute="top" secondItem="Ltg-ST-qNT" secondAttribute="top" id="9dr-FP-ir7"/>
                             <constraint firstItem="dKw-rN-BKo" firstAttribute="leading" secondItem="Ltg-ST-qNT" secondAttribute="leading" id="9mo-vc-Gv0"/>
                             <constraint firstItem="dKw-rN-BKo" firstAttribute="trailing" secondItem="Ltg-ST-qNT" secondAttribute="trailing" id="APt-XP-nKL"/>
                             <constraint firstItem="Ltg-ST-qNT" firstAttribute="bottom" secondItem="xik-it-5v8" secondAttribute="bottom" constant="12" id="H7x-Eb-XvH"/>
                             <constraint firstItem="xik-it-5v8" firstAttribute="top" secondItem="dKw-rN-BKo" secondAttribute="bottom" id="MZf-Gf-x4m"/>
                             <constraint firstItem="Ltg-ST-qNT" firstAttribute="trailing" secondItem="xik-it-5v8" secondAttribute="trailing" constant="12" id="Qvc-6j-4Hf"/>
                             <constraint firstItem="xik-it-5v8" firstAttribute="leading" secondItem="Ltg-ST-qNT" secondAttribute="leading" constant="12" id="Qz6-c5-PSy"/>
-                            <constraint firstItem="dKw-rN-BKo" firstAttribute="top" secondItem="Ltg-ST-qNT" secondAttribute="top" id="pF3-va-29f"/>
+                            <constraint firstItem="NLl-6x-Oa1" firstAttribute="centerX" secondItem="Ltg-ST-qNT" secondAttribute="centerX" id="bvn-az-z3J"/>
+                            <constraint firstItem="NLl-6x-Oa1" firstAttribute="width" secondItem="Ltg-ST-qNT" secondAttribute="width" multiplier="0.95" id="bxW-qf-LNJ"/>
+                            <constraint firstItem="dKw-rN-BKo" firstAttribute="top" secondItem="NLl-6x-Oa1" secondAttribute="bottom" id="pF3-va-29f"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Disc Swap!" id="lYf-Me-YIO">
@@ -612,6 +636,9 @@
                     </navigationItem>
                     <connections>
                         <outlet property="collectionView" destination="xik-it-5v8" id="ire-Qr-eIL"/>
+                        <outlet property="searchBar" destination="dKw-rN-BKo" id="y9Z-kK-QnO"/>
+                        <outlet property="useLocationButton" destination="uNB-Mz-4vu" id="2wC-al-827"/>
+                        <outlet property="zipCodeTextField" destination="CDr-Aq-D3P" id="NNc-QY-Mh2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vz3-hS-Qdt" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
