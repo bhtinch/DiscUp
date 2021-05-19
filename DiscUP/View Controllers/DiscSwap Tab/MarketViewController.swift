@@ -14,13 +14,15 @@ class MarketViewController: UIViewController {
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var zipCodeTextField: UITextField!
     @IBOutlet weak var useLocationButton: UIButton!
+    @IBOutlet weak var searchButton: UIButton!
+    @IBOutlet weak var noResultsLabel: UILabel!
     
     //  MARK: - PROPERTIES
     var items: [MarketItemBasic] = []
     var deleteImageIDs: [String] = []
     var usingCurrentLocation: Bool = true
     var location: Location?
-    let locationManager = LocationManager.shared
+    let locationManager = CLLocationManager()
     
     //  MARK: - LIFECYLCES
     override func viewDidLoad() {
@@ -34,6 +36,8 @@ class MarketViewController: UIViewController {
         searchBar.delegate = self
         usingCurrentLocation = false
         useLocationButtonTapped(self)
+        
+        noResultsLabel.isHidden = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -83,10 +87,16 @@ class MarketViewController: UIViewController {
         }
     }
     
+    @IBAction func searchButtonTapped(_ sender: Any) {
+        self.prepareToFetchItems()
+    }
+    
     
     //  MARK: - METHODS
     func prepareToFetchItems() {
         items = []
+        noResultsLabel.isHidden = true
+        self.collectionView.reloadData()
         
         //  get location from either zipCodeTextField or using current location
         if usingCurrentLocation == false {
@@ -129,28 +139,48 @@ class MarketViewController: UIViewController {
     }
     
     func fetchOffersWith(itemIDs: [String]) {
+        var allItems: [MarketItemBasic] = []
+        
         for id in itemIDs {
             MarketManager.fetchMarketBasicItemWith(itemID: id) { itemBasic in
                 DispatchQueue.main.async {
-                    self.items.append(itemBasic)
+                    allItems.append(itemBasic)
                     
                     if id == itemIDs.last {
-                        self.collectionView.reloadData()
+                        self.filterOffersWith(allItems: allItems)
                     }
                 }
             }
         }
     }
     
-    /*
+    func filterOffersWith(allItems: [MarketItemBasic]) {
+        guard let searchTerm = searchBar.text?.lowercased(), !searchTerm.isEmpty else {
+            self.items = allItems
+            self.collectionView.reloadData()
+            return
+        }
+        
+        for item in allItems {
+            if item.headline.localizedCaseInsensitiveContains(searchTerm) || item.manufacturer.localizedCaseInsensitiveContains(searchTerm) || item.model.localizedCaseInsensitiveContains(searchTerm) {
+                items.append(item)
+            }
+        }
+        
+        if items.isEmpty { noResultsLabel.isHidden = false }
+        self.collectionView.reloadData()
+    }
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        if segue.identifier == "toMarketItemDetailVC" {
+            guard let indexPath = collectionView.indexPathsForSelectedItems?.first,
+                  let destination = segue.destination as? MarketItemDetailViewController else { return }
+            destination.itemID = items[indexPath.row].id
+        }
     }
-    */
 
 }   //  End of Class
 
@@ -195,9 +225,7 @@ extension MarketViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         print("Search button tapped...")
-        guard let searchTerm = searchBar.text?.lowercased() else { return }
-        
-        self.prepareToFetchItems()
+        self.searchButtonTapped(self)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
