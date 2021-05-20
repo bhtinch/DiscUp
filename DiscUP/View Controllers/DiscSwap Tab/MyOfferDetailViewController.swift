@@ -39,6 +39,7 @@ class MyOfferDetailViewController: UIViewController {
     var usingCurrentLocation: Bool = true
     var location: Location?
     let locationManager = LocationManager.shared
+    var ownerID: String?
     
     //  MARK: - LIFECYLCES
     override func viewDidLoad() {
@@ -181,6 +182,7 @@ class MyOfferDetailViewController: UIViewController {
             DispatchQueue.main.async {
                 guard let item = item else { return print("Error fetching item details...") }
                 self.item = item
+                self.ownerID = item.ownerID
                 self.configureThumbImage()
             }
         }
@@ -357,7 +359,7 @@ class MyOfferDetailViewController: UIViewController {
     func saveOffer(id: String, headline: String, manufacturer: String, model: String, plastic: String?, weight: Double?, description: String, imageIDs: [String], thumbImageID: String, askingPrice: Int?, sellingLocation: Location, inputZipCode: String?, uploadImages: [UIImage]) {
         
         //  create a MarketItem object from values
-        let saveItem = MarketItem(id: id, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description, imageIDs: imageIDs, thumbImageID: thumbImageID, askingPrice: askingPrice, sellingLocation: sellingLocation, updatedTimestamp: Date(), inputZipCode: inputZipCode)
+        let saveItem = MarketItem(id: id, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description, imageIDs: imageIDs, thumbImageID: thumbImageID, askingPrice: askingPrice, sellingLocation: sellingLocation, updatedTimestamp: Date(), inputZipCode: inputZipCode, ownerID: ownerID)
         
         MarketManager.update(item: saveItem, uploadImages: uploadImages, deletedImageIDs: self.deleteImageIDs) { result in
             DispatchQueue.main.async {

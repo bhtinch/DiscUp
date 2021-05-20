@@ -38,6 +38,57 @@ class RegistrationViewController: UIViewController {
         return field
     }()
     
+    private let usernameField: UITextField = {
+        let field = UITextField()
+        field.placeholder = "Username..."
+        field.returnKeyType = .continue
+        field.leftViewMode = .always
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
+        field.autocapitalizationType = .none
+        field.autocorrectionType = .no
+        field.layer.masksToBounds = true
+        field.layer.cornerRadius = Constants.cornerRadius
+        field.backgroundColor = .secondarySystemBackground
+        field.layer.borderWidth = 1.0
+        field.layer.borderColor = UIColor.secondaryLabel.cgColor
+        
+        return field
+    }()
+    
+    private let firstNameField: UITextField = {
+        let field = UITextField()
+        field.placeholder = "First Name (Optional)..."
+        field.returnKeyType = .continue
+        field.leftViewMode = .always
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
+        field.autocapitalizationType = .none
+        field.autocorrectionType = .no
+        field.layer.masksToBounds = true
+        field.layer.cornerRadius = Constants.cornerRadius
+        field.backgroundColor = .secondarySystemBackground
+        field.layer.borderWidth = 1.0
+        field.layer.borderColor = UIColor.secondaryLabel.cgColor
+        
+        return field
+    }()
+    
+    private let lastNameField: UITextField = {
+        let field = UITextField()
+        field.placeholder = "Last Name (Optional)..."
+        field.returnKeyType = .continue
+        field.leftViewMode = .always
+        field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
+        field.autocapitalizationType = .none
+        field.autocorrectionType = .no
+        field.layer.masksToBounds = true
+        field.layer.cornerRadius = Constants.cornerRadius
+        field.backgroundColor = .secondarySystemBackground
+        field.layer.borderWidth = 1.0
+        field.layer.borderColor = UIColor.secondaryLabel.cgColor
+        
+        return field
+    }()
+    
     private let passwordField: UITextField = {
         let field = UITextField()
         field.placeholder = "Password..."
@@ -94,6 +145,9 @@ class RegistrationViewController: UIViewController {
         registerButton.addTarget(self, action: #selector(didTapRegisterButton), for: .touchUpInside)
         view.addSubview(logoLabel)
         view.addSubview(emailField)
+        view.addSubview(usernameField)
+        view.addSubview(firstNameField)
+        view.addSubview(lastNameField)
         view.addSubview(passwordField)
         view.addSubview(confirmPasswordField)
         view.addSubview(registerButton)
@@ -105,10 +159,13 @@ class RegistrationViewController: UIViewController {
         super.viewDidLayoutSubviews()
         
         logoLabel.frame = CGRect(x: 20, y: view.safeAreaInsets.top+64, width: view.width-40, height: 48)
-        emailField.frame = CGRect(x: 20, y: logoLabel.bottom + 64, width: view.width-40, height: 48)
-        passwordField.frame = CGRect(x: 20, y: emailField.bottom+10, width: view.width-40, height: 48)
+        emailField.frame = CGRect(x: 20, y: logoLabel.bottom + 10, width: view.width-40, height: 48)
+        usernameField.frame = CGRect(x: 20, y: emailField.bottom + 10, width: view.width-40, height: 48)
+        firstNameField.frame = CGRect(x: 20, y: usernameField.bottom + 10, width: view.width-40, height: 48)
+        lastNameField.frame = CGRect(x: 20, y: firstNameField.bottom + 10, width: view.width-40, height: 48)
+        passwordField.frame = CGRect(x: 20, y: lastNameField.bottom+24, width: view.width-40, height: 48)
         confirmPasswordField.frame = CGRect(x: 20, y: passwordField.bottom+10, width: view.width-40, height: 48)
-        registerButton.frame = CGRect(x: 20, y: confirmPasswordField.bottom+10, width: view.width-40, height: 48)
+        registerButton.frame = CGRect(x: 20, y: confirmPasswordField.bottom+24, width: view.width-40, height: 48)
     }
     
     
@@ -117,9 +174,16 @@ class RegistrationViewController: UIViewController {
         guard let email = emailField.text, !email.isEmpty,
               let password = passwordField.text, !password.isEmpty,
               let confirm = confirmPasswordField.text, !confirm.isEmpty,
+              let username = usernameField.text, !username.isEmpty,
               password == confirm else { return }
         
-        AuthManager.registerNewUserWith(email: email, password: password) { (success) in
+        var firstName = firstNameField.text
+        var lastName = lastNameField.text
+        
+        if firstName == "" { firstName = nil }
+        if lastName == "" { lastName = nil }
+        
+        AuthManager.registerNewUserWith(email: email, password: password, username: username, firstName: firstName, lastName: lastName) { (success) in
             DispatchQueue.main.async {
                 if success {
                     print("successfully registered user.")

@@ -10,13 +10,11 @@ import CoreLocation
 
 class LocationManager {
     static let shared = CLLocationManager()
-    private init() {}
+    init() {}
 }
 
 extension CLLocationManager {
     public func getCoordinates(zipCode: String, completion: @escaping(Result<CLLocationCoordinate2D, Error>) -> Void ) {
-        
-        
         
         let geoCoder = CLGeocoder()
         
@@ -31,5 +29,23 @@ extension CLLocationManager {
             
             completion(.failure(error!))
         }
+    }
+    
+    func getPlacemarkFrom(location: Location, completionHandler: @escaping (CLPlacemark?) -> Void ) {
+        let geocoder = CLGeocoder()
+        
+        let clLocation = CLLocation(latitude: location.latitude, longitude: location.longitude)
+        
+        // Look up the location and pass it to the completion handler
+        geocoder.reverseGeocodeLocation(clLocation, completionHandler: { (placemarks, error) in
+            if error == nil {
+                let firstLocation = placemarks?[0]
+                completionHandler(firstLocation)
+            }
+            else {
+                // An error occurred during geocoding.
+                completionHandler(nil)
+            }
+        })
     }
 }   //  End of Extension

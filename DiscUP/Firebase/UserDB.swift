@@ -17,6 +17,9 @@ struct UserKeys {
     static let userID = Auth.auth().currentUser?.uid ?? "No User"
     static let offers = "offers"
     static let conversations = "conversations"
+    static let username = "username"
+    static let firstName = "firstName"
+    static let lastName = "lastName"
 }
 
 class UserDB {
@@ -27,12 +30,15 @@ class UserDB {
     //  MARK: - Methods
     
     /// checks if user email already exists and, if not, creates new user object in firebase User database
-    func insertNewUserWith(userID: String, email: String, completion: @escaping (Bool) -> Void) {
+    func insertNewUserWith(userID: String, email: String, username: String, firstName: String?, lastName: String?, completion: @escaping (Bool) -> Void) {
         //  if user already exists, return
         
         dbRef.child(userID).setValue([
             UserKeys.email : email,
             UserKeys.dateJoined : "\(Date())",
+            UserKeys.username : username,
+            UserKeys.firstName : firstName,
+            UserKeys.lastName : lastName
         ])
                 
         completion(true)
@@ -45,6 +51,21 @@ class UserDB {
     func updateUserWith(key: String, value: Any) {
         guard let userID = Auth.auth().currentUser?.uid else { return }
         dbRef.child(userID).updateChildValues([key : value])
+    }
+    
+    func fetchUserInfoFor(userID: String, completion: @escaping(Result<UserProfile, NetworkError>) -> Void) {
+        
+        dbRef.child(userID).observeSingleEvent(of: .value) { snap in
+            let username = snap.childSnapshot(forPath: UserKeys.username).value as? String
+            let firstName = snap.childSnapshot(forPath: UserKeys.firstName).value as? String
+            let lastName = snap.childSnapshot(forPath: UserKeys.lastName).value as? String
+            
+            guard let username = username else { return completion(.failure(NetworkError.noUser)) }
+            
+            let userProfile = UserProfile(id: userID, username: username, firstName: firstName, lastName: lastName)
+            
+            completion(.success(userProfile))
+        }
     }
 
 }

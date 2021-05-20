@@ -197,6 +197,7 @@ class MarketManager {
             let sellingLocation = itemSnap.childSnapshot(forPath: MarketKeys.sellingLocation).value as? String ?? "Unknown Location"
             let updatedTimestampString = itemSnap.childSnapshot(forPath: MarketKeys.updatedTimestamp).value as? String
             let inputZipCode = itemSnap.childSnapshot(forPath: MarketKeys.inputZipCode).value as? String
+            let ownerID = itemSnap.childSnapshot(forPath: MarketKeys.owner).value as? String
             
             let imageIDs = imageIDsString.components(separatedBy: ",")
             
@@ -209,7 +210,7 @@ class MarketManager {
             
             let location = Location(latitude: Double(sellingLocationArray[0]) ?? 0, longitude: Double(sellingLocationArray[1]) ?? 0)
             
-            let item = MarketItem(id: itemID, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description, imageIDs: imageIDs, thumbImageID: thumbImageID, askingPrice: askingPrice, sellingLocation: location, updatedTimestamp: updatedTimestamp, inputZipCode: inputZipCode)
+            let item = MarketItem(id: itemID, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description, imageIDs: imageIDs, thumbImageID: thumbImageID, askingPrice: askingPrice, sellingLocation: location, updatedTimestamp: updatedTimestamp, inputZipCode: inputZipCode, ownerID: ownerID)
             
             completion(item)
         }

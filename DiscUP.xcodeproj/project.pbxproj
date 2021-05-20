@@ -31,6 +31,7 @@
 		62677437264FFAF800899183 /* MediaPermissions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62677436264FFAF800899183 /* MediaPermissions.swift */; };
 		626C74AF264B1236001E7B50 /* MarketItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 626C74AE264B1236001E7B50 /* MarketItem.swift */; };
 		62A06885264313CE00E80BC3 /* SwitchBagTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A06884264313CE00E80BC3 /* SwitchBagTableViewCell.swift */; };
+		62B928182655EBFF00981232 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B928172655EBFF00981232 /* UserProfile.swift */; };
 		62C04E8625F29B0500D4F4B6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 62C04E8525F29B0500D4F4B6 /* GoogleService-Info.plist */; };
 		62C04EB925F2A5AC00D4F4B6 /* Disc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EB825F2A5AC00D4F4B6 /* Disc.swift */; };
 		62C04EBC25F2A5B100D4F4B6 /* Bag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EBB25F2A5B100D4F4B6 /* Bag.swift */; };
@@ -90,6 +91,7 @@
 		62677436264FFAF800899183 /* MediaPermissions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaPermissions.swift; sourceTree = "<group>"; };
 		626C74AE264B1236001E7B50 /* MarketItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketItem.swift; sourceTree = "<group>"; };
 		62A06884264313CE00E80BC3 /* SwitchBagTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchBagTableViewCell.swift; sourceTree = "<group>"; };
+		62B928172655EBFF00981232 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		62C04E8525F29B0500D4F4B6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		62C04EB825F2A5AC00D4F4B6 /* Disc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Disc.swift; sourceTree = "<group>"; };
 		62C04EBB25F2A5B100D4F4B6 /* Bag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bag.swift; sourceTree = "<group>"; };
@@ -294,6 +296,7 @@
 				6255B5E4262244F100B3A53D /* Event.swift */,
 				626C74AE264B1236001E7B50 /* MarketItem.swift */,
 				62E27F102652DBCB00106333 /* Location.swift */,
+				62B928172655EBFF00981232 /* UserProfile.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -349,9 +352,9 @@
 			isa = PBXGroup;
 			children = (
 				62C04EDD25F2A83000D4F4B6 /* MarketViewController.swift */,
+				62D207A7262E2BA200FF6C9F /* MarketItemDetailViewController.swift */,
 				62D207A1262E2B6300FF6C9F /* MyOffersViewController.swift */,
 				62D207A4262E2B6D00FF6C9F /* MyOfferDetailViewController.swift */,
-				62D207A7262E2BA200FF6C9F /* MarketItemDetailViewController.swift */,
 			);
 			path = "DiscSwap Tab";
 			sourceTree = "<group>";
@@ -527,6 +530,7 @@
 				62C04EFB25F2A94200D4F4B6 /* DiscDetailViewController.swift in Sources */,
 				62C04EF825F2A92000D4F4B6 /* DiscSearchTableViewController.swift in Sources */,
 				626C74AF264B1236001E7B50 /* MarketItem.swift in Sources */,
+				62B928182655EBFF00981232 /* UserProfile.swift in Sources */,
 				62C04EE125F2A83F00D4F4B6 /* EventSearchViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

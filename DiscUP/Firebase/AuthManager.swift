@@ -10,7 +10,7 @@ import Foundation
 class AuthManager {
     
     /// Attempt to register a new user with Firebase Authentication
-    static func registerNewUserWith(email: String, password: String, completion: @escaping (Bool) -> Void) {
+    static func registerNewUserWith(email: String, password: String, username: String, firstName: String?, lastName: String?, completion: @escaping (Bool) -> Void) {
         
         Auth.auth().createUser(withEmail: email, password: password) { (authResult, error) in
             
@@ -22,7 +22,7 @@ class AuthManager {
                 return
             }
             
-            UserDB.shared.insertNewUserWith(userID: userID, email: email) { (test) in
+            UserDB.shared.insertNewUserWith(userID: userID, email: email, username: username, firstName: firstName, lastName: lastName) { (test) in
                 if test {
                     print("New Firebase User added to the user database.")
                     DispatchQueue.main.async {
