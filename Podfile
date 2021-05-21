@@ -14,6 +14,9 @@ pod 'Firebase/Analytics'
 pod 'Firebase/Crashlytics'
 pod 'Firebase/Storage'
 
+#MessageKit
+pod 'MessageKit'
+
 end
 
 post_install do |pi|

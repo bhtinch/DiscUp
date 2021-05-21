@@ -34,6 +34,7 @@ class MarketViewController: UIViewController {
         zipCodeTextField.delegate = self
         
         searchBar.delegate = self
+        
         usingCurrentLocation = false
         useLocationButtonTapped(self)
         
@@ -42,25 +43,12 @@ class MarketViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        
         prepareToFetchItems()
     }
     
     //  MARK: - ACTIONS
     @IBAction func useLocationButtonTapped(_ sender: Any) {
         print("tapped")
-        usingCurrentLocation.toggle()
-        
-        if usingCurrentLocation {
-            useLocationButton.setTitleColor(.white, for: .normal)
-            useLocationButton.backgroundColor = .link
-            zipCodeTextField.text = nil
-            zipCodeTextField.resignFirstResponder()
-        } else {
-            useLocationButton.setTitleColor(.link, for: .normal)
-            useLocationButton.backgroundColor = .white
-            return
-        }
         
         let status = locationManager.authorizationStatus
         
@@ -68,22 +56,35 @@ class MarketViewController: UIViewController {
         case .notDetermined:
             locationManager.requestWhenInUseAuthorization()
         case .restricted:
-            self.presentAlertWith(title: "Your permission settings for this app does not allow location capture", message: "Please update the app permissions in order to use this feature.")
+            self.presentAlertWith(title: "Your permission settings for this app does not allow location capture", message: "Please update the app permissions in order to use this feature. Otherwise, simply use a zip code to specify location.")
+            self.useLocationButton.isEnabled = false
+            self.usingCurrentLocation = false
+            
         case .denied:
-            self.presentAlertWith(title: "Your permission settings for this app does not allow location capture", message: "Please update the app permissions in order to use this feature.")
+            self.presentAlertWith(title: "Your permission settings for this app does not allow location capture", message: "Please update the app permissions in order to use this feature. Otherwise, simply use a zip code to specify location.")
+            self.useLocationButton.isEnabled = false
+            self.usingCurrentLocation = false
 
         case .authorizedAlways:
             if let latitude = locationManager.location?.coordinate.latitude,
                let longitude = locationManager.location?.coordinate.longitude {
                 self.location = Location(latitude: latitude, longitude: longitude)
+                self.useLocationButton.isEnabled = true
+                configureLocationButton()
             }
+            
         case .authorizedWhenInUse:
             if let latitude = locationManager.location?.coordinate.latitude,
                let longitude = locationManager.location?.coordinate.longitude {
                 self.location = Location(latitude: latitude, longitude: longitude)
+                self.useLocationButton.isEnabled = true
+                configureLocationButton()
             }
+            
         @unknown default:
-            self.presentAlertWith(title: "Your permission settings for this app does not allow location capture", message: "Please update the app permissions in order to use this feature.")
+            self.presentAlertWith(title: "Your permission settings for this app does not allow location capture", message: "Please update the app permissions in order to use this feature. Otherwise, simply use a zip code to specify location.")
+            self.useLocationButton.isEnabled = false
+            self.usingCurrentLocation = false
         }
     }
     
@@ -93,6 +94,21 @@ class MarketViewController: UIViewController {
     
     
     //  MARK: - METHODS
+    func configureLocationButton() {
+        let status = locationManager.authorizationStatus
+        usingCurrentLocation.toggle()
+        
+        if usingCurrentLocation {
+            useLocationButton.setTitleColor(.white, for: .normal)
+            useLocationButton.backgroundColor = .link
+            zipCodeTextField.text = nil
+            zipCodeTextField.resignFirstResponder()
+        } else if usingCurrentLocation == false && status == .authorizedAlways || status == .authorizedWhenInUse {
+            useLocationButton.setTitleColor(.link, for: .normal)
+            useLocationButton.backgroundColor = .white
+        }
+    }
+    
     func prepareToFetchItems() {
         items = []
         noResultsLabel.isHidden = true
@@ -100,22 +116,32 @@ class MarketViewController: UIViewController {
         
         //  get location from either zipCodeTextField or using current location
         if usingCurrentLocation == false {
-            guard let zip = zipCodeTextField.text, !zip.isEmpty else { return presentAlertWith(title: "Please enter a zip code or use select 'Use Current Location'.", message: nil) }
+            guard let zip = zipCodeTextField.text, !zip.isEmpty else {
+                if locationManager.authorizationStatus == .authorizedWhenInUse || locationManager.authorizationStatus == .authorizedAlways {
+                presentAlertWith(title: "Please enter a zip code or use select 'Use Current Location'.", message: nil)
+                } else {
+                    presentAlertWith(title: "Please enter a zip code to search.", message: nil)
+                }
+                
+                return
+            }
             
             guard zip.count == 5 else { return self.presentAlertWith(title: "Please enter a valid zip code.", message: nil) }
             
             self.locationManager.getCoordinates(zipCode: zip) { result in
-                switch result {
-                
-                case .success(let clLocation):
-                    let location = Location(latitude: clLocation.latitude, longitude: clLocation.longitude)
+                DispatchQueue.main.async {
+                    switch result {
                     
-                    self.fetchItemIDsWith(location: location)
-                    
-                case .failure(let error):
-                    print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
-                    
-                    return self.presentAlertWith(title: "Please enter a valid zip code.", message: nil)
+                    case .success(let clLocation):
+                        let location = Location(latitude: clLocation.latitude, longitude: clLocation.longitude)
+                        
+                        self.fetchItemIDsWith(location: location)
+                        
+                    case .failure(let error):
+                        print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                        
+                        return self.presentAlertWith(title: "Please enter a valid zip code.", message: nil)
+                    }
                 }
             }
         } else {
@@ -130,7 +156,14 @@ class MarketViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let itemIDs):
-                    self.fetchOffersWith(itemIDs: itemIDs)
+                    if itemIDs.isEmpty {
+                        self.noResultsLabel.isHidden = false
+                        self.collectionView.reloadData()
+                    } else {
+                        self.noResultsLabel.isHidden = true
+                        self.fetchOffersWith(itemIDs: itemIDs)
+                    }
+                    
                 case .failure(let error):
                     print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
                 }

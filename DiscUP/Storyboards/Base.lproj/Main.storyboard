@@ -528,10 +528,7 @@
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uNB-Mz-4vu">
                                         <rect key="frame" x="200.5" y="0.0" width="192.5" height="34"/>
-                                        <color key="backgroundColor" systemColor="linkColor"/>
-                                        <state key="normal" title="Use Current Location 📍">
-                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </state>
+                                        <state key="normal" title="Use Current Location 📍"/>
                                         <connections>
                                             <action selector="useLocationButtonTapped:" destination="pJU-e7-MeC" eventType="touchUpInside" id="hH7-4e-HRY"/>
                                             <action selector="useLocationButtonTapped:" destination="3dG-7S-RDf" eventType="touchUpInside" id="vON-tE-4fc"/>
@@ -1776,8 +1773,7 @@
                                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </state>
                                                         <connections>
-                                                            <action selector="messageSellerButtonTapped:" destination="HKl-e6-FNB" eventType="touchUpInside" id="jrX-p9-VCI"/>
-                                                            <action selector="useLocationButtonTapped:" destination="HKl-e6-FNB" eventType="touchUpInside" id="mEm-PG-L3d"/>
+                                                            <action selector="messageSellerButtonTapped:" destination="HKl-e6-FNB" eventType="touchUpInside" id="Cce-c7-iXj"/>
                                                         </connections>
                                                     </button>
                                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="cxI-Ze-aGV">
@@ -1942,7 +1938,7 @@
                         <outlet property="listedTimeLabel" destination="0X3-gd-8y5" id="YVK-jb-fJu"/>
                         <outlet property="mainImageView" destination="8xB-Yq-Od8" id="ehG-Xj-ubm"/>
                         <outlet property="manufacturerValueLabel" destination="Kio-Nc-nld" id="Lww-dp-WAm"/>
-                        <outlet property="messageSellerButton" destination="rHz-t1-Mgx" id="xSw-2p-mMO"/>
+                        <outlet property="messageSellerButton" destination="rHz-t1-Mgx" id="0FP-Tp-6Zn"/>
                         <outlet property="moldValueLabel" destination="YrG-r8-uEc" id="ori-Sv-f4K"/>
                         <outlet property="plasticValueLabel" destination="aRh-lG-moc" id="YE9-AO-rfp"/>
                         <outlet property="priceValueLabel" destination="TYq-Ix-Lor" id="bCS-Aa-RG0"/>

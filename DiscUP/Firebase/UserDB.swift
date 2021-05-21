@@ -20,6 +20,8 @@ struct UserKeys {
     static let username = "username"
     static let firstName = "firstName"
     static let lastName = "lastName"
+    static let buyingMessages = "buyingMessages"
+    static let sellingMessages = "sellingMessages"
 }
 
 class UserDB {
@@ -65,6 +67,19 @@ class UserDB {
             let userProfile = UserProfile(id: userID, username: username, firstName: firstName, lastName: lastName)
             
             completion(.success(userProfile))
+        }
+    }
+    
+    func checkIfConversationExistsForCurrentUserWith(itemID: String, completion: @escaping(Result<String, NetworkError>) ->Void) {
+        guard let userID = Auth.auth().currentUser?.uid else { return completion(.failure(NetworkError.noUser)) }
+        
+        dbRef.child(userID).child(UserKeys.buyingMessages).child(itemID).observeSingleEvent(of: .value) { snap in
+            if snap.exists() {
+                guard let convoID = snap.value as? String else { return completion(.failure(NetworkError.databaseError)) }
+                return completion(.success(convoID))
+            }
+            
+            completion(.failure(NetworkError.noData))
         }
     }
 

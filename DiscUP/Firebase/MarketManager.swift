@@ -226,6 +226,8 @@ class MarketManager {
         database.child(MarketKeys.coordinates).queryOrdered(byChild: MarketKeys.latitude).queryStarting(atValue: buyerLatitude - 1 , childKey: MarketKeys.latitude).queryEnding(atValue: buyerLatitude + 1, childKey: MarketKeys.latitude).observeSingleEvent(of: .value) { snap in
             var i = 0
             
+            if snap.childrenCount == 0 { return completion(.success(itemIDs)) }
+            
             for child in snap.children {
                 i += 1
                 if let childSnap = child as? DataSnapshot {

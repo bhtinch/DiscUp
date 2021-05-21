@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreLocation
+import FirebaseAuth
 
 class MarketItemDetailViewController: UIViewController {
     //  MARK: - OUTLETS
@@ -67,6 +68,34 @@ class MarketItemDetailViewController: UIViewController {
     }
     
     @IBAction func messageSellerButtonTapped(_ sender: Any) {
+        guard let item = item else { return }
+        
+        let vc = ConversationViewController()
+        vc.item = item
+        
+        //  check if convo for this specific item already exists for the current user (buyer)
+        UserDB.shared.checkIfConversationExistsForCurrentUserWith(itemID: item.id) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let convoID):
+                    //  if so push to conversation VC with convoID and isNewConvo = false
+                    vc.convoID = convoID
+                    vc.isNewConvo = false
+                    self.navigationController?.pushViewController(vc, animated: true)
+                case .failure(let error):
+                    switch error {
+                    case .noData:
+                        //  if not push with newConvo
+                        vc.convoID = nil
+                        vc.isNewConvo = true
+                        self.navigationController?.pushViewController(vc, animated: true)
+
+                    default:
+                        print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                    }
+                }
+            }
+        }
     }
     
     //  MARK: - METHODS
@@ -210,7 +239,7 @@ class MarketItemDetailViewController: UIViewController {
                         if div.remainder >= 1800 { hours += 1}
                         listedDurationOutput = "Listed \(hours) hrs ago in \(city), \(state)."
                         
-                    case 864000..<172800:
+                    case 86400..<172800:
                         let div = duration.quotientAndRemainder(dividingBy: 86400)
                         listedDurationOutput = "Listed \(div.quotient) days and \(div.remainder / 3600) hrs ago in \(city), \(state)."
                         

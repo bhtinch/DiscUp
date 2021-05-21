@@ -12,6 +12,10 @@
 		6209462C2649C5F600E4C6BC /* MarketDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6209462B2649C5F600E4C6BC /* MarketDB.swift */; };
 		6209462E2649C5FE00E4C6BC /* MessagingDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6209462D2649C5FE00E4C6BC /* MessagingDB.swift */; };
 		62094631264A138A00E4C6BC /* MarketCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62094630264A138A00E4C6BC /* MarketCollectionViewCell.swift */; };
+		623833712656CE7B0043B4CA /* MKmessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623833702656CE7B0043B4CA /* MKmessage.swift */; };
+		623833732656CE830043B4CA /* MKuser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623833722656CE830043B4CA /* MKuser.swift */; };
+		623833752656CEEA0043B4CA /* Conversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623833742656CEEA0043B4CA /* Conversation.swift */; };
+		62383377265741EE0043B4CA /* Alerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62383376265741EE0043B4CA /* Alerts.swift */; };
 		62492A9625F2C20A00A24A05 /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 62492A9525F2C20A00A24A05 /* Login.storyboard */; };
 		62492A9925F2CC7900A24A05 /* BagManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62492A9825F2CC7900A24A05 /* BagManager.swift */; };
 		62492AA125F2F80300A24A05 /* BaggedDiscTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62492AA025F2F80300A24A05 /* BaggedDiscTableViewCell.swift */; };
@@ -70,6 +74,10 @@
 		6209462B2649C5F600E4C6BC /* MarketDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketDB.swift; sourceTree = "<group>"; };
 		6209462D2649C5FE00E4C6BC /* MessagingDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingDB.swift; sourceTree = "<group>"; };
 		62094630264A138A00E4C6BC /* MarketCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketCollectionViewCell.swift; sourceTree = "<group>"; };
+		623833702656CE7B0043B4CA /* MKmessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKmessage.swift; sourceTree = "<group>"; };
+		623833722656CE830043B4CA /* MKuser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKuser.swift; sourceTree = "<group>"; };
+		623833742656CEEA0043B4CA /* Conversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conversation.swift; sourceTree = "<group>"; };
+		62383376265741EE0043B4CA /* Alerts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alerts.swift; sourceTree = "<group>"; };
 		62492A9525F2C20A00A24A05 /* Login.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		62492A9825F2CC7900A24A05 /* BagManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BagManager.swift; sourceTree = "<group>"; };
 		62492AA025F2F80300A24A05 /* BaggedDiscTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaggedDiscTableViewCell.swift; sourceTree = "<group>"; };
@@ -268,6 +276,7 @@
 				6255B5EE262245E100B3A53D /* UIClasses.swift */,
 				62677436264FFAF800899183 /* MediaPermissions.swift */,
 				62E27F0E2652DB5500106333 /* LocationManager.swift */,
+				62383376265741EE0043B4CA /* Alerts.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -297,6 +306,9 @@
 				626C74AE264B1236001E7B50 /* MarketItem.swift */,
 				62E27F102652DBCB00106333 /* Location.swift */,
 				62B928172655EBFF00981232 /* UserProfile.swift */,
+				623833702656CE7B0043B4CA /* MKmessage.swift */,
+				623833722656CE830043B4CA /* MKuser.swift */,
+				623833742656CEEA0043B4CA /* Conversation.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -495,6 +507,7 @@
 				62C04EDB25F2A81B00D4F4B6 /* BagViewController.swift in Sources */,
 				62D207A5262E2B6D00FF6C9F /* MyOfferDetailViewController.swift in Sources */,
 				62C04EB925F2A5AC00D4F4B6 /* Disc.swift in Sources */,
+				62383377265741EE0043B4CA /* Alerts.swift in Sources */,
 				6255B5E2262244C400B3A53D /* EventDetailViewController.swift in Sources */,
 				620946282649C19B00E4C6BC /* MarketManager.swift in Sources */,
 				62518D4D25F1648400A6753B /* AppDelegate.swift in Sources */,
@@ -523,7 +536,10 @@
 				6255B5EC262245A400B3A53D /* DateFormatter.swift in Sources */,
 				62C04EFE25F2A96D00D4F4B6 /* SwitchBagTableViewController.swift in Sources */,
 				62C04ECB25F2A6D500D4F4B6 /* Network Error.swift in Sources */,
+				623833752656CEEA0043B4CA /* Conversation.swift in Sources */,
+				623833732656CE830043B4CA /* MKuser.swift in Sources */,
 				62C04EE425F2A86700D4F4B6 /* LoginViewController.swift in Sources */,
+				623833712656CE7B0043B4CA /* MKmessage.swift in Sources */,
 				62A06885264313CE00E80BC3 /* SwitchBagTableViewCell.swift in Sources */,
 				62518D4F25F1648400A6753B /* SceneDelegate.swift in Sources */,
 				62C04EBF25F2A62000D4F4B6 /* AuthManager.swift in Sources */,
