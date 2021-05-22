@@ -22,6 +22,8 @@ struct UserKeys {
     static let lastName = "lastName"
     static let buyingMessages = "buyingMessages"
     static let sellingMessages = "sellingMessages"
+    static let conversationID = "conversationID"
+    static let messageCount = "messageCount"
 }
 
 class UserDB {
