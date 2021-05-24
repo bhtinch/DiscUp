@@ -31,6 +31,7 @@ class ConversationViewController: MessagesViewController {
     var messages: [MKmessage] = []
     var isNewConvo: Bool = false
     var item: MarketItem?
+    var blockedUserIDs : [String] = []
     
     //  MARK: - LIFECYLCES
     override func viewDidLoad() {
@@ -41,7 +42,30 @@ class ConversationViewController: MessagesViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        listenForMessages()
+        
+        if let item = item {
+            self.title = item.headline
+        }
+        
+        fetchBlockedUsers()
+    }
+    
+    //  MARK: - ACTIONS
+    @IBAction func moreButtonTapped(_ sender: Any) {
+        let alert = UIAlertController(title: "Block This User?", message: "Any new messages from this user will no longer be shown.  The user will not be notified that you have blocked them, however.", preferredStyle: .actionSheet)
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+            alert.dismiss(animated: true, completion: nil)
+        }))
+        
+        let blockAction = UIAlertAction(title: "Yes, Block this User.", style: .destructive) { _ in
+            self.blockUser()
+            alert.dismiss(animated: true, completion: nil)
+        }
+        
+        alert.addAction(blockAction)
+        
+        present(alert, animated: true, completion: nil)
     }
     
     //  MARK: - METHODS
@@ -68,6 +92,16 @@ class ConversationViewController: MessagesViewController {
         )
     }
     
+    func fetchBlockedUsers() {
+        MessagingManager.fetchBlockedUsers { blockedUserIDs in
+            DispatchQueue.main.async {
+                self.blockedUserIDs = blockedUserIDs
+                self.listenForMessages()
+                
+            }
+        }
+    }
+    
     func listenForMessages() {
         guard let convoID = convoID else { return }
         
@@ -90,6 +124,9 @@ class ConversationViewController: MessagesViewController {
                 guard let date = msg.key.stringToLocalDate(format: .MM_dd_yyyy_T_HH_mm_ss_SSS_Z) else { return }
                 
                 let sender = Sender(photoURL: "", senderId: userID, displayName: displayName)
+                
+                if self.blockedUserIDs.contains(sender.senderId)  { continue }
+                
                 let message = MKmessage(text: content, user: sender, messageId: msg.key, date: date)
                 
                 self.messages.append(message)
@@ -102,6 +139,18 @@ class ConversationViewController: MessagesViewController {
     func updateView() {
         self.messagesCollectionView.reloadDataAndKeepOffset()
         self.messagesCollectionView.scrollToLastItem()
+    }
+    
+    func blockUser() {
+        guard let convoID = convoID else { return }
+        
+        MessagingManager.blockUserFromConversationWith(convoID: convoID, blockedUsersList: blockedUserIDs) { success in
+            DispatchQueue.main.async {
+                if success {
+                    Alerts.presentAlertWith(title: "This user is now blocked.", message: "You will no longer see new messages. You may unblock users at any time in the app settings.", sender: self)
+                }
+            }
+        }
     }
 
 }   //  End of Class

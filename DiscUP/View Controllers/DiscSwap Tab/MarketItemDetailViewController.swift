@@ -40,6 +40,10 @@ class MarketItemDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         descriptionTextView.isEditable = false
+        
+        descriptionTextView.layer.borderWidth = 1
+        descriptionTextView.layer.borderColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
+        descriptionTextView.layer.cornerRadius = 6
     }
     
     override func viewWillAppear(_ animated: Bool) {

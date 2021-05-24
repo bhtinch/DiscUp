@@ -51,8 +51,8 @@ class MessagingManager {
             
             //  add convoID ref to seller's 'sellingMessages'
             userDatabase.child("\(sellerID)/\(UserKeys.sellingMessages)").updateChildValues([
-                item.id : [
-                    UserKeys.conversationID : convoID,
+                convoID : [
+                    UserKeys.itemID : item.id,
                     UserKeys.messageCount : 0
                 ]
             ])
@@ -98,13 +98,15 @@ class MessagingManager {
                         
                         var updateUserID: String = sellerID
                         var conversationType: ConversationType = .sellingMessages
+                        var identifier: String = convID
                         
                         if buyerID == user.uid {
                             conversationType = .buyingMessages
                             updateUserID = buyerID
+                            identifier = itemID
                         }
                         
-                        userDatabase.child("\(updateUserID)/\(conversationType.rawValue)/\(itemID)").updateChildValues([UserKeys.messageCount : messageCount])
+                        userDatabase.child("\(updateUserID)/\(conversationType.rawValue)/\(identifier)").updateChildValues([UserKeys.messageCount : messageCount])
                         completion(true)
                     }
                 }
@@ -129,8 +131,15 @@ class MessagingManager {
             for child in snap.children {
                 i += 1
                 if let childSnap = child as? DataSnapshot {
-                    guard let convoID = childSnap.childSnapshot(forPath: UserKeys.conversationID).value as? String,
-                          let userMessageCount = childSnap.childSnapshot(forPath: UserKeys.messageCount).value as? Int else { return completion(.failure(NetworkError.databaseError)) }
+                    guard let userMessageCount = childSnap.childSnapshot(forPath: UserKeys.messageCount).value as? Int else { return completion(.failure(NetworkError.databaseError)) }
+                    
+                    var convoID = childSnap.childSnapshot(forPath: UserKeys.conversationID).value as? String
+                    
+                    if conversationType.rawValue == ConversationType.sellingMessages.rawValue {
+                        convoID = childSnap.key
+                    }
+                    
+                    guard let convoID = convoID else { return completion(.failure(NetworkError.databaseError)) }
                     
                     convoIDs[convoID] = userMessageCount
                     
@@ -144,12 +153,12 @@ class MessagingManager {
     
     static func getConvoBasicWith(convoID: String, userMessageCount: Int, completion: @escaping(ConversationBasic?) -> Void) {
         
-        database.child(convoID).observe(.value) { snap in
+        database.child(convoID).observeSingleEvent(of: .value) { snap in
             let id = snap.key
             let messageCount = snap.childSnapshot(forPath: ConversationKeys.messages).childrenCount
             
-            let newMessages = Int(messageCount) - userMessageCount
-            
+            var newMessages = Int(messageCount) - userMessageCount
+                        
             guard let sellerID = snap.childSnapshot(forPath: ConversationKeys.sellerID).value as? String,
                   let buyerID = snap.childSnapshot(forPath: ConversationKeys.buyerID).value as? String,
                   let itemHeadline = snap.childSnapshot(forPath: ConversationKeys.itemHeadline).value as? String,
@@ -158,6 +167,66 @@ class MessagingManager {
             
             completion(ConversationBasic(id: id, newMessages: newMessages, sellerID: sellerID, buyerID: buyerID, itemID: itemID, itemHeadline: itemHeadline, thumbImageID: thumbImageID))
         }
+    }
+    
+    static func blockUserFromConversationWith(convoID: String, blockedUsersList: [String], completion: @escaping(Bool) -> Void) {
+        guard let currentUserID = userID else { return completion(false) }
+        
+        database.child(convoID).observeSingleEvent(of: .value) { snap in
+            guard let sellerID = snap.childSnapshot(forPath: ConversationKeys.sellerID).value as? String,
+                  let buyerID = snap.childSnapshot(forPath: ConversationKeys.buyerID).value as? String else { return completion(false) }
+            
+            var blockUserID = sellerID
+            
+            if blockUserID == currentUserID {
+                blockUserID = buyerID
+            }
+            
+            var newBlockedList = blockedUsersList
+            
+            newBlockedList.append(blockUserID)
+            
+            let blockedString = newBlockedList.joined(separator: ",")
+            
+            userDatabase.child(currentUserID).updateChildValues([UserKeys.blockedUserIDs : blockedString])
+            
+            completion(true)
+        }
+    }
+    
+    static func fetchBlockedUsers(completion: @escaping([String]) -> Void) {
+        guard let userID = userID else { return completion([]) }
+        
+        userDatabase.child(userID).child(UserKeys.blockedUserIDs).observeSingleEvent(of: .value) { snap in
+            if !snap.exists() { return completion([]) }
+            
+            if let blockedString = snap.value as? String {
+                
+                let blockedArray = blockedString.components(separatedBy: ",")
+                return completion(blockedArray)
+            }
+            
+            completion([])
+        }
+    }
+    
+    static func unblockUserWith(id: String, blockedUserIDs: [String], completion: @escaping(Bool) -> Void) {
+        guard let userID = userID,
+              let index = blockedUserIDs.firstIndex(of: id) else { return completion(false) }
+        
+        var newBlockedList = blockedUserIDs
+        
+        newBlockedList.remove(at: index)
+        
+        let blockedString = newBlockedList.joined(separator: ",")
+        
+        if blockedString.count == 0 || blockedString == ""  {
+            userDatabase.child(userID).child(UserKeys.blockedUserIDs).removeValue()
+        } else {
+            userDatabase.child(userID).updateChildValues([UserKeys.blockedUserIDs : blockedString])
+        }
+        
+        completion(true)
     }
     
 }   //  End of Class

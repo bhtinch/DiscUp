@@ -35,6 +35,7 @@ class ConversationListViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let convoIDs):
+                    self.buyingConvos = []
                     self.fetchBuyingConvos(convoIDs: convoIDs)
                 case .failure(let error):
                     print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
@@ -54,9 +55,7 @@ class ConversationListViewController: UIViewController {
             MessagingManager.getConvoBasicWith(convoID: id.key, userMessageCount: id.value) { convoBasic in
                 DispatchQueue.main.async {
                     guard let convoBasic = convoBasic else { return self.fetchSellingConvoIDs() }
-                    
-                    if i == 1 { self.buyingConvos = [] }
-                    
+                                        
                     self.buyingConvos.append(convoBasic)
                     
                     if i == count {
@@ -68,16 +67,15 @@ class ConversationListViewController: UIViewController {
     }
     
     func fetchSellingConvoIDs() {
-        sellingConvos = []
-        
         MessagingManager.fetchUserConvosWith(conversationType: .sellingMessages) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let convoIDs):
+                    self.sellingConvos = []
                     self.fetchSellingConvos(convoIDs: convoIDs)
                 case .failure(let error):
                     print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
-                    self.tableView.reloadData()
+                    self.updateView()
                 }
             }
         }
@@ -92,18 +90,24 @@ class ConversationListViewController: UIViewController {
             i += 1
             MessagingManager.getConvoBasicWith(convoID: id.key, userMessageCount: id.value) { convoBasic in
                 DispatchQueue.main.async {
-                    if i == 1 { self.sellingConvos = [] }
                     
                     if let convoBasic = convoBasic {
                         self.sellingConvos.append(convoBasic)
                     }
                     
                     if i == count {
-                        self.tableView.reloadData()
+                        self.updateView()
                     }
                 }
             }
         }
+    }
+    
+    func updateView() {
+        
+        buyingConvos.sort { $0.newMessages > $1.newMessages }
+        sellingConvos.sort { $0.newMessages > $1.newMessages }
+        self.tableView.reloadData()
     }
 
     // MARK: - Navigation
@@ -128,10 +132,10 @@ extension ConversationListViewController: UITableViewDataSource, UITableViewDele
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 1 {
-            return ("Items that I'm selling.")
+            return ("Discs that I'm selling.")
         }
 
-        return "Items that I'm buying."
+        return "Discs that I'm buying."
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -156,7 +160,14 @@ extension ConversationListViewController: UITableViewDataSource, UITableViewDele
 
         if let convo = convo {
             cell.textLabel?.text = convo.itemHeadline
-            cell.detailTextLabel?.text = convo.newMessages.description
+            
+            let newMessages = convo.newMessages
+            
+            var newMessagesString = ""
+            
+            if newMessages > 0 { newMessagesString = newMessages.description }
+            
+            cell.detailTextLabel?.text = newMessagesString
         }
         
         return cell

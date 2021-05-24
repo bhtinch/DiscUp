@@ -24,6 +24,8 @@ struct UserKeys {
     static let sellingMessages = "sellingMessages"
     static let conversationID = "conversationID"
     static let messageCount = "messageCount"
+    static let blockedUserIDs = "blockedUserIDs"
+    static let itemID = "itemID"
 }
 
 class UserDB {
@@ -77,7 +79,7 @@ class UserDB {
         
         dbRef.child(userID).child(UserKeys.buyingMessages).child(itemID).observeSingleEvent(of: .value) { snap in
             if snap.exists() {
-                guard let convoID = snap.value as? String else { return completion(.failure(NetworkError.databaseError)) }
+                guard let convoID = snap.childSnapshot(forPath: UserKeys.conversationID).value as? String else { return completion(.failure(NetworkError.databaseError)) }
                 return completion(.success(convoID))
             }
             
