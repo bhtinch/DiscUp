@@ -22,6 +22,10 @@ class AuthManager {
                 return
             }
             
+            let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
+            changeRequest?.displayName = username
+            changeRequest?.commitChanges()
+            
             UserDB.shared.insertNewUserWith(userID: userID, email: email, username: username, firstName: firstName, lastName: lastName) { (test) in
                 if test {
                     print("New Firebase User added to the user database.")

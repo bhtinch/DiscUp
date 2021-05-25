@@ -27,15 +27,17 @@ class ConversationViewController: MessagesViewController {
         return Sender(photoURL: "", senderId: senderID, displayName: displayName)
     }
     
-    var convoID: String?
+    var basicConvo: ConversationBasic?
     var messages: [MKmessage] = []
     var isNewConvo: Bool = false
+    var itemID: String?
     var item: MarketItem?
     var blockedUserIDs : [String] = []
     
     //  MARK: - LIFECYLCES
     override func viewDidLoad() {
         super.viewDidLoad()
+                
         configureMessageCollectionView()
         configureMessageInputBar()
     }
@@ -43,11 +45,19 @@ class ConversationViewController: MessagesViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         
-        if let item = item {
-            self.title = item.headline
+        if let basicConvo = basicConvo {
+            self.title = basicConvo.itemHeadline
         }
         
         fetchBlockedUsers()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        
+        if let convoID = basicConvo?.id {
+            MessagingManager.resetMessageCount(convoID: convoID)
+        }
     }
     
     //  MARK: - ACTIONS
@@ -69,6 +79,18 @@ class ConversationViewController: MessagesViewController {
     }
     
     //  MARK: - METHODS
+    func fetchItem() {
+        guard let itemID = basicConvo?.itemID else { return }
+        
+        MarketManager.fetchItemWith(itemID: itemID) { fetchedItem in
+            DispatchQueue.main.async {
+                if let item = fetchedItem {
+                    self.item = item
+                }
+            }
+        }
+    }
+    
     func configureMessageCollectionView() {
         
         messagesCollectionView.messagesDataSource = self
@@ -97,13 +119,12 @@ class ConversationViewController: MessagesViewController {
             DispatchQueue.main.async {
                 self.blockedUserIDs = blockedUserIDs
                 self.listenForMessages()
-                
             }
         }
     }
     
     func listenForMessages() {
-        guard let convoID = convoID else { return }
+        guard let convoID = basicConvo?.id else { return }
         
         let pathString = "\(convoID)/\(ConversationKeys.messages)"
         
@@ -142,7 +163,7 @@ class ConversationViewController: MessagesViewController {
     }
     
     func blockUser() {
-        guard let convoID = convoID else { return }
+        guard let convoID = basicConvo?.id else { return }
         
         MessagingManager.blockUserFromConversationWith(convoID: convoID, blockedUsersList: blockedUserIDs) { success in
             DispatchQueue.main.async {
@@ -166,20 +187,21 @@ extension ConversationViewController: InputBarAccessoryViewDelegate {
             //  update buyer and seller user nodes and create convo node
             guard let item = item else { return }
             
-            MessagingManager.createNewConversationWith(item: item, text: text) { convoID in
+            MessagingManager.createNewConversationWith(item: item, text: text) { result in
                 DispatchQueue.main.async {
-                    if convoID != "noConvoID" {
+                    switch result {
+                    case .success(let basicConvo):
                         self.isNewConvo = false
-                        self.convoID = convoID
+                        self.basicConvo = basicConvo
                         self.listenForMessages()
-                    } else {
-                        //  present alert about not able to send message.
+                    case .failure(let error):
+                        print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
                         Alerts.presentAlertWith(title: "Uh-Oh!", message: "Your message could not be sent for an unknown reason.  Please try again.", sender: self)
                     }
                 }
             }
         } else {
-            if let convoID = self.convoID {
+            if let convoID = self.basicConvo?.id {
                 MessagingManager.sendMessage(to: convoID, with: text) { success in
                     if success {
                         print("message successfully sent")
@@ -229,9 +251,67 @@ extension ConversationViewController: MessagesDataSource, MessagesDisplayDelegat
 
 // MARK: - MessageCellDelegate
 extension ConversationViewController: MessageCellDelegate {
+
+    func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        
+        let initials = sender.displayName.first ?? "?"
+        
+        avatarView.backgroundColor = .link
+        
+        if message.sender.senderId == Auth.auth().currentUser?.uid {
+            avatarView.backgroundColor = #colorLiteral(red: 0.3236978054, green: 0.1063579395, blue: 0.574860394, alpha: 1)
+        }
+        
+        MarketManager.fetchImageWith(imageID: message.sender.senderId) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let image):
+                    let avatar = Avatar(image: image, initials: initials.description)
+                    avatarView.set(avatar: avatar)
+                    
+                case .failure(_):
+                    let avatar = Avatar(image: nil, initials: initials.description)
+                    avatarView.set(avatar: avatar)
+                }
+            }
+        }
+    }
+    
+    func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
+        let tail: MessageStyle.TailCorner = isFromCurrentSender(message: message) ? .bottomRight : .bottomLeft
+        return .bubbleTail(tail, .curved)
+    }
+    
+    func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
+        if indexPath.section % 3 == 0 {
+            return NSAttributedString(string: MessageKitDateFormatter.shared.string(from: message.sentDate), attributes: [NSAttributedString.Key.font: UIFont.boldSystemFont(ofSize: 10), NSAttributedString.Key.foregroundColor: UIColor.darkGray])
+        }
+        return nil
+    }
+    
+    func messageBottomLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
+        let dateString = message.sentDate.dateToString(format: .monthDayYearTimestamp)
+        return NSAttributedString(string: dateString, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .caption2)])
+    }
+    
 }   //  End of Extension
 
 // MARK: - MessagesLayoutDelegate
 extension ConversationViewController: MessagesLayoutDelegate {
+    func cellTopLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return 30
+    }
+    
+    func cellBottomLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return 17
+    }
+    
+    func messageTopLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return 20
+    }
+    
+    func messageBottomLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
+        return 16
+    }
 }   //  End of Extension
 

@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseDatabase
 
 class ConversationListViewController: UIViewController {
     //  MARK: - OUTLETS
@@ -15,17 +16,25 @@ class ConversationListViewController: UIViewController {
     //  MARK: - PROPERTIES
     var sellingConvos: [ConversationBasic] = []
     var buyingConvos: [ConversationBasic] = []
+    let database = MessagingDB.shared.dbRef
+    var buyingConvoIDs : [String : Int] = [:]
+    var sellingConvoIDs : [String : Int] = [:]
+    var newMessageCount = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+        
         fetchBuyingConvoIDs()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        //database.removeAllObservers()
     }
     
     //  MARK: - METHODS
@@ -35,6 +44,14 @@ class ConversationListViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let convoIDs):
+                    let convoCount = convoIDs.count
+                    
+                    if convoCount != self.buyingConvoIDs.count {
+                        self.buyingConvoIDs = convoIDs
+                        self.setObservers(convoIDs: convoIDs)
+                        return
+                    }
+                    
                     self.buyingConvos = []
                     self.fetchBuyingConvos(convoIDs: convoIDs)
                 case .failure(let error):
@@ -55,7 +72,7 @@ class ConversationListViewController: UIViewController {
             MessagingManager.getConvoBasicWith(convoID: id.key, userMessageCount: id.value) { convoBasic in
                 DispatchQueue.main.async {
                     guard let convoBasic = convoBasic else { return self.fetchSellingConvoIDs() }
-                                        
+                    
                     self.buyingConvos.append(convoBasic)
                     
                     if i == count {
@@ -71,6 +88,14 @@ class ConversationListViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let convoIDs):
+                    let convoCount = convoIDs.count
+                    
+                    if convoCount != self.sellingConvoIDs.count {
+                        self.sellingConvoIDs = convoIDs
+                        self.setObservers(convoIDs: convoIDs)
+                        return
+                    }
+                    
                     self.sellingConvos = []
                     self.fetchSellingConvos(convoIDs: convoIDs)
                 case .failure(let error):
@@ -103,7 +128,31 @@ class ConversationListViewController: UIViewController {
         }
     }
     
+    func setObservers(convoIDs: [String : Int]) {
+        for id in convoIDs {
+            database.child(id.key).observe(.value) { _ in
+                DispatchQueue.main.async {
+                    self.fetchBuyingConvoIDs()
+                }
+            }
+        }
+    }
+    
     func updateView() {
+        self.newMessageCount = 0
+        
+        for convo in buyingConvos {
+            self.newMessageCount += convo.newMessages
+        }
+        for convo in sellingConvos {
+            self.newMessageCount += convo.newMessages
+        }
+        
+        self.tabBarController?.tabBar.items?.last!.badgeValue = newMessageCount.description
+        
+        if newMessageCount == 0 {
+            self.tabBarController?.tabBar.items?.last!.badgeValue = nil
+        }
         
         buyingConvos.sort { $0.newMessages > $1.newMessages }
         sellingConvos.sort { $0.newMessages > $1.newMessages }
@@ -117,9 +166,9 @@ class ConversationListViewController: UIViewController {
                   let indexPath = tableView.indexPathForSelectedRow else { return }
             
             if indexPath.section == 1 {
-                destination.convoID = sellingConvos[indexPath.row].id
+                destination.basicConvo = sellingConvos[indexPath.row]
             } else {
-                destination.convoID = buyingConvos[indexPath.row].id
+                destination.basicConvo = buyingConvos[indexPath.row]
             }
         }
     }
@@ -165,7 +214,11 @@ extension ConversationListViewController: UITableViewDataSource, UITableViewDele
             
             var newMessagesString = ""
             
-            if newMessages > 0 { newMessagesString = newMessages.description }
+            if newMessages > 0 {
+                newMessagesString = newMessages.description
+                cell.textLabel?.font = .boldSystemFont(ofSize: 17)
+                cell.detailTextLabel?.font = .boldSystemFont(ofSize: 17)
+            }
             
             cell.detailTextLabel?.text = newMessagesString
         }

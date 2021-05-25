@@ -83,14 +83,22 @@ class MarketItemDetailViewController: UIViewController {
                 switch result {
                 case .success(let convoID):
                     //  if so push to conversation VC with convoID and isNewConvo = false
-                    vc.convoID = convoID
-                    vc.isNewConvo = false
-                    self.navigationController?.pushViewController(vc, animated: true)
+                    
+                    MessagingManager.getConvoBasicWith(convoID: convoID, userMessageCount: nil) { basicConvo in
+                        DispatchQueue.main.async {
+                            if let basicConvo = basicConvo {
+                                vc.basicConvo = basicConvo
+                                vc.isNewConvo = false
+                                self.navigationController?.pushViewController(vc, animated: true)
+                            }
+                        }
+                    }
+                    
                 case .failure(let error):
                     switch error {
                     case .noData:
                         //  if not push with newConvo
-                        vc.convoID = nil
+                        vc.basicConvo = nil
                         vc.isNewConvo = true
                         self.navigationController?.pushViewController(vc, animated: true)
 

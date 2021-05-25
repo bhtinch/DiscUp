@@ -453,8 +453,6 @@ extension MyOfferDetailViewController {
                     self.presentAlertWith(title: "Your permission settings for this app does not allow taking pictures", message: "Please update the app permissions in order to take photos.")
                     alert.dismiss(animated: true, completion: nil)
             }
-            
-            
         }
         
         let choosePhotoAction = UIAlertAction(title: "Choose from Gallery", style: .default) { _ in

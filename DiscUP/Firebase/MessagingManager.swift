@@ -7,6 +7,7 @@
 
 import Foundation
 import Firebase
+import MessageKit
 
 enum ConversationType: String {
     case buyingMessages = "buyingMessages"
@@ -18,28 +19,33 @@ class MessagingManager {
     static let userDatabase = UserDB.shared.dbRef
     static let userID = Auth.auth().currentUser?.uid
     
-    static func createNewConversationWith(item: MarketItem, text: String, completion: @escaping(String) -> Void) {
+    static func createNewConversationWith(item: MarketItem, text: String, completion: @escaping(Result<ConversationBasic, NetworkError>) -> Void) {
         guard let buyerID = userID,
-              let sellerID = item.ownerID else { return completion("noConvoID") }
+              let sellerID = item.ownerID else { return completion(.failure(NetworkError.databaseError)) }
+        
+        
+        let createdDate = Date().convertToUTCString(format: .fullNumericWithTimezone)
         
         //  create convoID
         database.childByAutoId().setValue([
             ConversationKeys.itemID : item.id,
             ConversationKeys.itemHeadline : item.headline,
             ConversationKeys.thumbImageID : item.thumbImageID,
-            ConversationKeys.createdDate : Date().convertToUTCString(format: .fullNumericWithTimezone),
+            ConversationKeys.createdDate : createdDate,
             ConversationKeys.sellerID : sellerID,
             ConversationKeys.buyerID : buyerID
         ]) { error, ref in
             if let error = error {
                 print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
-                return completion("noConvoID")
+                return completion(.failure(NetworkError.databaseError))
             }
             
             guard let convoID = ref.key else {
                 print("no ref key")
-                return completion("noConvoID")
+                return completion(.failure(NetworkError.databaseError))
             }
+            
+            let basicConvo = ConversationBasic(id: convoID, newMessages: 1, sellerID: sellerID, buyerID: buyerID, itemID: item.id, itemHeadline: item.headline, thumbImageID: item.thumbImageID)
             
             //  add convoID ref to buyer's 'buyingMessages'
             userDatabase.child("\(buyerID)/\(UserKeys.buyingMessages)").updateChildValues([
@@ -61,9 +67,9 @@ class MessagingManager {
             DispatchQueue.main.async {
                 sendMessage(to: convoID, with: text) { success in
                     if success == false {
-                        return completion("noConvoID")
+                        return completion(.failure(NetworkError.databaseError))
                     }
-                    completion(convoID)
+                    completion(.success(basicConvo))
                 }
             }
         }
@@ -73,12 +79,12 @@ class MessagingManager {
         
     }  //   NEEDS IMPLEMENTATION
     
-    static func sendMessage(to convID: String, with text: String, completion: @escaping(Bool) -> Void) {
+    static func sendMessage(to convoID: String, with text: String, completion: @escaping(Bool) -> Void) {
         guard let user = Auth.auth().currentUser else { return completion(false) }
         
         let sentDate = Date().convertToUTCString(format: .MM_dd_yyyy_T_HH_mm_ss_SSS_Z)
         
-        database.child(convID).child(ConversationKeys.messages).child(sentDate).updateChildValues([
+        database.child(convoID).child(ConversationKeys.messages).child(sentDate).updateChildValues([
             MessageKeys.text : text,
             MessageKeys.senderID : user.uid,
             MessageKeys.senderDisplayName : user.displayName ?? "Unknown User"
@@ -89,27 +95,33 @@ class MessagingManager {
                     return completion(false)
                 }
                 
-                database.child(convID).observeSingleEvent(of: .value) { snap in
-                    if let sellerID = snap.childSnapshot(forPath: ConversationKeys.sellerID).value as? String,
-                       let buyerID = snap.childSnapshot(forPath: ConversationKeys.buyerID).value as? String,
-                       let itemID = snap.childSnapshot(forPath: ConversationKeys.itemID).value as? String {
-                        
-                        let messageCount = snap.childSnapshot(forPath: ConversationKeys.messages).childrenCount
-                        
-                        var updateUserID: String = sellerID
-                        var conversationType: ConversationType = .sellingMessages
-                        var identifier: String = convID
-                        
-                        if buyerID == user.uid {
-                            conversationType = .buyingMessages
-                            updateUserID = buyerID
-                            identifier = itemID
-                        }
-                        
-                        userDatabase.child("\(updateUserID)/\(conversationType.rawValue)/\(identifier)").updateChildValues([UserKeys.messageCount : messageCount])
-                        completion(true)
-                    }
+                resetMessageCount(convoID: convoID)
+                return completion(true)
+            }
+        }
+    }
+    
+    static func resetMessageCount(convoID: String) {
+        guard let user = Auth.auth().currentUser else { return }
+        
+        database.child(convoID).observeSingleEvent(of: .value) { snap in
+            if let sellerID = snap.childSnapshot(forPath: ConversationKeys.sellerID).value as? String,
+               let buyerID = snap.childSnapshot(forPath: ConversationKeys.buyerID).value as? String,
+               let itemID = snap.childSnapshot(forPath: ConversationKeys.itemID).value as? String {
+                
+                let messageCount = snap.childSnapshot(forPath: ConversationKeys.messages).childrenCount
+                
+                var updateUserID: String = sellerID
+                var conversationType: ConversationType = .sellingMessages
+                var identifier: String = convoID
+                
+                if buyerID == user.uid {
+                    conversationType = .buyingMessages
+                    updateUserID = buyerID
+                    identifier = itemID
                 }
+                
+                userDatabase.child("\(updateUserID)/\(conversationType.rawValue)/\(identifier)").updateChildValues([UserKeys.messageCount : messageCount])
             }
         }
     }
@@ -151,13 +163,17 @@ class MessagingManager {
         }
     }
     
-    static func getConvoBasicWith(convoID: String, userMessageCount: Int, completion: @escaping(ConversationBasic?) -> Void) {
+    static func getConvoBasicWith(convoID: String, userMessageCount: Int?, completion: @escaping(ConversationBasic?) -> Void) {
         
         database.child(convoID).observeSingleEvent(of: .value) { snap in
             let id = snap.key
             let messageCount = snap.childSnapshot(forPath: ConversationKeys.messages).childrenCount
             
-            var newMessages = Int(messageCount) - userMessageCount
+            var newMessages = 0
+            
+            if userMessageCount != nil {
+                newMessages = Int(messageCount) - userMessageCount!
+            }
                         
             guard let sellerID = snap.childSnapshot(forPath: ConversationKeys.sellerID).value as? String,
                   let buyerID = snap.childSnapshot(forPath: ConversationKeys.buyerID).value as? String,
