@@ -50,7 +50,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         tableView.dataSource = self
         
         profileDefaultImage.layer.borderWidth = 2.0
-        profileDefaultImage.layer.borderColor = UIColor.systemGray.cgColor
+        profileDefaultImage.layer.borderColor = UIColor.clear.cgColor
         profileDefaultImage.layer.masksToBounds = false
         profileDefaultImage.clipsToBounds = true
         profileDefaultImage.layer.cornerRadius = profileDefaultImage.height/2.1

@@ -13,6 +13,7 @@ import FirebaseDatabase
 
 class ConversationViewController: MessagesViewController {
     //  MARK: - OUTLETS
+    @IBOutlet weak var itemHighlightView: UIView!
     
     //  MARK: - PROPERTIES
     var sender: Sender {
@@ -37,7 +38,7 @@ class ConversationViewController: MessagesViewController {
     //  MARK: - LIFECYLCES
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+        
         configureMessageCollectionView()
         configureMessageInputBar()
     }
@@ -62,16 +63,25 @@ class ConversationViewController: MessagesViewController {
     
     //  MARK: - ACTIONS
     @IBAction func moreButtonTapped(_ sender: Any) {
-        let alert = UIAlertController(title: "Block This User?", message: "Any new messages from this user will no longer be shown.  The user will not be notified that you have blocked them, however.", preferredStyle: .actionSheet)
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .alert)
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
             alert.dismiss(animated: true, completion: nil)
         }))
         
-        let blockAction = UIAlertAction(title: "Yes, Block this User.", style: .destructive) { _ in
-            self.blockUser()
+        let blockAction = UIAlertAction(title: "Block This User", style: .default) { _ in
+            self.presentBlockUserAlert()
             alert.dismiss(animated: true, completion: nil)
         }
+        
+        let viewItemAction = UIAlertAction(title: "View Listing", style: .default) { _ in
+            
+            self.performSegue(withIdentifier: "toItemDetailVC", sender: self)
+            
+            alert.dismiss(animated: true, completion: nil)
+        }
+        
+        alert.addAction(viewItemAction)
         
         alert.addAction(blockAction)
         
@@ -173,6 +183,33 @@ class ConversationViewController: MessagesViewController {
             }
         }
     }
+    
+    func presentBlockUserAlert() {
+        let alert = UIAlertController(title: "Block This User?", message: "Any new messages from this user will no longer be shown.  The user will not be notified that you have blocked them, however.", preferredStyle: .actionSheet)
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+            alert.dismiss(animated: true, completion: nil)
+        }))
+        
+        let blockAction = UIAlertAction(title: "Yes, Block this User.", style: .destructive) { _ in
+            self.blockUser()
+            alert.dismiss(animated: true, completion: nil)
+        }
+        
+        alert.addAction(blockAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
+    //  MARK: - NAVIGATION
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toItemDetailVC" {
+            guard let destination = segue.destination as? MarketItemDetailViewController,
+                  let itemID = basicConvo?.itemID else { return }
+            
+            destination.itemID = itemID
+        }
+    }
 
 }   //  End of Class
 
@@ -244,9 +281,7 @@ extension ConversationViewController: MessagesDataSource, MessagesDisplayDelegat
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
         return messages[indexPath.section]
     }
-    
-    
-    
+        
 } // END OF EXTENSION
 
 // MARK: - MessageCellDelegate
@@ -314,4 +349,3 @@ extension ConversationViewController: MessagesLayoutDelegate {
         return 16
     }
 }   //  End of Extension
-
