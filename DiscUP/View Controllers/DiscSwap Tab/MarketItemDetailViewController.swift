@@ -27,6 +27,8 @@ class MarketItemDetailViewController: UIViewController {
     @IBOutlet weak var plasticValueLabel: UILabel!
     @IBOutlet weak var weightValueLabel: UILabel!
     @IBOutlet weak var priceValueLabel: UILabel!
+    @IBOutlet weak var imagesStackView: UIStackView!
+    @IBOutlet weak var contentView: UIView!
     
     //  MARK: - PROPERTIES
     var itemID: String?
@@ -44,6 +46,10 @@ class MarketItemDetailViewController: UIViewController {
         descriptionTextView.layer.borderWidth = 1
         descriptionTextView.layer.borderColor = #colorLiteral(red: 0.921431005, green: 0.9214526415, blue: 0.9214410186, alpha: 1)
         descriptionTextView.layer.cornerRadius = 6
+        
+        sellerImageView.layer.masksToBounds = false
+        sellerImageView.clipsToBounds = true
+        sellerImageView.layer.cornerRadius = sellerImageView.height/2.1
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -160,7 +166,10 @@ class MarketItemDetailViewController: UIViewController {
     
     func configureImages() {
         guard let item = item,
-              item.imageIDs.first != "", !item.imageIDs.isEmpty else { return updateImageViews() }
+              item.imageIDs.first != "", !item.imageIDs.isEmpty else {
+            updateImageViews()
+            return
+        }
                 
         for id in item.imageIDs {
             
@@ -221,9 +230,15 @@ class MarketItemDetailViewController: UIViewController {
             plasticValueLabel.text = item.plastic
             weightValueLabel.text = item.weight?.description
             descriptionTextView.text = item.description
-            priceValueLabel.text = item.askingPrice?.description
             listedDuration = Date().timeIntervalSince(item.updatedTimestamp)
             itemLocation = item.sellingLocation
+            
+            if let price = item.askingPrice?.description {
+                priceValueLabel.isHidden = false
+                priceValueLabel.text = "$\(price)"
+            } else {
+                priceValueLabel.isHidden = true
+            }
         }
         
         locationManager.getPlacemarkFrom(location: itemLocation) { placemark in
@@ -288,6 +303,17 @@ class MarketItemDetailViewController: UIViewController {
                     } else {
                         self.sellerNameLabel.text = "\(ownerProfile.firstName ?? "") \(ownerProfile.lastName ?? "")"
                     }
+                case .failure(let error):
+                    print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                }
+            }
+        }
+        
+        MarketManager.fetchImageWith(imageID: ownerID) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let image):
+                    self.sellerImageView.image = image
                 case .failure(let error):
                     print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
                 }

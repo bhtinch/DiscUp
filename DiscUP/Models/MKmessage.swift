@@ -49,7 +49,10 @@ internal struct MKmessage: MessageType {
     init(text: String, user: Sender, messageId: String, date: Date) {
         self.init(kind: .text(text), user: user, messageId: messageId, date: date)
     }
-
+    
+    init(text: String, mediaItem: MediaItem, user: Sender, messageId: String, date: Date) {
+        self.init(kind: .photo(mediaItem), user: user, messageId: messageId, date: date)
+    }
 }
 
 struct Sender: SenderType {

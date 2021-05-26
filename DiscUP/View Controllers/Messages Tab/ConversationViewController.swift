@@ -35,6 +35,11 @@ class ConversationViewController: MessagesViewController {
     var item: MarketItem?
     var blockedUserIDs : [String] = []
     
+    lazy var attachmentManager: AttachmentManager = { [unowned self] in
+         let manager = AttachmentManager()
+         return manager
+     }()
+    
     //  MARK: - LIFECYLCES
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -115,6 +120,7 @@ class ConversationViewController: MessagesViewController {
     }
     
     func configureMessageInputBar() {
+        let messageInputBar = CameraInputBarAccessoryView()
         messageInputBar.delegate = self
         messageInputBar.inputTextView.tintColor = .blue
         messageInputBar.sendButton.setTitleColor(.blue, for: .normal)
@@ -122,6 +128,20 @@ class ConversationViewController: MessagesViewController {
             UIColor.blue.withAlphaComponent(0.3),
             for: .highlighted
         )
+        
+        let camera = makeButton(named: "ic_camera")
+        camera.tintColor = .darkGray
+        camera.onTouchUpInside { (item) in
+            print("camera tapped.")
+            self.showImagePickerControllerActionSheet()
+        }
+        
+        messageInputBar.setLeftStackViewWidthConstant(to: 35, animated: true)
+        messageInputBar.setStackViewItems([camera], forStack: .left, animated: false)
+        attachmentManager.delegate = messageInputBar
+        messageInputBar.inputPlugins = [attachmentManager]
+        
+        self.messageInputBar = messageInputBar
     }
     
     func fetchBlockedUsers() {
@@ -214,7 +234,12 @@ class ConversationViewController: MessagesViewController {
 }   //  End of Class
 
 // MARK: - Extensions
-extension ConversationViewController: InputBarAccessoryViewDelegate {
+extension ConversationViewController: CameraInputBarAccessoryViewDelegate {
+    
+    func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith attachments: [AttachmentManager.Attachment]) {
+        
+    }
+    
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
         guard !text.replacingOccurrences(of: " ", with: "").isEmpty else { return }
         
@@ -266,6 +291,48 @@ extension ConversationViewController: InputBarAccessoryViewDelegate {
             }
         }
     }
+    
+    func makeButton(named: String) -> InputBarButtonItem {
+        return InputBarButtonItem()
+            .configure {
+                $0.spacing = .fixed(10)
+                   
+                if #available(iOS 13.0, *) {
+                    $0.image = UIImage(systemName: "camera.fill")?.withRenderingMode(.alwaysTemplate)
+                } else {
+                    $0.image = UIImage(named: named)?.withRenderingMode(.alwaysTemplate)
+                }
+                
+                $0.setSize(CGSize(width: 30, height: 30), animated: false)
+            }.onSelected {
+                $0.tintColor = .systemBlue
+            }.onDeselected {
+                $0.tintColor = UIColor.lightGray
+            }.onTouchUpInside { _ in
+                print("Item Tapped")
+        }
+    }
+    
+    @objc  func showImagePickerControllerActionSheet()  {
+        
+        let alert = UIAlertController(title: "Choose Your Image", message: nil, preferredStyle: .actionSheet)
+
+        let photoLibraryAction = UIAlertAction(title: "Choose From Library", style: .default) { (action) in
+            //self.showImagePickerController(sourceType: .photoLibrary)
+        }
+        
+        let cameraAction = UIAlertAction(title: "Take From Camera", style: .default) { (action) in
+            //self.showImagePickerController(sourceType: .camera)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .default , handler: nil)
+        
+        alert.addAction(photoLibraryAction)
+        alert.addAction(cameraAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
 } // END OF EXTENSION
 
 // MARK: - Messages DataSource & Delegates
@@ -309,6 +376,14 @@ extension ConversationViewController: MessageCellDelegate {
                     avatarView.set(avatar: avatar)
                 }
             }
+        }
+    }
+    
+    func configureMediaMessageImageView(_ imageView: UIImageView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        if case MessageKind.photo(let media) = message.kind, let imageURL = media.url {
+            //imageView.kf.setImage(with: imageURL)
+        } else {
+            //imageView.kf.cancelDownloadTask()
         }
     }
     
