@@ -60,3 +60,11 @@ struct Sender: SenderType {
     public var senderId: String
     public var displayName: String
 } // END OF STRUCT
+
+struct MKmessageProto {
+    let sender: Sender
+    let sentDate: Date
+    let messageID: String
+    let convoIndex: Int
+    let imageID: String
+}

@@ -41,3 +41,17 @@ public protocol MediaItem {
     var size: CGSize { get }
 
 }
+
+extension UIImage: MediaItem {
+    public var url: URL? {
+        nil
+    }
+    
+    public var image: UIImage? {
+        UIImage(systemName: "questionmark")
+    }
+    
+    public var placeholderImage: UIImage {
+        UIImage(systemName: "arrow.triangle.2.circlepath.camera") ?? UIImage()
+    }
+}

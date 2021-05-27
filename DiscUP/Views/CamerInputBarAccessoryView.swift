@@ -52,17 +52,17 @@ extension CameraInputBarAccessoryViewDelegate {
 
     }
     
-    override func didSelectSendButton() {
-        
-        if attachmentManager.attachments.count > 0 {
-            
-            (delegate as? CameraInputBarAccessoryViewDelegate)?.inputBar(self, didPressSendButtonWith: attachmentManager.attachments)
-        }
-        else {
-            
-            delegate?.inputBar(self, didPressSendButtonWith: inputTextView.text)
-        }
-    }
+//    override func didSelectSendButton() {
+//
+//        if attachmentManager.attachments.count > 0 {
+//
+//            (delegate as? CameraInputBarAccessoryViewDelegate)?.inputBar(self, didPressSendButtonWith: attachmentManager.attachments)
+//        }
+//        else {
+//
+//            delegate?.inputBar(self, didPressSendButtonWith: inputTextView.text)
+//        }
+//    }
     
     
     

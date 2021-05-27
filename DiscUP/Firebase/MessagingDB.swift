@@ -25,6 +25,7 @@ struct MessageKeys {
     static let text = "text"
     static let messageID = "messageID"
     static let senderDisplayName = "senderDisplayName"
+    static let imageID = "imageID"
 }
 
 class MessagingDB {

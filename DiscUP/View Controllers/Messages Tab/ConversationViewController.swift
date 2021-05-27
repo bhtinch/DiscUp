@@ -10,6 +10,8 @@ import MessageKit
 import InputBarAccessoryView
 import FirebaseAuth
 import FirebaseDatabase
+import AVFoundation
+import Photos
 
 class ConversationViewController: MessagesViewController {
     //  MARK: - OUTLETS
@@ -34,11 +36,14 @@ class ConversationViewController: MessagesViewController {
     var itemID: String?
     var item: MarketItem?
     var blockedUserIDs : [String] = []
+    var senderAvatarImage: UIImage?
+    var receiverAvatarImage: UIImage?
+    var mediaMessageProtos: [MKmessageProto] = []
     
     lazy var attachmentManager: AttachmentManager = { [unowned self] in
-         let manager = AttachmentManager()
-         return manager
-     }()
+        let manager = AttachmentManager()
+        return manager
+    }()
     
     //  MARK: - LIFECYLCES
     override func viewDidLoad() {
@@ -133,7 +138,7 @@ class ConversationViewController: MessagesViewController {
         camera.tintColor = .darkGray
         camera.onTouchUpInside { (item) in
             print("camera tapped.")
-            self.showImagePickerControllerActionSheet()
+            self.presentImageAlert()
         }
         
         messageInputBar.setLeftStackViewWidthConstant(to: 35, animated: true)
@@ -148,7 +153,45 @@ class ConversationViewController: MessagesViewController {
         MessagingManager.fetchBlockedUsers { blockedUserIDs in
             DispatchQueue.main.async {
                 self.blockedUserIDs = blockedUserIDs
+                self.fetchSenderAvatar()
+            }
+        }
+    }
+    
+    func fetchSenderAvatar() {
+        guard let _ = basicConvo else { return }
+        
+        MarketManager.fetchImageWith(imageID: sender.senderId) { result in
+            switch result {
+            
+            case .success(let image):
+                self.senderAvatarImage = image
+                self.fetchReceiverAvatar()
+            case .failure(let error):
+                print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    func fetchReceiverAvatar() {
+        guard let basicConvo = basicConvo else { return }
+        
+        var imageID = ""
+        
+        if basicConvo.buyerID == sender.senderId {
+            imageID = basicConvo.sellerID
+        } else {
+            imageID = basicConvo.buyerID
+        }
+        
+        MarketManager.fetchImageWith(imageID: imageID) { result in
+            switch result {
+            
+            case .success(let image):
+                self.receiverAvatarImage = image
                 self.listenForMessages()
+            case .failure(let error):
+                print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
             }
         }
     }
@@ -166,23 +209,59 @@ class ConversationViewController: MessagesViewController {
             }
             
             self.messages = []
+            self.mediaMessageProtos = []
             
-            for msg in msgsSorted {
+            for i in 0..<msgsSorted.count {
+                let msg = msgsSorted[i]
+                
                 let content = msg.value[MessageKeys.text] ?? "no content"
                 let userID = msg.value[MessageKeys.senderID] ?? "no sender"
                 let displayName = msg.value[MessageKeys.senderDisplayName] ?? "no name"
+                let imageID: String? = msg.value[MessageKeys.imageID]
                 
                 guard let date = msg.key.stringToLocalDate(format: .MM_dd_yyyy_T_HH_mm_ss_SSS_Z) else { return }
                 
                 let sender = Sender(photoURL: "", senderId: userID, displayName: displayName)
                 
                 if self.blockedUserIDs.contains(sender.senderId)  { continue }
+                                
+                if let imageID = imageID {
+                    let proto = MKmessageProto(sender: sender, sentDate: date, messageID: msg.key, convoIndex: i, imageID: imageID)
+                    self.mediaMessageProtos.append(proto)
+                } else {
+                    let message = MKmessage(text: content, user: sender, messageId: msg.key, date: date)
+                    self.messages.append(message)
+                }
                 
-                let message = MKmessage(text: content, user: sender, messageId: msg.key, date: date)
-                
-                self.messages.append(message)
-                
-                self.updateView()
+                if i == msgsSorted.count - 1 {
+                    self.appendMediaMessages()
+                }
+            }
+        }
+    }
+    
+    func appendMediaMessages() {
+        
+        for proto in mediaMessageProtos {
+            MarketManager.fetchImageWith(imageID: proto.imageID) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    
+                    case .success(let image):
+                        let message = MKmessage(text: "", mediaItem: image, user: proto.sender, messageId: proto.messageID, date: proto.sentDate)
+                        
+                        if proto.convoIndex >= self.messages.count {
+                            self.messages.append(message)
+                        } else {
+                            self.messages.insert(message, at: proto.convoIndex)
+                        }
+                        
+                        self.updateView()
+                        
+                    case .failure(let error):
+                        print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                    }
+                }
             }
         }
     }
@@ -230,63 +309,96 @@ class ConversationViewController: MessagesViewController {
             destination.itemID = itemID
         }
     }
-
+    
 }   //  End of Class
 
 // MARK: - Extensions
 extension ConversationViewController: CameraInputBarAccessoryViewDelegate {
     
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith attachments: [AttachmentManager.Attachment]) {
+        guard let attachment = attachments.first,
+              let convoID = basicConvo?.id else { return }
         
+        switch attachment {
+        case .image(let image):
+            image.accessibilityIdentifier = "\(convoID)_\(UUID().uuidString)"
+            
+            StorageManager.uploadImagesWith(images: [image]) { result in
+                switch result {
+                case .success(_):
+                    print("Image successfully uploaded to Firebase.")
+                    print("Sending media message with imageID: \(String(describing: image.accessibilityIdentifier))")
+                    self.sendMessage(text: nil, imageID: image.accessibilityIdentifier)
+                    
+                case .failure(let error):
+                    print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                    return
+                }
+            }
+        default:
+            return
+        }
     }
     
-    func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
-        guard !text.replacingOccurrences(of: " ", with: "").isEmpty else { return }
+    func inputBar(_ inputBarView: InputBarAccessoryView, didPressSendButtonWith text: String) {
+        if attachmentManager.attachments.count > 0 {
+            inputBar(messageInputBar, didPressSendButtonWith: attachmentManager.attachments)
+        }
+        
+        guard !text.replacingOccurrences(of: " ", with: "").isEmpty else { return resetInputBar()}
         
         print("Sending: \(text)")
-        
+        sendMessage(text: text, imageID: nil)
+    }
+    
+    func sendMessage(text: String?, imageID: String?) {
         if isNewConvo {
-            //  update buyer and seller user nodes and create convo node
             guard let item = item else { return }
             
-            MessagingManager.createNewConversationWith(item: item, text: text) { result in
+            MessagingManager.createNewConversationWith(item: item, text: text, imageID: imageID) { result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let basicConvo):
                         self.isNewConvo = false
                         self.basicConvo = basicConvo
                         self.listenForMessages()
+                        self.resetInputBar()
                     case .failure(let error):
                         print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
                         Alerts.presentAlertWith(title: "Uh-Oh!", message: "Your message could not be sent for an unknown reason.  Please try again.", sender: self)
+                        self.resetInputBar()
                     }
                 }
             }
         } else {
             if let convoID = self.basicConvo?.id {
-                MessagingManager.sendMessage(to: convoID, with: text) { success in
+                MessagingManager.sendMessage(to: convoID, with: text, imageID: imageID) { success in
                     if success {
                         print("message successfully sent")
+                        self.resetInputBar()
                     } else {
                         Alerts.presentAlertWith(title: "Uh-Oh!", message: "Your message could not be sent for an unknown reason.  Please try again.", sender: self)
+                        self.resetInputBar()
                     }
                 }
             }
         }
-        
-        inputBar.inputTextView.text = String()
-        inputBar.invalidatePlugins()
+    }
+    
+    func resetInputBar() {
+        messageInputBar.inputTextView.text = String()
+        messageInputBar.invalidatePlugins()
         // Send button activity animation
-        inputBar.sendButton.startAnimating()
-        inputBar.inputTextView.placeholder = "Sending..."
+        messageInputBar.sendButton.startAnimating()
+        messageInputBar.inputTextView.placeholder = "Sending..."
         // Resign first responder for iPad split view
-        inputBar.inputTextView.resignFirstResponder()
+        messageInputBar.inputTextView.resignFirstResponder()
         DispatchQueue.global(qos: .default).async {
             // fake send request task
             sleep(1)
             DispatchQueue.main.async { [weak self] in
-                inputBar.sendButton.stopAnimating()
-                inputBar.inputTextView.placeholder = "Aa"
+                self?.messageInputBar.sendButton.stopAnimating()
+                self?.messageInputBar.inputTextView.placeholder = "Aa"
                 self?.messagesCollectionView.scrollToLastItem(animated: true)
             }
         }
@@ -296,7 +408,7 @@ extension ConversationViewController: CameraInputBarAccessoryViewDelegate {
         return InputBarButtonItem()
             .configure {
                 $0.spacing = .fixed(10)
-                   
+                
                 if #available(iOS 13.0, *) {
                     $0.image = UIImage(systemName: "camera.fill")?.withRenderingMode(.alwaysTemplate)
                 } else {
@@ -310,29 +422,9 @@ extension ConversationViewController: CameraInputBarAccessoryViewDelegate {
                 $0.tintColor = UIColor.lightGray
             }.onTouchUpInside { _ in
                 print("Item Tapped")
-        }
+            }
     }
     
-    @objc  func showImagePickerControllerActionSheet()  {
-        
-        let alert = UIAlertController(title: "Choose Your Image", message: nil, preferredStyle: .actionSheet)
-
-        let photoLibraryAction = UIAlertAction(title: "Choose From Library", style: .default) { (action) in
-            //self.showImagePickerController(sourceType: .photoLibrary)
-        }
-        
-        let cameraAction = UIAlertAction(title: "Take From Camera", style: .default) { (action) in
-            //self.showImagePickerController(sourceType: .camera)
-        }
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .default , handler: nil)
-        
-        alert.addAction(photoLibraryAction)
-        alert.addAction(cameraAction)
-        alert.addAction(cancelAction)
-        
-        present(alert, animated: true, completion: nil)
-    }
 } // END OF EXTENSION
 
 // MARK: - Messages DataSource & Delegates
@@ -348,42 +440,34 @@ extension ConversationViewController: MessagesDataSource, MessagesDisplayDelegat
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
         return messages[indexPath.section]
     }
-        
+    
 } // END OF EXTENSION
 
 // MARK: - MessageCellDelegate
 extension ConversationViewController: MessageCellDelegate {
-
+    
     func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
         
         let initials = sender.displayName.first ?? "?"
         
         avatarView.backgroundColor = .link
+        var image = receiverAvatarImage
+        var avatar = Avatar(image: image, initials: initials.description)
         
         if message.sender.senderId == Auth.auth().currentUser?.uid {
             avatarView.backgroundColor = #colorLiteral(red: 0.3236978054, green: 0.1063579395, blue: 0.574860394, alpha: 1)
+            image = senderAvatarImage
+            avatar = Avatar(image: image, initials: initials.description)
         }
         
-        MarketManager.fetchImageWith(imageID: message.sender.senderId) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let image):
-                    let avatar = Avatar(image: image, initials: initials.description)
-                    avatarView.set(avatar: avatar)
-                    
-                case .failure(_):
-                    let avatar = Avatar(image: nil, initials: initials.description)
-                    avatarView.set(avatar: avatar)
-                }
-            }
-        }
+        avatarView.set(avatar: avatar)
     }
     
     func configureMediaMessageImageView(_ imageView: UIImageView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
-        if case MessageKind.photo(let media) = message.kind, let imageURL = media.url {
-            //imageView.kf.setImage(with: imageURL)
+        if case MessageKind.photo(let media) = message.kind, let image = media.image {
+            imageView.image = image
         } else {
-            //imageView.kf.cancelDownloadTask()
+            imageView.image = UIImage(systemName: "questionmark")
         }
     }
     
@@ -422,5 +506,122 @@ extension ConversationViewController: MessagesLayoutDelegate {
     
     func messageBottomLabelHeight(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> CGFloat {
         return 16
+    }
+}   //  End of Extension
+
+//  MARK: - IMAGE PICKER
+extension ConversationViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+    
+    func presentCamera() {
+        let camera = UIImagePickerController()
+        camera.sourceType = .camera
+        camera.delegate = self
+        camera.allowsEditing = true
+        present(camera, animated: true, completion: nil)
+    }
+    
+    func presentPhotoPicker() {
+        let picker = UIImagePickerController()
+        picker.sourceType = .photoLibrary
+        picker.delegate = self
+        picker.allowsEditing = true
+        present(picker, animated: true, completion: nil)
+    }
+    
+    //  MARK: - PHOTO PICKER METHODS
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true, completion: nil)
+        
+        guard let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else { return }
+        
+        messageInputBar.inputPlugins.forEach { _ = $0.handleInput(of: image)}
+        inputAccessoryView?.isHidden = false
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    //  MARK: - ALERTS
+    func presentImageAlert() {
+        let alert = UIAlertController(title: "Take a photo or choose an image.", message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+            alert.dismiss(animated: true, completion: nil)
+        }))
+        
+        let takePhotoAction = UIAlertAction(title: "Take Photo", style: .default) { _ in
+            
+            switch MediaPermissions.checkCameraPermission() {
+            case .notDetermined:
+                AVCaptureDevice.requestAccess(for: .video) { granted in
+                    DispatchQueue.main.async {
+                        if granted {
+                            self.presentCamera()
+                            alert.dismiss(animated: true, completion: nil)
+                        } else {
+                            alert.dismiss(animated: true, completion: nil)
+                        }
+                    }
+                }
+                
+            case .restricted:
+                self.presentAlertWith(title: "Your permission settings for this app does not allow taking pictures", message: "Please update the app permissions in order to take photos.")
+                alert.dismiss(animated: true, completion: nil)
+                
+            case .denied:
+                self.presentAlertWith(title: "Your permission settings for this app does not allow taking pictures", message: "Please update the app permissions in order to take photos.")
+                alert.dismiss(animated: true, completion: nil)
+                
+            case .authorized:
+                self.presentCamera()
+                alert.dismiss(animated: true, completion: nil)
+                
+            @unknown default:
+                self.presentAlertWith(title: "Your permission settings for this app does not allow taking pictures", message: "Please update the app permissions in order to take photos.")
+                alert.dismiss(animated: true, completion: nil)
+            }
+        }
+        
+        let choosePhotoAction = UIAlertAction(title: "Choose from Gallery", style: .default) { _ in
+            
+            switch MediaPermissions.checkMediaLibraryPermission() {
+            case .notDetermined:
+                PHPhotoLibrary.requestAuthorization { status in
+                    DispatchQueue.main.async {
+                        switch status {
+                        case .authorized:
+                            self.presentPhotoPicker()
+                            alert.dismiss(animated: true, completion: nil)
+                            
+                        default:
+                            alert.dismiss(animated: true, completion: nil)
+                        }
+                    }
+                }
+                
+            case .authorized:
+                self.presentPhotoPicker()
+                alert.dismiss(animated: true, completion: nil)
+                
+            default:
+                self.presentAlertWith(title: "Your permission settings for this app does not allow taking pictures", message: "Please update the app permissions in order to take photos.")
+                alert.dismiss(animated: true, completion: nil)
+            }
+        }
+        
+        alert.addAction(takePhotoAction)
+        alert.addAction(choosePhotoAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func presentAlertWith(title: String, message: String?) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+            alert.dismiss(animated: true, completion: nil)
+        }))
+        
+        present(alert, animated: true, completion: nil)
     }
 }   //  End of Extension

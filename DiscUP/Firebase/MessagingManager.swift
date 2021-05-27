@@ -19,7 +19,7 @@ class MessagingManager {
     static let userDatabase = UserDB.shared.dbRef
     static let userID = Auth.auth().currentUser?.uid
     
-    static func createNewConversationWith(item: MarketItem, text: String, completion: @escaping(Result<ConversationBasic, NetworkError>) -> Void) {
+    static func createNewConversationWith(item: MarketItem, text: String?, imageID: String?, completion: @escaping(Result<ConversationBasic, NetworkError>) -> Void) {
         guard let buyerID = userID,
               let sellerID = item.ownerID else { return completion(.failure(NetworkError.databaseError)) }
         
@@ -65,7 +65,7 @@ class MessagingManager {
             
             //  send first message
             DispatchQueue.main.async {
-                sendMessage(to: convoID, with: text) { success in
+                sendMessage(to: convoID, with: text, imageID: imageID) { success in
                     if success == false {
                         return completion(.failure(NetworkError.databaseError))
                     }
@@ -79,7 +79,7 @@ class MessagingManager {
         
     }  //   NEEDS IMPLEMENTATION
     
-    static func sendMessage(to convoID: String, with text: String, completion: @escaping(Bool) -> Void) {
+    static func sendMessage(to convoID: String, with text: String?, imageID: String?, completion: @escaping(Bool) -> Void) {
         guard let user = Auth.auth().currentUser else { return completion(false) }
         
         let sentDate = Date().convertToUTCString(format: .MM_dd_yyyy_T_HH_mm_ss_SSS_Z)
@@ -87,7 +87,8 @@ class MessagingManager {
         database.child(convoID).child(ConversationKeys.messages).child(sentDate).updateChildValues([
             MessageKeys.text : text,
             MessageKeys.senderID : user.uid,
-            MessageKeys.senderDisplayName : user.displayName ?? "Unknown User"
+            MessageKeys.senderDisplayName : user.displayName ?? "Unknown User",
+            MessageKeys.imageID : imageID
         ]) {error, dbRef in
             DispatchQueue.main.async {
                 if let error = error {
