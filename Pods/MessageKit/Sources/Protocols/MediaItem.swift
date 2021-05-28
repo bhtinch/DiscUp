@@ -48,7 +48,7 @@ extension UIImage: MediaItem {
     }
     
     public var image: UIImage? {
-        UIImage(systemName: "questionmark")
+        self
     }
     
     public var placeholderImage: UIImage {

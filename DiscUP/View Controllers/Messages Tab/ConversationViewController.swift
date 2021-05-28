@@ -255,7 +255,7 @@ class ConversationViewController: MessagesViewController {
                         } else {
                             self.messages.insert(message, at: proto.convoIndex)
                         }
-                        
+                        	
                         self.updateView()
                         
                     case .failure(let error):
@@ -469,11 +469,13 @@ extension ConversationViewController: MessageCellDelegate {
         } else {
             imageView.image = UIImage(systemName: "questionmark")
         }
+        
+        imageView.contentMode = .scaleAspectFit
     }
     
     func messageStyle(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageStyle {
         let tail: MessageStyle.TailCorner = isFromCurrentSender(message: message) ? .bottomRight : .bottomLeft
-        return .bubbleTail(tail, .curved)
+        return .bubbleTail(tail, .pointedEdge)
     }
     
     func cellTopLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
@@ -486,6 +488,23 @@ extension ConversationViewController: MessageCellDelegate {
     func messageBottomLabelAttributedText(for message: MessageType, at indexPath: IndexPath) -> NSAttributedString? {
         let dateString = message.sentDate.dateToString(format: .monthDayYearTimestamp)
         return NSAttributedString(string: dateString, attributes: [NSAttributedString.Key.font: UIFont.preferredFont(forTextStyle: .caption2)])
+    }
+        
+    func didTapImage(in cell: MessageCollectionViewCell) {
+        guard let indexPath = self.messagesCollectionView.indexPath(for: cell) else { return }
+        let message = messageForItem(at: indexPath, in: self.messagesCollectionView)
+        let kind = message.kind
+        
+        let vc = ImageDetailViewController()
+        
+        switch kind {
+        case .photo(let mediaItem):
+            vc.imageView.image = mediaItem.image
+        default:
+            return
+        }
+                        
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
 }   //  End of Extension
