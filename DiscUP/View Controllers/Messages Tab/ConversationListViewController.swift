@@ -158,6 +158,24 @@ class ConversationListViewController: UIViewController {
         sellingConvos.sort { $0.newMessages > $1.newMessages }
         self.tableView.reloadData()
     }
+    
+    func fetchName(nameID: String, completion: @escaping(String) -> Void) {
+        UserDB.shared.fetchUserInfoFor(userID: nameID) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let profile):
+                    if profile.firstName == nil && profile.lastName == nil {
+                        completion(profile.username)
+                    } else {
+                        completion("\(profile.firstName ?? "") \(profile.lastName ?? "")")
+                    }
+                case .failure(let error):
+                    print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                    completion("")
+                }
+            }
+        }
+    }
 
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -197,18 +215,21 @@ extension ConversationListViewController: UITableViewDataSource, UITableViewDele
     }
         
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? ConversationTableViewCell else { return UITableViewCell() }
         
         var convo: ConversationBasic?
+        var nameID: String = ""
 
         if indexPath.section == 1 {
             convo = sellingConvos[indexPath.row]
+            nameID = convo?.buyerID ?? ""
         } else {
             convo = buyingConvos[indexPath.row]
+            nameID = convo?.sellerID ?? ""
         }
 
         if let convo = convo {
-            cell.textLabel?.text = convo.itemHeadline
+            cell.itemHeadlilneLabel.text = convo.itemHeadline
             
             let newMessages = convo.newMessages
             
@@ -216,11 +237,15 @@ extension ConversationListViewController: UITableViewDataSource, UITableViewDele
             
             if newMessages > 0 {
                 newMessagesString = newMessages.description
-                cell.textLabel?.font = .boldSystemFont(ofSize: 17)
-                cell.detailTextLabel?.font = .boldSystemFont(ofSize: 17)
+                cell.itemHeadlilneLabel.font = .boldSystemFont(ofSize: 18)
+                cell.numberNewLabel.font = .boldSystemFont(ofSize: 16)
             }
             
-            cell.detailTextLabel?.text = newMessagesString
+            cell.numberNewLabel.text = newMessagesString
+            
+            fetchName(nameID: nameID) { name in
+                cell.nameLabel.text = name
+            }
         }
         
         return cell
