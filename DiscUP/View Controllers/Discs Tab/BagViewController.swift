@@ -141,8 +141,7 @@ class BagViewController: UIViewController {
     func presentCreateBagAlert() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "CreateNewBagViewController")
-        vc.modalPresentationStyle = .fullScreen
-        present(vc, animated: true, completion: nil)
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     //  MARK: - Navigation

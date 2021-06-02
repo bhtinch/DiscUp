@@ -7,12 +7,15 @@ target 'DiscUP' do
 
   # Pods for DiscUP
 
-pod 'Firebase/Core'
-pod 'Firebase/Auth'
-pod 'Firebase/Database'
-pod 'Firebase/Analytics'
-pod 'Firebase/Crashlytics'
-pod 'Firebase/Storage'
+  pod 'Firebase/Core'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Database'
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Crashlytics'
+  pod 'Firebase/Storage'
+
+  #MessageKit
+  pod 'MessageKit'
 
 end
 
@@ -23,3 +26,4 @@ post_install do |pi|
       end
     end
 end
+	

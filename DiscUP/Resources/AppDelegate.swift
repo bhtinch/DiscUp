@@ -10,6 +10,7 @@ import UIKit
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
+    var window: UIWindow?
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -19,6 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //Database.database(url: "https://discup-users-rtdb.firebaseio.com/").isPersistenceEnabled = true
         //UserDatabaseManager.shared.dbRef.keepSynced(true)
         //DiscDatabaseManager.shared.dbRef.keepSynced(true)
+                
         return true
     }
 

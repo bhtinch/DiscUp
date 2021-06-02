@@ -1,8 +1,9 @@
+
 //
 //  DateFormatter.swift
-//  DiscUP
+//  BikeApp
 //
-//  Created by Benjamin Tincher on 4/10/21.
+//  Created by Benjamin Tincher on 3/18/21.
 //
 
 import Foundation
@@ -54,7 +55,7 @@ extension Date {
         case full = "EEEE, MMM d, yyyy"
         case fullNumeric = "MM/dd/yyyy"
         case fullNumericTimestamp = "MM-dd-yyyy HH:mm"
-        case MM_dd_yyyy__HH_mm_ss_SSS = "MM-dd-yyyy HH:mm:ss:SSS"
+        case MM_dd_yyyy_T_HH_mm_ss_SSS_Z = "MM-dd-yyyy'T'HH:mm:ss:SSSZ"
         case monthDayTimestamp = "MMM d, h:mm a"
         case monthDayYearTimestamp = "MMM d, yyyy, h:mm a"
         case monthYear = "MMMM yyyy"
@@ -80,13 +81,14 @@ extension Date {
         formatter.dateFormat = format.rawValue
         return formatter.string(from: self)
     }
+    
 }    //  End of Extension
 
 extension String {
     enum DateFormatType: String {
         case EEEE_MMM_d_yyyy = "EEEE, MMM d, yyyy"
         case MM_dd_yyyy = "MM/dd/yyyy"
-        case MM_dd_yyyy__HH_mm_ss_SSS = "MM-dd-yyyy HH:mm:ss:SSS"
+        case MM_dd_yyyy_T_HH_mm_ss_SSS_Z = "MM-dd-yyyy'T'HH:mm:ss:SSSZ"
         case monthDayTimestamp = "MMM d, h:mm a"
         case monthDayYearTimestamp = "MMM d, yyyy, h:mm a"
         case monthYear = "MMMM yyyy"
@@ -97,11 +99,22 @@ extension String {
         case timestamp = "HH:mm:ss.SSS"
         case dbSafeTimestamp = "HH-mm-ss-SSS"
         case searchedDate = "yyyy-MM-dd"
+        case eventDate = "E MMM dd yyyy"
     }
     
     func stringToDate(format: DateFormatType) -> Date? {
         let formatter = DateFormatter()
         formatter.dateFormat = format.rawValue
+        
+        let date: Date? = formatter.date(from: self)
+        
+        return date
+    }
+    
+    func stringToLocalDate(format: DateFormatType) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = format.rawValue
+        formatter.timeZone = .current
         
         let date: Date? = formatter.date(from: self)
         
