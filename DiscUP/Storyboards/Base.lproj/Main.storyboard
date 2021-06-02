@@ -142,7 +142,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oLM-ox-IgR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3206" y="115"/>
+            <point key="canvasLocation" x="-3207" y="115"/>
         </scene>
         <!--Events-->
         <scene sceneID="8DU-aI-AEV">
@@ -152,18 +152,19 @@
                         <imageReference key="image" image="calendar" catalog="system" symbolScale="large"/>
                     </tabBarItem>
                     <toolbarItems/>
+                    <navigationItem key="navigationItem" id="6wb-K5-aFY"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="kLD-Sg-dRI">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="8Jn-Kc-khn" kind="relationship" relationship="rootViewController" id="lkw-SJ-Y5y"/>
+                        <segue destination="8Jn-Kc-khn" kind="relationship" relationship="rootViewController" id="eL0-rF-VlJ"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gjR-UD-AA0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3206" y="-616"/>
+            <point key="canvasLocation" x="-3207" y="-616"/>
         </scene>
         <!--Conversation List View Controller-->
         <scene sceneID="Jg3-20-26V">
@@ -887,6 +888,7 @@
             <objects>
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="gHK-pC-K95" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <navigationItem key="navigationItem" id="Nid-zu-qaL"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="4uc-6K-2d0">
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -894,10 +896,10 @@
                     </tabBar>
                     <connections>
                         <segue destination="nYE-Lh-8N0" kind="relationship" relationship="viewControllers" id="V09-3E-ZoB"/>
-                        <segue destination="u2b-jo-391" kind="relationship" relationship="viewControllers" id="Xdd-3U-QFK"/>
                         <segue destination="9OD-Tj-MRJ" kind="relationship" relationship="viewControllers" id="PDn-iP-XCb"/>
                         <segue destination="G0K-Aq-OwK" kind="relationship" relationship="viewControllers" id="aGg-49-f8B"/>
                         <segue destination="UZw-wE-6NS" kind="relationship" relationship="viewControllers" id="TYL-VV-nsH"/>
+                        <segue destination="u2b-jo-391" kind="relationship" relationship="viewControllers" id="eLM-1N-wTv"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="o5v-Rf-UHr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

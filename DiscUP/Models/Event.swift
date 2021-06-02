@@ -1,8 +1,8 @@
 //
 //  Event.swift
-//  DiscUP
+//  PdgaApiTesting
 //
-//  Created by Benjamin Tincher on 4/10/21.
+//  Created by Benjamin Tincher on 4/6/21.
 //
 
 import Foundation
@@ -95,4 +95,19 @@ extension Event {
         let formattedStartDateString = startDate.dateToString(format: .eventDate)
         return formattedStartDateString
     }
+}
+
+
+enum Tier: String, Codable {
+    case L = "L"
+    case NT = "NT"
+    case B = "B"
+    case C = "C"
+    case M = "M"
+    case A = "A"
+    case DGPT = "DGPT"
+    case XM = "XM"
+    case XA = "XA"
+    case XB = "XB"
+    case XC = "XC"
 }
