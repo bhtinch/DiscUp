@@ -281,14 +281,14 @@
             <objects>
                 <viewController id="A4h-sS-bo4" customClass="ProfileViewController" customModule="DiscUP" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NAN-aJ-xgq">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="colorDiscs" translatesAutoresizingMaskIntoConstraints="NO" id="BhD-Er-MIz">
-                                <rect key="frame" x="0.0" y="137" width="414" height="269"/>
+                                <rect key="frame" x="0.0" y="49" width="414" height="252.5"/>
                             </imageView>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person.fill.questionmark" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="cCT-Ay-gJu">
-                                <rect key="frame" x="24" y="161.5" width="134.5" height="132.5"/>
+                                <rect key="frame" x="24" y="73.5" width="126.5" height="124.5"/>
                                 <color key="backgroundColor" systemColor="opaqueSeparatorColor"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -296,7 +296,7 @@
                                 </constraints>
                             </imageView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="15G-cL-hQi">
-                                <rect key="frame" x="0.0" y="406" width="414" height="407"/>
+                                <rect key="frame" x="0.0" y="301.5" width="414" height="506.5"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="profileCell" id="f6x-w4-ugm">
@@ -310,20 +310,20 @@
                                 </prototypes>
                             </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nvl-JZ-yTD">
-                                <rect key="frame" x="24" y="161" width="134.5" height="134.5"/>
+                                <rect key="frame" x="24" y="73" width="126.5" height="126.5"/>
                                 <connections>
                                     <action selector="changeDefaultImageButtonTapped:" destination="A4h-sS-bo4" eventType="touchUpInside" id="OOO-sX-fmV"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Ku-VE-cLz">
-                                <rect key="frame" x="0.0" y="137" width="414" height="269"/>
+                                <rect key="frame" x="0.0" y="49" width="414" height="252.5"/>
                                 <connections>
                                     <action selector="changeBackgroundImageButtonTapped:" destination="A4h-sS-bo4" eventType="touchUpInside" id="8QL-LU-aPp"/>
                                     <action selector="changeDefaultImageButtonTapped:" destination="A4h-sS-bo4" eventType="touchUpInside" id="wXg-1y-isd"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="DiscUp!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f4D-fG-gYm">
-                                <rect key="frame" x="157.5" y="96" width="99.5" height="33"/>
+                                <rect key="frame" x="157.5" y="8" width="99.5" height="33"/>
                                 <fontDescription key="fontDescription" name="Trebuchet-BoldItalic" family="Trebuchet MS" pointSize="28"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -381,7 +381,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="1O9-Vf-jjs">
-                                <rect key="frame" x="0.0" y="88" width="414" height="725"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="settingsCell" textLabel="Ans-KY-hAl" style="IBUITableViewCellStyleDefault" id="mNO-hn-abC">
@@ -400,6 +400,9 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="A4h-sS-bo4" kind="show" identifier="noUserToProfile" id="R76-8f-9XM"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
@@ -428,7 +431,7 @@
             <objects>
                 <tableViewController id="H7W-lQ-ctn" customClass="BlockedUsersTableViewController" customModule="DiscUP" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="1a2-HR-ZZe">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <prototypes>
@@ -2043,6 +2046,7 @@
     <inferredMetricsTieBreakers>
         <segue reference="gW8-JE-0MJ"/>
         <segue reference="hvR-Fh-db7"/>
+        <segue reference="R76-8f-9XM"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="arrow.triangle.2.circlepath.circle" catalog="system" width="128" height="121"/>

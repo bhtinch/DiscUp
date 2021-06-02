@@ -6,6 +6,8 @@
 //
 import FirebaseAuth
 import Foundation
+import FirebaseDatabase
+import FirebaseStorage
 
 class AuthManager {
     
@@ -103,7 +105,32 @@ class AuthManager {
         }
     }
     
-    static func deleteUser(){
+    static func deleteUser(completion: @escaping (Bool) -> Void){
+        guard let user = Auth.auth().currentUser else { return completion(false) }
+        
+        user.delete { error in
+            if let error = error {
+                print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                return completion(false)
+            }
+            
+            print("user account with id: \(user.uid) successfully deleted")
+            do {
+                try Auth.auth().signOut()
+            } catch {
+                print("could not sign out.")
+            }
+            
+            UserDB.shared.dbRef.child(user.uid).removeValue()
+            StorageManager.storage.child(user.uid).delete { error in
+                if let error = error {
+                    print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                    return completion(false)
+                }
+                
+                completion(true)
+            }
+        }
         
     }   //  NEEDS IMPLEMENTATION
     
