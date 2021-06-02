@@ -154,34 +154,38 @@ extension EventSearchViewController: UITableViewDelegate, UITableViewDataSource 
         eventCell.eventNameLabel.text = event.tournament_name ?? "Unknown Tournament"
         eventCell.eventLocationLabel.text = "\(event.city ?? "Unknown"), \(event.state_prov ?? "Unknown")"
         
-        if event.tier?.rawValue == "L" { eventCell.tierLabel.text = "League" } else {
-            eventCell.tierLabel.text = "Tier \(event.tier?.rawValue ?? "Unknown")"
-        }
         
+        
+        if event.tier == "L" { eventCell.tierLabel.text = "League" } else {
+            eventCell.tierLabel.text = "Tier \(event.tier ?? "Unknown")"
+        }
+
         if let tier = event.tier {
             switch tier {
-            case .L:
+            case "L":
                 eventCell.tierLabel.backgroundColor = .darkGray
-            case .NT:
+            case "NT":
                 eventCell.tierLabel.backgroundColor = .systemOrange
-            case .B:
+            case "B":
                 eventCell.tierLabel.backgroundColor = .systemGreen
-            case .C:
+            case "C":
                 eventCell.tierLabel.backgroundColor = .blue
-            case .M:
+            case "M":
                 eventCell.tierLabel.backgroundColor = .purple
-            case .A:
+            case "A":
                 eventCell.tierLabel.backgroundColor = .systemIndigo
-            case .DGPT:
+            case "DGPT":
                 eventCell.tierLabel.backgroundColor = .black
-            case .XM:
+            case "XM":
                 eventCell.tierLabel.backgroundColor = .systemTeal
-            case .XA:
+            case "XA":
                 eventCell.tierLabel.backgroundColor = .systemGray
-            case .XB:
+            case "XB":
                 eventCell.tierLabel.backgroundColor = .link
-            case .XC:
+            case "XC":
                 eventCell.tierLabel.backgroundColor = .systemRed
+            default:
+                eventCell.tierLabel.backgroundColor = .white
             }
         }
         

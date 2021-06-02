@@ -38,7 +38,7 @@ struct Event: Codable {
     var start_date: String?
     var end_date: String?
     var status: String?
-    var tier: Tier?
+    var tier: String?
     var event_url: String?
     var registration_url: String?
 }
