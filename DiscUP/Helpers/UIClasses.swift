@@ -26,3 +26,17 @@ class EventDateLabel: RoundedColorLabel {
     }
 }
 
+enum Tier: String, Codable {
+    case L = "L"
+    case NT = "NT"
+    case B = "B"
+    case C = "C"
+    case M = "M"
+    case A = "A"
+    case DGPT = "DGPT"
+    case XM = "XM"
+    case XA = "XA"
+    case XB = "XB"
+    case XC = "XC"
+}
+
