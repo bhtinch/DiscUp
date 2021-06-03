@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -17,17 +17,26 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="DiscUp!" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bxq-vV-nMv">
-                                <rect key="frame" x="0.0" y="364" width="414" height="46.5"/>
+                                <rect key="frame" x="0.0" y="532" width="414" height="46.5"/>
                                 <fontDescription key="fontDescription" name="Trebuchet-BoldItalic" family="Trebuchet MS" pointSize="40"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo2" translatesAutoresizingMaskIntoConstraints="NO" id="c2c-T7-ka5">
+                                <rect key="frame" x="87" y="244" width="240" height="240"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="c2c-T7-ka5" secondAttribute="height" multiplier="1:1" id="2TW-gk-HDy"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="bxq-vV-nMv" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="320" id="9Nt-gv-AbC"/>
+                            <constraint firstItem="c2c-T7-ka5" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="200" id="I1Q-Cc-6Ic"/>
                             <constraint firstItem="bxq-vV-nMv" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Id4-m6-uiB"/>
+                            <constraint firstItem="bxq-vV-nMv" firstAttribute="top" secondItem="c2c-T7-ka5" secondAttribute="bottom" constant="48" id="VVE-AR-HuS"/>
+                            <constraint firstItem="c2c-T7-ka5" firstAttribute="width" secondItem="Ze5-6b-2t3" secondAttribute="width" multiplier="0.57971" id="eCu-gR-qbG"/>
+                            <constraint firstItem="c2c-T7-ka5" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="ozM-tR-Ece"/>
                             <constraint firstItem="bxq-vV-nMv" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="vYi-T5-cQv"/>
                         </constraints>
                     </view>
@@ -38,6 +47,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="logo2" width="512" height="512"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

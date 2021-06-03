@@ -709,7 +709,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 346F05CA14D0A82C1D2C41C4 /* Pods-DiscUP.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-noText-Teal";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QYHXM7HJ4V;
@@ -729,7 +729,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E26A72DC8CD450C3E5B44019 /* Pods-DiscUP.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-noText-Teal";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QYHXM7HJ4V;
