@@ -897,10 +897,10 @@
                     </tabBar>
                     <connections>
                         <segue destination="nYE-Lh-8N0" kind="relationship" relationship="viewControllers" id="V09-3E-ZoB"/>
+                        <segue destination="u2b-jo-391" kind="relationship" relationship="viewControllers" id="eLM-1N-wTv"/>
                         <segue destination="9OD-Tj-MRJ" kind="relationship" relationship="viewControllers" id="PDn-iP-XCb"/>
                         <segue destination="G0K-Aq-OwK" kind="relationship" relationship="viewControllers" id="aGg-49-f8B"/>
                         <segue destination="UZw-wE-6NS" kind="relationship" relationship="viewControllers" id="TYL-VV-nsH"/>
-                        <segue destination="u2b-jo-391" kind="relationship" relationship="viewControllers" id="eLM-1N-wTv"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="o5v-Rf-UHr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
