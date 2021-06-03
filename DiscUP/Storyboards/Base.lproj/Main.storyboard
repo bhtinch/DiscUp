@@ -400,9 +400,6 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
-                                        <connections>
-                                            <segue destination="A4h-sS-bo4" kind="show" identifier="noUserToProfile" id="R76-8f-9XM"/>
-                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
@@ -420,6 +417,7 @@
                     <connections>
                         <outlet property="tableView" destination="1O9-Vf-jjs" id="g4t-Gz-R7h"/>
                         <segue destination="H7W-lQ-ctn" kind="show" identifier="toBlockedUsersVC" id="idp-2X-XJB"/>
+                        <segue destination="A4h-sS-bo4" kind="show" identifier="noUserToProfile" id="gXA-Rg-dTp"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GbT-uF-F9S" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -2046,7 +2044,7 @@
     <inferredMetricsTieBreakers>
         <segue reference="gW8-JE-0MJ"/>
         <segue reference="hvR-Fh-db7"/>
-        <segue reference="R76-8f-9XM"/>
+        <segue reference="gXA-Rg-dTp"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="arrow.triangle.2.circlepath.circle" catalog="system" width="128" height="121"/>

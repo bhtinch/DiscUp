@@ -24,13 +24,6 @@ class SettingsViewController: UIViewController {
         tableView.dataSource = self
     }
     
-    //    //  MARK: - Actions
-    //    @IBAction func logOutButtonTapped(_ sender: Any) {
-    //        AuthManager.logoutUser()
-    //        self.userID = "No User"
-    //        self.handleNotAuthenticated()
-    //    }
-    
     //  MARK: - METHODS
     func logout() {
         AuthManager.logoutUser()
@@ -60,7 +53,47 @@ class SettingsViewController: UIViewController {
         alert.addAction(sendEmailAction)
         
         present(alert, animated: true, completion: nil)
+    }
         
+    func reauth() {
+        guard let user = Auth.auth().currentUser else { return Alerts.presentAlertWith(title: "We're Sorry...", message: "This account could not be deleted at this time.", sender: self) }
+        
+        let alert = UIAlertController(title: "Delete Your Account?", message: "Would you like to delete your account? This cannot be undone. Please reauthenticate your account to delete.", preferredStyle: .alert)
+        
+        alert.addTextField { tf in
+            tf.placeholder = "Login Email..."
+        }
+        
+        alert.addTextField { tf in
+            tf.placeholder = "Password..."
+            tf.isSecureTextEntry = true
+        }
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
+            alert.dismiss(animated: true, completion: nil)
+        }))
+        
+        let deleteAction = UIAlertAction(title: "DELETE", style: .destructive) { (_) in
+            guard let email = alert.textFields?.first?.text, !email.isEmpty,
+            let password = alert.textFields?.last?.text, !password.isEmpty else {
+                Alerts.presentAlertWith(title: "Please enter your login information", message: nil, sender: self)
+                return }
+
+            AuthManager.reauthenticateUser(email: email, password: password) { success in
+                DispatchQueue.main.async {
+                    switch success {
+                    case true:
+                        self.deleteAccount()
+                    case false:
+                        return Alerts.presentAlertWith(title: "We're Sorry...", message: "The login information provided does not match out system. Please try again.", sender: self)
+                    }
+                }
+            }
+        }
+        
+        alert.addAction(deleteAction)
+        
+        present(alert, animated: true, completion: nil)
     }
     
     func deleteAccount() {

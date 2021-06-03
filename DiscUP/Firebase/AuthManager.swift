@@ -108,31 +108,37 @@ class AuthManager {
     static func deleteUser(completion: @escaping (Bool) -> Void){
         guard let user = Auth.auth().currentUser else { return completion(false) }
         
-        user.delete { error in
-            if let error = error {
-                print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
-                return completion(false)
-            }
-            
-            print("user account with id: \(user.uid) successfully deleted")
-            do {
-                try Auth.auth().signOut()
-            } catch {
-                print("could not sign out.")
-            }
-            
-            UserDB.shared.dbRef.child(user.uid).removeValue()
-            StorageManager.storage.child(user.uid).delete { error in
-                if let error = error {
-                    print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
-                    return completion(false)
-                }
+        let userID = user.uid
+        
+        UserDB.shared.dbRef.child(userID).child(UserKeys.offers).observeSingleEvent(of: .value) { snap in
+            if snap.exists() {
+                if let dict = snap.value as? NSDictionary {
                 
-                completion(true)
+                    let keyEnumerator = dict.keyEnumerator()
+                
+                    for key in keyEnumerator {
+                        if let itemID = key as? String {
+                            MarketManager.deleteOfferWith(itemID: itemID)
+                        }
+                    }
+                }
             }
+            completion(false)
         }
         
-    }   //  NEEDS IMPLEMENTATION
+//        StorageManager.storage.child(userID).delete()
+//        UserDB.shared.dbRef.child(userID).removeValue()
+//
+//        user.delete { error in
+//            if let error = error {
+//                print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+//                return completion(false)
+//            }
+//
+//            print("user account with id: \(user.uid) successfully deleted")
+//            completion(true)
+//        }
+    }
     
     /// Presents an alert controller to inform user of action taken with phrase specified.  'OK' is the only action and dismisses the alert.
     static func presentActionUpdateAlert(with phrase: String, sender: UIViewController) {

@@ -57,7 +57,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         profileDefaultImage.layer.borderColor = UIColor.clear.cgColor
         profileDefaultImage.layer.masksToBounds = false
         profileDefaultImage.clipsToBounds = true
-        profileDefaultImage.layer.cornerRadius = profileDefaultImage.height/2.1
+        profileDefaultImage.layer.cornerRadius = profileDefaultImage.height/1.99
         
         MarketManager.fetchImageWith(imageID: userID) { result in
             DispatchQueue.main.async {
