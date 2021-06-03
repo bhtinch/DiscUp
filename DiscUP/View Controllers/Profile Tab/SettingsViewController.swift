@@ -143,7 +143,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             
         case .deleteAccount:
             print("delete account tapped...")
-            self.deleteAccount()
+            self.reauth()
             
         case .logout:
             print("log out tapped...")

@@ -118,26 +118,28 @@ class AuthManager {
                 
                     for key in keyEnumerator {
                         if let itemID = key as? String {
-                            MarketManager.deleteOfferWith(itemID: itemID)
+                            MarketManager.deleteOfferWith(itemID: itemID) { _ in
+                                DispatchQueue.main.async {
+                                    
+                                    StorageManager.storage.child(userID).delete()
+                                    UserDB.shared.dbRef.child(userID).removeValue()
+
+                                    user.delete { error in
+                                        if let error = error {
+                                            print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                                            return completion(false)
+                                        }
+
+                                        print("user account with id: \(user.uid) successfully deleted")
+                                        completion(true)
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
-            completion(false)
         }
-        
-//        StorageManager.storage.child(userID).delete()
-//        UserDB.shared.dbRef.child(userID).removeValue()
-//
-//        user.delete { error in
-//            if let error = error {
-//                print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
-//                return completion(false)
-//            }
-//
-//            print("user account with id: \(user.uid) successfully deleted")
-//            completion(true)
-//        }
     }
     
     /// Presents an alert controller to inform user of action taken with phrase specified.  'OK' is the only action and dismisses the alert.
