@@ -136,7 +136,12 @@ class MarketItemDetailViewController: UIViewController {
         
         MarketManager.fetchItemWith(itemID: itemID) { item in
             DispatchQueue.main.async {
-                guard let item = item else { return print("Error fetching item details...") }
+                guard let item = item else {
+                    print("Error fetching item details...")
+                    Alerts.presentAlertWith(title: "This item could not be found.  It may not be available anymore.", message: nil, sender: self)
+                    return
+                }
+                
                 self.item = item
                 self.ownerID = item.ownerID
                 self.configureThumbImage()

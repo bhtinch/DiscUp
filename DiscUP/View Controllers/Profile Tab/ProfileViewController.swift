@@ -21,13 +21,17 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        userID = Auth.auth().currentUser?.uid ?? "no user"
-        configureViews()
+        if let userID = Auth.auth().currentUser?.uid {
+            self.userID = userID
+            configureViews()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        userID = Auth.auth().currentUser?.uid ?? "no user"
         if self.userID == "no user" {
             handleNotAuthenticated()
+            configureViews()
         }
     }
     
@@ -53,7 +57,7 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
         profileDefaultImage.layer.borderColor = UIColor.clear.cgColor
         profileDefaultImage.layer.masksToBounds = false
         profileDefaultImage.clipsToBounds = true
-        profileDefaultImage.layer.cornerRadius = profileDefaultImage.height/2.1
+        profileDefaultImage.layer.cornerRadius = profileDefaultImage.height/1.99
         
         MarketManager.fetchImageWith(imageID: userID) { result in
             DispatchQueue.main.async {

@@ -104,9 +104,39 @@ class MarketManager {
         }
     }
     
-    static func deleteOffer() {
+    static func deleteOfferWith(itemID: String, completion: @escaping(Bool) -> Void) {
         
-    }  //   NEEDS IMPLEMENTATION
+        database.child(itemID).child(MarketKeys.thumbImageID).observeSingleEvent(of: .value) { snap in
+            if snap.exists() {
+                if let id = snap.value as? String {
+                    StorageManager.deleteImagesWith(imageIDs: [id]) { _ in
+                        
+                        database.child(itemID).child(MarketKeys.imageIDs).observeSingleEvent(of: .value) { snap in
+                            if snap.exists() {
+                                if let imageIDsString = snap.value as? String {
+                                    let imageIDs = imageIDsString.components(separatedBy: ",")
+                                    
+                                    StorageManager.deleteImagesWith(imageIDs: imageIDs) { _ in
+                                        database.child(itemID).removeValue()
+                                        database.child(MarketKeys.coordinates).child(itemID).removeValue()
+                                        userDatabase.child(UserKeys.offers).child(itemID).removeValue()
+                                        
+                                        completion(true)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                database.child(itemID).removeValue()
+                database.child(MarketKeys.coordinates).child(itemID).removeValue()
+                userDatabase.child(UserKeys.offers).child(itemID).removeValue()
+                
+                completion(true)
+            }
+        }
+    }
     
     static func fetchMyOffers(completion: @escaping (Result<[MarketItemBasic], NetworkError>) -> Void) {
         guard let userID = userID else { return completion(.failure(NetworkError.noUser)) }

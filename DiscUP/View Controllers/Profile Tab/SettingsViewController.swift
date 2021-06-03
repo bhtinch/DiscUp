@@ -24,18 +24,10 @@ class SettingsViewController: UIViewController {
         tableView.dataSource = self
     }
     
-    //    //  MARK: - Actions
-    //    @IBAction func logOutButtonTapped(_ sender: Any) {
-    //        AuthManager.logoutUser()
-    //        self.userID = "No User"
-    //        self.handleNotAuthenticated()
-    //    }
-    
     //  MARK: - METHODS
     func logout() {
         AuthManager.logoutUser()
-        self.userID = "no user"
-        self.navigationController?.popViewController(animated: true)
+        self.performSegue(withIdentifier: "noUserToProfile", sender: self)
     }
     
     func sendResetPasswordEmail() {
@@ -61,15 +53,65 @@ class SettingsViewController: UIViewController {
         alert.addAction(sendEmailAction)
         
         present(alert, animated: true, completion: nil)
+    }
         
+    func reauth() {
+        guard let user = Auth.auth().currentUser else { return Alerts.presentAlertWith(title: "We're Sorry...", message: "This account could not be deleted at this time.", sender: self) }
+        
+        let alert = UIAlertController(title: "Delete Your Account?", message: "Would you like to delete your account? This cannot be undone. Please reauthenticate your account to delete.", preferredStyle: .alert)
+        
+        alert.addTextField { tf in
+            tf.placeholder = "Login Email..."
+        }
+        
+        alert.addTextField { tf in
+            tf.placeholder = "Password..."
+            tf.isSecureTextEntry = true
+        }
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
+            alert.dismiss(animated: true, completion: nil)
+        }))
+        
+        let deleteAction = UIAlertAction(title: "DELETE", style: .destructive) { (_) in
+            guard let email = alert.textFields?.first?.text, !email.isEmpty,
+            let password = alert.textFields?.last?.text, !password.isEmpty else {
+                Alerts.presentAlertWith(title: "Please enter your login information", message: nil, sender: self)
+                return }
+
+            AuthManager.reauthenticateUser(email: email, password: password) { success in
+                DispatchQueue.main.async {
+                    switch success {
+                    case true:
+                        self.deleteAccount()
+                    case false:
+                        return Alerts.presentAlertWith(title: "We're Sorry...", message: "The login information provided does not match out system. Please try again.", sender: self)
+                    }
+                }
+            }
+        }
+        
+        alert.addAction(deleteAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func deleteAccount() {
+        AuthManager.deleteUser { success in
+            DispatchQueue.main.async {
+                switch success {
+                case true:
+                    self.performSegue(withIdentifier: "noUserToProfile", sender: self)
+                case false:
+                    Alerts.presentAlertWith(title: "We're Sorry...", message: "This account could not be deleted at this time.", sender: self)
+                }
+            }
+        }
     }
     
      // MARK: - Navigation
-//     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == "toBlockedUsersVC" {
-//            print("going to blockedUsersVC")
-//        }
-//     }
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     }
     
 }   //  End of Class
 
@@ -91,12 +133,6 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         let option = tableData[indexPath.row]
         
         switch option {
-        case .changeEmail:
-            print("change email tapped...")
-            
-        case .changePassword:
-            print("change password tapped...")
-            
         case .resetPassword:
             print("reset password tapped...")
             self.sendResetPasswordEmail()
@@ -107,24 +143,18 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             
         case .deleteAccount:
             print("delete account tapped...")
+            self.reauth()
             
         case .logout:
             print("log out tapped...")
             self.logout()
-            
-        case .privacyPolicy:
-            print("privacy policy tapped...")
-            
         }
     }
 }   //  End of Extension
 
 enum Settings: String, CaseIterable {
-    case changeEmail = "Change Email"
-    case changePassword = "Change Password"
     case resetPassword = "Reset Password"
     case blockedUsers = "Blocked Users"
     case deleteAccount = "Delete Account"
     case logout = "Log Out"
-    case privacyPolicy = "Privacy Policy"
 }

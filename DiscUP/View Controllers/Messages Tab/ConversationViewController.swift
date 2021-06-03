@@ -231,6 +231,7 @@ class ConversationViewController: MessagesViewController {
                 } else {
                     let message = MKmessage(text: content, user: sender, messageId: msg.key, date: date)
                     self.messages.append(message)
+                    self.updateView()
                 }
                 
                 if i == msgsSorted.count - 1 {
