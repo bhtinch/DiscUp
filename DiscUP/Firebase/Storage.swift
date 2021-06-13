@@ -13,7 +13,8 @@ class StorageManager {
     static func uploadImagesWith(images: [UIImage], completion: @escaping (Result<Bool, NetworkError>) -> Void) {
         for image in images {
             guard let filename = image.accessibilityIdentifier,
-                  let data = image.pngData() else { return completion(.failure(NetworkError.databaseError)) }
+                  let data = image.jpegData(compressionQuality: 0.5) else { return completion(.failure(NetworkError.databaseError)) }
+            
             storage.child(filename).putData(data, metadata: nil) { _, error in
                 if let error = error {
                     print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
@@ -28,6 +29,7 @@ class StorageManager {
     }
     
     static func downloadURLFor(imageID: String, completion: @escaping (Result<URL, NetworkError>) -> Void) {
+       
         storage.child(imageID).downloadURL { url, error in
             if let error = error {
                 print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")

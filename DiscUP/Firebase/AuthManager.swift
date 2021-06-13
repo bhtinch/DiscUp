@@ -11,6 +11,8 @@ import FirebaseStorage
 
 class AuthManager {
     
+    //let user = Auth.auth().currentUser
+    
     /// Attempt to register a new user with Firebase Authentication
     static func registerNewUserWith(email: String, password: String, username: String, firstName: String?, lastName: String?, completion: @escaping (Bool) -> Void) {
         

@@ -112,7 +112,7 @@ extension CameraInputBarAccessoryView : UIImagePickerControllerDelegate , UINavi
         alert.addAction(cameraAction)
         alert.addAction(cancelAction)
         
-        self.getRootViewController()
+        //self.getRootViewController()
     }
     
     func showImagePickerController(sourceType: UIImagePickerController.SourceType){
