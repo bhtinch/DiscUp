@@ -10,36 +10,53 @@ import FirebaseAuth
 import AVFoundation
 import Photos
 
-class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+enum Settings: String, CaseIterable {
+    case resetPassword = "Reset Password"
+    case blockedUsers = "Blocked Users"
+    case deleteAccount = "Delete Account"
+    case logout = "Log Out"
+}
+
+class ProfileViewController: UIViewController {
     //  MARK: - Outlets
-    @IBOutlet weak var profileBackgroundImage: UIImageView!
-    @IBOutlet weak var profileDefaultImage: UIImageView!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var defaultImageButton: UIButton!
     
     //  MARK: - PROPERTIES
+    var tableData = Settings.allCases
     var userID = "no user"
     
+    //  MARK: - LIFECYLCES
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.delegate = self
+        tableView.dataSource = self
+        
         if let userID = Auth.auth().currentUser?.uid {
             self.userID = userID
             configureViews()
         }
     }
     
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        defaultImageButton.layer.cornerRadius = defaultImageButton.frame.height/2
+        defaultImageButton.clipsToBounds = true
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         userID = Auth.auth().currentUser?.uid ?? "no user"
         if self.userID == "no user" {
             handleNotAuthenticated()
+        } else {
             configureViews()
         }
     }
     
+    //  MARK: - ACTIONS
     @IBAction func changeDefaultImageButtonTapped(_ sender: Any) {
         presentImageAlert()
-    }
-    
-    @IBAction func changeBackgroundImageButtonTapped(_ sender: Any) {
     }
     
     //  MARK: - Methods
@@ -50,55 +67,21 @@ class ProfileViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func configureViews() {
-        tableView.delegate = self
-        tableView.dataSource = self
-        
-        profileDefaultImage.layer.borderWidth = 2.0
-        profileDefaultImage.layer.borderColor = UIColor.clear.cgColor
-        profileDefaultImage.layer.masksToBounds = false
-        profileDefaultImage.clipsToBounds = true
-        profileDefaultImage.layer.cornerRadius = profileDefaultImage.height/1.99
-        
         MarketManager.fetchImageWith(imageID: userID) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let image):
-                    self.profileDefaultImage.image = image
+                    self.defaultImageButton.setImage(image, for: .normal)
                 case .failure(let error):
                     print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
                 }
             }
         }
     }
-    
-    
-    //  MARK: - TableView DataSource
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        
-        return cell
-    }
-    
-    
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destination.
-     // Pass the selected object to the new view controller.
-     }
-     */
-    
 }   //  End of Class
 
+//  MARK: - IMAGE PICKER AND ALERTS
 extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-    
-    
     func presentCamera() {
         let camera = UIImagePickerController()
         camera.sourceType = .camera
@@ -129,7 +112,7 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
                     switch result {
                     
                     case .success(_):
-                        self.profileDefaultImage.image = image
+                        self.defaultImageButton.setImage(image, for: .normal)
                     case .failure(let error):
                         print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
                     }
@@ -225,3 +208,130 @@ extension ProfileViewController: UINavigationControllerDelegate, UIImagePickerCo
         present(alert, animated: true, completion: nil)
     }
 }   //  End of Extension
+
+
+//  MARK: - TV DELEGATE & DATA SOURCE
+extension ProfileViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        tableData.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "settingsCell", for: indexPath)
+        
+        cell.textLabel?.text = tableData[indexPath.row].rawValue
+        cell.textLabel?.textColor = .link
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let option = tableData[indexPath.row]
+        
+        switch option {
+        case .resetPassword:
+            print("reset password tapped...")
+            self.sendResetPasswordEmail()
+            
+        case .blockedUsers:
+            print("blocked users tapped...")
+            performSegue(withIdentifier: "toBlockedUsersVC", sender: self)
+            
+        case .deleteAccount:
+            print("delete account tapped...")
+            self.reauth()
+            
+        case .logout:
+            print("log out tapped...")
+            self.logout()
+        }
+    }
+}   //  End of Extension
+
+
+//  MARK: - SETTINGS METHODS
+extension ProfileViewController {
+    func logout() {
+        AuthManager.logoutUser()
+        handleNotAuthenticated()
+    }
+    
+    func sendResetPasswordEmail() {
+        let alert = UIAlertController(title: "Password Reset Email", message: "Would you like to an email sent to you to reset your password?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
+            alert.dismiss(animated: true, completion: nil)
+        }))
+        
+        let sendEmailAction = UIAlertAction(title: "Send Email", style: .default) { (_) in
+            AuthManager.sendUserPasswordResetEmail { (success) in
+                if success {
+                    let message = "Password reset email successfully sent."
+                    AuthManager.presentActionUpdateAlert(with: message, sender: self)
+                    
+                } else {
+                    let message = "Whoops! An error occurred attempting to send a password reset email."
+                    AuthManager.presentActionUpdateAlert(with: message, sender: self)
+                }
+                alert.dismiss(animated: true, completion: nil)
+            }
+        }
+        
+        alert.addAction(sendEmailAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
+        
+    func reauth() {
+        guard let user = Auth.auth().currentUser else { return Alerts.presentAlertWith(title: "We're Sorry...", message: "This account could not be deleted at this time.", sender: self) }
+        
+        let alert = UIAlertController(title: "Delete Your Account?", message: "Would you like to delete your account? This cannot be undone. Please reauthenticate your account to delete.", preferredStyle: .alert)
+        
+        alert.addTextField { tf in
+            tf.placeholder = "Login Email..."
+        }
+        
+        alert.addTextField { tf in
+            tf.placeholder = "Password..."
+            tf.isSecureTextEntry = true
+        }
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
+            alert.dismiss(animated: true, completion: nil)
+        }))
+        
+        let deleteAction = UIAlertAction(title: "DELETE", style: .destructive) { (_) in
+            guard let email = alert.textFields?.first?.text, !email.isEmpty,
+            let password = alert.textFields?.last?.text, !password.isEmpty else {
+                Alerts.presentAlertWith(title: "Please enter your login information", message: nil, sender: self)
+                return }
+
+            AuthManager.reauthenticateUser(email: email, password: password) { success in
+                DispatchQueue.main.async {
+                    switch success {
+                    case true:
+                        self.deleteAccount()
+                    case false:
+                        return Alerts.presentAlertWith(title: "We're Sorry...", message: "The login information provided does not match out system. Please try again.", sender: self)
+                    }
+                }
+            }
+        }
+        
+        alert.addAction(deleteAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func deleteAccount() {
+        AuthManager.deleteUser { success in
+            DispatchQueue.main.async {
+                switch success {
+                case true:
+                    self.handleNotAuthenticated()
+                case false:
+                    Alerts.presentAlertWith(title: "We're Sorry...", message: "This account could not be deleted at this time.", sender: self)
+                }
+            }
+        }
+    }
+}
