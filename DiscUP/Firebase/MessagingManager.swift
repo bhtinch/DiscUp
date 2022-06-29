@@ -247,7 +247,3 @@ class MessagingManager {
     }
     
 }   //  End of Class
-
-
-
-

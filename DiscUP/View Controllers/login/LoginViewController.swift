@@ -87,6 +87,10 @@ class LoginViewController: UIViewController {
         usernameEmailField.delegate = self
         passwordField.delegate = self
         addSubviews()
+        
+        let tapGesture = UITapGestureRecognizer(target: view, action: #selector(UIView.endEditing))
+        view.addGestureRecognizer(tapGesture)
+        
         view.backgroundColor = .systemBackground
     }
     

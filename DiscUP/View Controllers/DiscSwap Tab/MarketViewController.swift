@@ -55,17 +55,8 @@ class MarketViewController: UIViewController {
         switch status {
         case .notDetermined:
             locationManager.requestWhenInUseAuthorization()
-        case .restricted:
-            self.presentAlertWith(title: "Your permission settings for this app does not allow location capture", message: "Please update the app permissions in order to use this feature. Otherwise, simply use a zip code to specify location.")
-            self.useLocationButton.isEnabled = false
-            self.usingCurrentLocation = false
-            
-        case .denied:
-            self.presentAlertWith(title: "Your permission settings for this app does not allow location capture", message: "Please update the app permissions in order to use this feature. Otherwise, simply use a zip code to specify location.")
-            self.useLocationButton.isEnabled = false
-            self.usingCurrentLocation = false
 
-        case .authorizedAlways:
+        case .authorizedAlways, .authorizedWhenInUse:
             if let latitude = locationManager.location?.coordinate.latitude,
                let longitude = locationManager.location?.coordinate.longitude {
                 self.location = Location(latitude: latitude, longitude: longitude)
@@ -73,15 +64,7 @@ class MarketViewController: UIViewController {
                 configureLocationButton()
             }
             
-        case .authorizedWhenInUse:
-            if let latitude = locationManager.location?.coordinate.latitude,
-               let longitude = locationManager.location?.coordinate.longitude {
-                self.location = Location(latitude: latitude, longitude: longitude)
-                self.useLocationButton.isEnabled = true
-                configureLocationButton()
-            }
-            
-        @unknown default:
+        default:
             self.presentAlertWith(title: "Your permission settings for this app does not allow location capture", message: "Please update the app permissions in order to use this feature. Otherwise, simply use a zip code to specify location.")
             self.useLocationButton.isEnabled = false
             self.usingCurrentLocation = false
