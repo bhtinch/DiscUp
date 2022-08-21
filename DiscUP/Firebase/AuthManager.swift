@@ -4,12 +4,27 @@
 //
 //  Created by Benjamin Tincher on 3/5/21.
 //
+import Combine
 import FirebaseAuth
 import Foundation
 import FirebaseDatabase
 import FirebaseStorage
 
 class AuthManager {
+    
+    //  MARK: - Publishers
+    
+    static var userSignedOutPublisher = PassthroughSubject<Void, Never>()
+    
+    //  MARK: - State Properties
+    
+    static var auth: Auth {
+        Auth.auth()
+    }
+    
+    static var userLoggedIn: Bool {
+        auth.currentUser != nil
+    }
     
     /// Attempt to register a new user with Firebase Authentication
     static func registerNewUserWith(email: String, password: String, username: String, firstName: String?, lastName: String?, completion: @escaping (Bool) -> Void) {
@@ -60,12 +75,15 @@ class AuthManager {
     }
     
     /// Attempt to logout firebase user
-    static func logoutUser() {
+    static func logoutUser() -> Bool {
         do {
             try Auth.auth().signOut()
             print("firebase user logged out")
+            return true
+            
         } catch {
             print("Could not sign out.")
+            return false
         }
     }
     
