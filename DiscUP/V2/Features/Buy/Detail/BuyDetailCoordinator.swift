@@ -1,61 +1,61 @@
-////
-////  BuyDetailCoordinator.swift
-////  DiscUpV2
-////
-////  Created by Ben Tincher on 3/6/22.
-////
 //
-//import Foundation
-//import Combine
+//  BuyDetailCoordinator.swift
+//  DiscUpV2
 //
-//// MARK: - ViewController
+//  Created by Ben Tincher on 3/6/22.
 //
-//class BuyDetailViewModel: ViewModel<BuyDetailCoordinator.Action> {
-//    @Published var item: MarketItem
-//    
-//    init(item: MarketItem) {
-//        self.item = item
-//    }
-//}
-//
-//// MARK: - Coordinator
-//
-//class BuyDetailCoordinator: Coordinator<BuyDetailCoordinator.Action> {
-//    
-//    // MARK: - Actions
-//    
-//    enum Action {}
-//    
-//    // MARK: - UIActions
-//    
-//    enum UIAction {}
-//    
-//    // MARK: - Properties
-//    
-//    let userInterface = PassthroughSubject<UIAction, Never>()
-//    let viewModel: BuyDetailViewModel
-//    
-//    // MARK: - Initialization
-//    
-//    init(item: MarketItem) {
-//        viewModel = BuyDetailViewModel(item: item)
-//        
-//        super.init()
-//        
-//        merge(with: viewModel)
-//            .receive(on: dispatchQueue)
-//            .sink { [weak self] in
-//                self?.perform(action: $0)
-//            }
-//            .store(in: &cancellables)
-//    }
-//}
-//
-//// MARK: - Action Methods
-//
-//extension BuyDetailCoordinator {
-//    func perform(action: Action) {
-//        switch action {}
-//    }
-//}
-//
+
+import Foundation
+import Combine
+
+// MARK: - ViewController
+
+class BuyDetailViewModel: ViewModel<BuyDetailCoordinator.Action> {
+    @Published var item: MarketItemV2
+    
+    init(item: MarketItemV2) {
+        self.item = item
+    }
+}
+
+// MARK: - Coordinator
+
+class BuyDetailCoordinator: Coordinator<BuyDetailCoordinator.Action> {
+    
+    // MARK: - Actions
+    
+    enum Action {}
+    
+    // MARK: - UIActions
+    
+    enum UIAction {}
+    
+    // MARK: - Properties
+    
+    let userInterface = PassthroughSubject<UIAction, Never>()
+    let viewModel: BuyDetailViewModel
+    
+    // MARK: - Initialization
+    
+    init(item: MarketItemV2) {
+        viewModel = BuyDetailViewModel(item: item)
+        
+        super.init()
+        
+        merge(with: viewModel)
+            .receive(on: dispatchQueue)
+            .sink { [weak self] in
+                self?.perform(action: $0)
+            }
+            .store(in: &cancellables)
+    }
+}
+
+// MARK: - Action Methods
+
+extension BuyDetailCoordinator {
+    func perform(action: Action) {
+        switch action {}
+    }
+}
+

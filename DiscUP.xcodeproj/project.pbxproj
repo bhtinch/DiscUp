@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6207C91428BA78FD00AC59EE /* MarketItemV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6207C91328BA78FD00AC59EE /* MarketItemV2.swift */; };
+		6207C91628BA79A500AC59EE /* MarketImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6207C91528BA79A500AC59EE /* MarketImage.swift */; };
+		6207C91828BA79CF00AC59EE /* AppUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6207C91728BA79CF00AC59EE /* AppUser.swift */; };
+		6207C91E28BA89D600AC59EE /* ItemDetailImagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6207C91D28BA89D600AC59EE /* ItemDetailImagesView.swift */; };
+		6207C92028BA8AB100AC59EE /* ItemsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6207C91F28BA8AB100AC59EE /* ItemsCollectionView.swift */; };
+		6207C92228BA8ACF00AC59EE /* ItemThumbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6207C92128BA8ACF00AC59EE /* ItemThumbView.swift */; };
+		6207C92428BA8AEE00AC59EE /* CornerRadiusStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6207C92328BA8AEE00AC59EE /* CornerRadiusStyle.swift */; };
 		620946282649C19B00E4C6BC /* MarketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 620946272649C19B00E4C6BC /* MarketManager.swift */; };
 		6209462A2649C4C500E4C6BC /* MessagingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 620946292649C4C500E4C6BC /* MessagingManager.swift */; };
 		6209462C2649C5F600E4C6BC /* MarketDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6209462B2649C5F600E4C6BC /* MarketDB.swift */; };
@@ -126,6 +133,13 @@
 
 /* Begin PBXFileReference section */
 		346F05CA14D0A82C1D2C41C4 /* Pods-DiscUP.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DiscUP.debug.xcconfig"; path = "Target Support Files/Pods-DiscUP/Pods-DiscUP.debug.xcconfig"; sourceTree = "<group>"; };
+		6207C91328BA78FD00AC59EE /* MarketItemV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketItemV2.swift; sourceTree = "<group>"; };
+		6207C91528BA79A500AC59EE /* MarketImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketImage.swift; sourceTree = "<group>"; };
+		6207C91728BA79CF00AC59EE /* AppUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUser.swift; sourceTree = "<group>"; };
+		6207C91D28BA89D600AC59EE /* ItemDetailImagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailImagesView.swift; sourceTree = "<group>"; };
+		6207C91F28BA8AB100AC59EE /* ItemsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsCollectionView.swift; sourceTree = "<group>"; };
+		6207C92128BA8ACF00AC59EE /* ItemThumbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemThumbView.swift; sourceTree = "<group>"; };
+		6207C92328BA8AEE00AC59EE /* CornerRadiusStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadiusStyle.swift; sourceTree = "<group>"; };
 		620946272649C19B00E4C6BC /* MarketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketManager.swift; sourceTree = "<group>"; };
 		620946292649C4C500E4C6BC /* MessagingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingManager.swift; sourceTree = "<group>"; };
 		6209462B2649C5F600E4C6BC /* MarketDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketDB.swift; sourceTree = "<group>"; };
@@ -275,9 +289,48 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		6207C91228BA78DD00AC59EE /* V2 Models */ = {
+			isa = PBXGroup;
+			children = (
+				6207C91328BA78FD00AC59EE /* MarketItemV2.swift */,
+				6207C91528BA79A500AC59EE /* MarketImage.swift */,
+				6207C91728BA79CF00AC59EE /* AppUser.swift */,
+			);
+			path = "V2 Models";
+			sourceTree = "<group>";
+		};
+		6207C91928BA89A500AC59EE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				6207C91C28BA89BD00AC59EE /* SwiftUI Views */,
+				6207C91B28BA89B700AC59EE /* View Modifiers */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		6207C91B28BA89B700AC59EE /* View Modifiers */ = {
+			isa = PBXGroup;
+			children = (
+				6207C92328BA8AEE00AC59EE /* CornerRadiusStyle.swift */,
+			);
+			path = "View Modifiers";
+			sourceTree = "<group>";
+		};
+		6207C91C28BA89BD00AC59EE /* SwiftUI Views */ = {
+			isa = PBXGroup;
+			children = (
+				6207C91D28BA89D600AC59EE /* ItemDetailImagesView.swift */,
+				6207C91F28BA8AB100AC59EE /* ItemsCollectionView.swift */,
+				6207C92128BA8ACF00AC59EE /* ItemThumbView.swift */,
+			);
+			path = "SwiftUI Views";
+			sourceTree = "<group>";
+		};
 		6207CB9128B29EBB00CDF9A3 /* V2 */ = {
 			isa = PBXGroup;
 			children = (
+				6207C91928BA89A500AC59EE /* Views */,
+				6207C91228BA78DD00AC59EE /* V2 Models */,
 				6286B4D828B2A778000F5CD1 /* App */,
 				6207CBA728B29FDE00CDF9A3 /* Features */,
 				6207CB9428B29F2200CDF9A3 /* Components */,
@@ -437,8 +490,8 @@
 			children = (
 				6286B48328B2A1DE000F5CD1 /* BuyRootView.swift */,
 				6286B48428B2A1DE000F5CD1 /* BuyCoordinator.swift */,
-				6286B48528B2A1DE000F5CD1 /* Detail */,
 				6286B48D28B2A1DE000F5CD1 /* BuyViewController.swift */,
+				6286B48528B2A1DE000F5CD1 /* Detail */,
 			);
 			path = Buy;
 			sourceTree = "<group>";
@@ -840,6 +893,7 @@
 				62D207A2262E2B6300FF6C9F /* MyOffersViewController.swift in Sources */,
 				6286B4B828B2A1DE000F5CD1 /* BuyDetailViewController.swift in Sources */,
 				6209462E2649C5FE00E4C6BC /* MessagingDB.swift in Sources */,
+				6207C92428BA8AEE00AC59EE /* CornerRadiusStyle.swift in Sources */,
 				6286B4CB28B2A1DE000F5CD1 /* SellDetailButtonsView.swift in Sources */,
 				6286B4C428B2A1DE000F5CD1 /* SellNewItemView.swift in Sources */,
 				62D207AE262E2CDD00FF6C9F /* ConversationViewController.swift in Sources */,
@@ -858,8 +912,10 @@
 				6286B47F28B2A1CD000F5CD1 /* BaseView.swift in Sources */,
 				62C04EC225F2A63600D4F4B6 /* UserDB.swift in Sources */,
 				62C04EF225F2A8B300D4F4B6 /* SettingsViewController.swift in Sources */,
+				6207C92228BA8ACF00AC59EE /* ItemThumbView.swift in Sources */,
 				62C04EDB25F2A81B00D4F4B6 /* BagViewController.swift in Sources */,
 				62D207A5262E2B6D00FF6C9F /* MyOfferDetailViewController.swift in Sources */,
+				6207C91E28BA89D600AC59EE /* ItemDetailImagesView.swift in Sources */,
 				6286B4D728B2A1DE000F5CD1 /* TabBarConstants.swift in Sources */,
 				6286B4B528B2A1DE000F5CD1 /* BuyDetailHeadlineView.swift in Sources */,
 				62C04EB925F2A5AC00D4F4B6 /* Disc.swift in Sources */,
@@ -873,6 +929,7 @@
 				6286B4BE28B2A1DE000F5CD1 /* MessagesRootView.swift in Sources */,
 				6286B47528B2A1CD000F5CD1 /* LogInCoordinator.swift in Sources */,
 				62677437264FFAF800899183 /* MediaPermissions.swift in Sources */,
+				6207C91828BA79CF00AC59EE /* AppUser.swift in Sources */,
 				62E27F112652DBCB00106333 /* Location.swift in Sources */,
 				6255B5EF262245E100B3A53D /* UIClasses.swift in Sources */,
 				62C04EBC25F2A5B100D4F4B6 /* Bag.swift in Sources */,
@@ -915,8 +972,11 @@
 				6286B47E28B2A1CD000F5CD1 /* NavigationController.swift in Sources */,
 				6286B4C028B2A1DE000F5CD1 /* Settings.swift in Sources */,
 				62C04EFE25F2A96D00D4F4B6 /* SwitchBagTableViewController.swift in Sources */,
+				6207C91628BA79A500AC59EE /* MarketImage.swift in Sources */,
 				6286B4B428B2A1DE000F5CD1 /* BuyCoordinator.swift in Sources */,
 				62C04ECB25F2A6D500D4F4B6 /* Network Error.swift in Sources */,
+				6207C91428BA78FD00AC59EE /* MarketItemV2.swift in Sources */,
+				6207C92028BA8AB100AC59EE /* ItemsCollectionView.swift in Sources */,
 				6286B4C928B2A1DE000F5CD1 /* SellNewPageTabView.swift in Sources */,
 				6286B47D28B2A1CD000F5CD1 /* BaseHostingController.swift in Sources */,
 				6286B4BA28B2A1DE000F5CD1 /* BuyDetailCoordinator.swift in Sources */,

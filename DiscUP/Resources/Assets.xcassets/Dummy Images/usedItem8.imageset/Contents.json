@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "f319a9bf5d8a800bfef6e18106c5abc1--disc-golf-bag-golf-bags.jpeg",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
