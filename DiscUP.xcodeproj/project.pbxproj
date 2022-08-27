@@ -14,6 +14,9 @@
 		6207C92028BA8AB100AC59EE /* ItemsCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6207C91F28BA8AB100AC59EE /* ItemsCollectionView.swift */; };
 		6207C92228BA8ACF00AC59EE /* ItemThumbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6207C92128BA8ACF00AC59EE /* ItemThumbView.swift */; };
 		6207C92428BA8AEE00AC59EE /* CornerRadiusStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6207C92328BA8AEE00AC59EE /* CornerRadiusStyle.swift */; };
+		6207C92628BA8DA000AC59EE /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6207C92528BA8DA000AC59EE /* ImagePicker.swift */; };
+		6207C92828BA8DB200AC59EE /* EditItemDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6207C92728BA8DB200AC59EE /* EditItemDetailsView.swift */; };
+		6207C92A28BA8DBA00AC59EE /* EditPhotosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6207C92928BA8DBA00AC59EE /* EditPhotosView.swift */; };
 		620946282649C19B00E4C6BC /* MarketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 620946272649C19B00E4C6BC /* MarketManager.swift */; };
 		6209462A2649C4C500E4C6BC /* MessagingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 620946292649C4C500E4C6BC /* MessagingManager.swift */; };
 		6209462C2649C5F600E4C6BC /* MarketDB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6209462B2649C5F600E4C6BC /* MarketDB.swift */; };
@@ -140,6 +143,9 @@
 		6207C91F28BA8AB100AC59EE /* ItemsCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemsCollectionView.swift; sourceTree = "<group>"; };
 		6207C92128BA8ACF00AC59EE /* ItemThumbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemThumbView.swift; sourceTree = "<group>"; };
 		6207C92328BA8AEE00AC59EE /* CornerRadiusStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRadiusStyle.swift; sourceTree = "<group>"; };
+		6207C92528BA8DA000AC59EE /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		6207C92728BA8DB200AC59EE /* EditItemDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditItemDetailsView.swift; sourceTree = "<group>"; };
+		6207C92928BA8DBA00AC59EE /* EditPhotosView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPhotosView.swift; sourceTree = "<group>"; };
 		620946272649C19B00E4C6BC /* MarketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketManager.swift; sourceTree = "<group>"; };
 		620946292649C4C500E4C6BC /* MessagingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingManager.swift; sourceTree = "<group>"; };
 		6209462B2649C5F600E4C6BC /* MarketDB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketDB.swift; sourceTree = "<group>"; };
@@ -322,6 +328,9 @@
 				6207C91D28BA89D600AC59EE /* ItemDetailImagesView.swift */,
 				6207C91F28BA8AB100AC59EE /* ItemsCollectionView.swift */,
 				6207C92128BA8ACF00AC59EE /* ItemThumbView.swift */,
+				6207C92528BA8DA000AC59EE /* ImagePicker.swift */,
+				6207C92728BA8DB200AC59EE /* EditItemDetailsView.swift */,
+				6207C92928BA8DBA00AC59EE /* EditPhotosView.swift */,
 			);
 			path = "SwiftUI Views";
 			sourceTree = "<group>";
@@ -906,11 +915,13 @@
 				6286B47A28B2A1CD000F5CD1 /* EditPhotosCoordinator.swift in Sources */,
 				6286B4BC28B2A1DE000F5CD1 /* MessagesCoordinator.swift in Sources */,
 				6286B4DB28B2A79D000F5CD1 /* AppDependencies.swift in Sources */,
+				6207C92628BA8DA000AC59EE /* ImagePicker.swift in Sources */,
 				6286B47628B2A1CD000F5CD1 /* LogInRootView.swift in Sources */,
 				6286B47928B2A1CD000F5CD1 /* EditPhotosRootView.swift in Sources */,
 				6209462A2649C4C500E4C6BC /* MessagingManager.swift in Sources */,
 				6286B47F28B2A1CD000F5CD1 /* BaseView.swift in Sources */,
 				62C04EC225F2A63600D4F4B6 /* UserDB.swift in Sources */,
+				6207C92A28BA8DBA00AC59EE /* EditPhotosView.swift in Sources */,
 				62C04EF225F2A8B300D4F4B6 /* SettingsViewController.swift in Sources */,
 				6207C92228BA8ACF00AC59EE /* ItemThumbView.swift in Sources */,
 				62C04EDB25F2A81B00D4F4B6 /* BagViewController.swift in Sources */,
@@ -983,6 +994,7 @@
 				623833752656CEEA0043B4CA /* Conversation.swift in Sources */,
 				623833732656CE830043B4CA /* MKuser.swift in Sources */,
 				6250097E266185AE00CD63E8 /* ImageDetailViewController.swift in Sources */,
+				6207C92828BA8DB200AC59EE /* EditItemDetailsView.swift in Sources */,
 				62C04EE425F2A86700D4F4B6 /* LoginViewController.swift in Sources */,
 				623833712656CE7B0043B4CA /* MKmessage.swift in Sources */,
 				62A06885264313CE00E80BC3 /* SwitchBagTableViewCell.swift in Sources */,
