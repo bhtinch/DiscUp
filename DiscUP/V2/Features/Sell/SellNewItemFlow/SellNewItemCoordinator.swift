@@ -1,96 +1,97 @@
-////
-////  SellNewItemCoordinator.swift
-////  DiscUpV2
-////
-////  Created by Benjamin Tincher on 6/17/22.
-////
 //
-//import Foundation
-//import Combine
-//import SwiftUI
+//  SellNewItemCoordinator.swift
+//  DiscUpV2
 //
-//// MARK: - View Model
+//  Created by Benjamin Tincher on 6/17/22.
 //
-//class SellNewItemViewModel: ViewModel <SellNewItemCoordinator.Action> {
-//    @Published var pageIndex = 0
-//    
-//    @Published var nextButtonDisabled = true
-//    
-//    @Published var item: MarketItem
-//    
-//    init(item: MarketItem) {
-//        self.item = item
-//    }
-//}
-//
-//// MARK: - Coordinator
-//
-//class SellNewItemCoordinator: Coordinator <SellNewItemCoordinator.Action> {
-//    
-//    // MARK: - UIActions
-//    
-//    enum UIAction {
-//        case dismiss
-//    }
-//    
-//    // MARK: - Action
-//    
-//    enum Action {
-//        case cancelTapped
-//        case saveTapped
-//    }
-//    
-//    // MARK: - Properties
-//    
-//    let viewModel: SellNewItemViewModel
-//    let userInterface = PassthroughSubject<UIAction, Never>()
-//    
-//    // MARK: - Initialization
-//    
-//    override init() {
-//        /* Ben do:
-//         - need to se default seller prop as current user (user defaults)
-//         - need to get current users default selling location (user defaults)
-//         - not sure if any generic uuid will do... may want some other form of a uuid later
-//         
-//         */
-//        let newItem = MarketItem(
-//            id: UUID().uuidString,
-//            headline: "",
-//            manufacturer: "",
-//            model: "",
-//            plastic: "N/A",
-//            thumbImageID: "",
-//            price: 10,
-//            location: Location(latitude: 29.1383, longitude: -80.9956),
-//            itemType: .disc,
-//            description: "Please add a description..."
-//        )
-//        
-//        viewModel = SellNewItemViewModel(item: newItem)
-//        
-//        super.init()
-//        
-//        merge(with: viewModel)
-//            .receive(on: dispatchQueue)
-//            .sink { [weak self] in
-//                self?.perform(action: $0)
-//            }
-//            .store(in: &cancellables)
-//    }
-//}
-//
-//// MARK: - Action Methods
-//
-//extension SellNewItemCoordinator {
-//    private func perform(action: Action) {
-//        switch action {
-//        case .cancelTapped:
-//            userInterface.send(.dismiss)
-//            
-//        case .saveTapped:
-//            // Bendo: handle save
-//            break
-//        }
-//    }
-//}
+
+import Foundation
+import Combine
+import SwiftUI
+
+// MARK: - View Model
+
+class SellNewItemViewModel: ViewModel <SellNewItemCoordinator.Action> {
+    @Published var pageIndex = 0
+    
+    @Published var nextButtonDisabled = true
+    
+    @Published var item: MarketItemV2
+    
+    init(item: MarketItemV2) {
+        self.item = item
+    }
+}
+
+// MARK: - Coordinator
+
+class SellNewItemCoordinator: Coordinator <SellNewItemCoordinator.Action> {
+    
+    // MARK: - UIActions
+    
+    enum UIAction {
+        case dismiss
+    }
+    
+    // MARK: - Action
+    
+    enum Action {
+        case cancelTapped
+        case saveTapped
+    }
+    
+    // MARK: - Properties
+    
+    let viewModel: SellNewItemViewModel
+    let userInterface = PassthroughSubject<UIAction, Never>()
+    
+    // MARK: - Initialization
+    
+    override init() {
+        /* Ben do:
+         - need to set default seller prop as current user (user defaults)
+         - need to get current users default selling location (user defaults)
+         - not sure if any generic uuid will do... may want some other form of a uuid later
+         
+         */
+        let newItem = MarketItemV2(
+            id: UUID().uuidString,
+            headline: "",
+            manufacturer: "",
+            model: "",
+            plastic: "",
+            weight: 0,
+            thumbImageID: "",
+            price: 10,
+            location: Location(latitude: 29.1383, longitude: -80.9956),
+            itemType: .disc,
+            description: "Please add a description..."
+        )
+        
+        viewModel = SellNewItemViewModel(item: newItem)
+        
+        super.init()
+        
+        merge(with: viewModel)
+            .receive(on: dispatchQueue)
+            .sink { [weak self] in
+                self?.perform(action: $0)
+            }
+            .store(in: &cancellables)
+    }
+}
+
+// MARK: - Action Methods
+
+extension SellNewItemCoordinator {
+    private func perform(action: Action) {
+        switch action {
+        case .cancelTapped:
+            userInterface.send(.dismiss)
+            
+        case .saveTapped:
+            // Bendo: handle save
+            break
+        }
+    }
+}

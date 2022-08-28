@@ -66,9 +66,7 @@ enum TabBarConstants: Int, CaseIterable {
         
         switch self {
         case .buy:      vc = BuyViewController()
-//        case .sell:     vc = SellViewController()
-        case .sell: vc = MessagesVC()
-            
+        case .sell:     vc = SellViewController()            
         case .messages: vc = MessagesVC()
         case .settings: vc = SettingsVC()
         }
