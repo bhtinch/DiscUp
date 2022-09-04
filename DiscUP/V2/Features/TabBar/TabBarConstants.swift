@@ -13,7 +13,7 @@ enum TabBarConstants: Int, CaseIterable {
     case buy = 0
     case sell
     case messages
-    case settings
+    case profile
     
     // MARK: - Tab Bar Elements
     
@@ -22,7 +22,7 @@ enum TabBarConstants: Int, CaseIterable {
         case .buy:      return "Buy"
         case .sell:     return "Sell"
         case .messages: return "Messages"
-        case .settings: return "Settings"
+        case .profile:  return "Profile"
         }
     }
     
@@ -31,7 +31,7 @@ enum TabBarConstants: Int, CaseIterable {
         case .buy:      return UIImage(systemName: "tag")
         case .sell:     return UIImage(systemName: "dollarsign.circle")
         case .messages: return UIImage(systemName: "text.bubble")
-        case .settings: return UIImage(systemName: "gearshape")
+        case .profile:  return UIImage(systemName: "person")
         }
     }
     
@@ -40,7 +40,7 @@ enum TabBarConstants: Int, CaseIterable {
         case .buy:      return UIImage(systemName: "tag.fill")
         case .sell:     return UIImage(systemName: "dollarsign.circle.fill")
         case .messages: return UIImage(systemName: "text.bubble.fill")
-        case .settings: return UIImage(systemName: "gearshape.fill")
+        case .profile:  return UIImage(systemName: "person.fill")
         }
     }
     
@@ -68,7 +68,7 @@ enum TabBarConstants: Int, CaseIterable {
         case .buy:      vc = BuyViewController()
         case .sell:     vc = SellViewController()            
         case .messages: vc = MessagesVC()
-        case .settings: vc = SettingsVC()
+        case .profile:  vc = ProfileViewControllerV2()
         }
         
         vc?.tabBarItem = tabItem

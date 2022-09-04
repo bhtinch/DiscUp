@@ -20,9 +20,7 @@ class SettingsCoordinator: Coordinator<SettingsCoordinator.Action> {
     
     // MARK: - Actions
     
-    enum Action {
-        case signOut
-    }
+    enum Action {}
     
     // MARK: - UIActions
     
@@ -53,17 +51,7 @@ class SettingsCoordinator: Coordinator<SettingsCoordinator.Action> {
 
 extension SettingsCoordinator {
     func perform(action: Action) {
-        switch action {
-        case .signOut: signOutAction()
-        }
-    }
-    
-    private func signOutAction() {
-        //  MARK: - present log out confirmation alert
-        //  MARK: - BENDO: handle error in sign out
-        guard AuthManager.logoutUser() else { return }
-        
-        AuthManager.userSignedOutPublisher.send()
+        switch action {}
     }
 }
 

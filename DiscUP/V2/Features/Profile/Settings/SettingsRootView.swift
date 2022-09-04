@@ -37,10 +37,8 @@ struct SettingsRootView_Previews: PreviewProvider {
 extension SettingsRootView {
     private func performAction(setting: SettingType) {
         switch setting {
-        case .profile:          break
         case .notifications:    break
         case .feedback:         break
-        case .logOut:           viewModel.send(.signOut)
         }
     }
 }
