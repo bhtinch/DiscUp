@@ -7,8 +7,21 @@
 
 import Foundation
 import CoreLocation
+import CloudKit
 
 class Location {
+    /// user current location if location services are granted, otherwise returns nil
+    static var userCurrentLocation: Location? {
+        guard let coordinate = LocationManager.shared.location?.coordinate else { return nil }
+        
+        return Location(latitude: coordinate.latitude, longitude: coordinate.longitude)
+    }
+    
+    /// defaultLocation is Emporia, KS
+    static var defaultLocation: Location {
+        Location(latitude: 38.404, longitude: -96.182)
+    }
+    
     let latitude: Double
     let longitude: Double
     var city: String = ""

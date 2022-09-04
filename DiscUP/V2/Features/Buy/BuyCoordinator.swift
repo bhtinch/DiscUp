@@ -30,6 +30,7 @@ class BuyCoordinator: Coordinator<BuyCoordinator.Action> {
     
     enum UIAction {
         case goToDetail(MarketItemV2)
+        case handle(Error)
     }
     
     // MARK: - Action
@@ -57,6 +58,15 @@ class BuyCoordinator: Coordinator<BuyCoordinator.Action> {
                 self?.perform(action: $0)
             }
             .store(in: &cancellables)
+        
+        start()
+    }
+}
+
+//  MARK: - Start
+extension BuyCoordinator {
+    private func start() {
+        loadStartingItems()
     }
 }
 
@@ -80,5 +90,24 @@ extension BuyCoordinator {
         // BenDo: 
         // FB search and return values
         // update items on viewModel
+    }
+}
+
+//  MARK: - Private Methods
+
+extension BuyCoordinator {
+    private func loadStartingItems() {
+        MarketManager.fetchOfferIDsWithin(range: "", of: Location.userCurrentLocation ?? Location.defaultLocation) { [weak self] result in
+            switch result {
+            case .failure(let error):   self?.userInterface.send(.handle(error))
+            case .success(let itemIDs): self?.fetchItems(with: itemIDs)
+            }
+        }
+    }
+
+    private func fetchItemIDs() {}
+    
+    private func fetchItems(with itemIDs: [String]) {
+        debugPrint(itemIDs.count)
     }
 }

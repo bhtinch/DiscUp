@@ -152,7 +152,7 @@ class MarketViewController: UIViewController {
     
     func fetchItemIDsWith(location: Location) {
         
-        MarketManager.fetchOffersWithin(range: "a", of: location) { result in
+        MarketManager.fetchOfferIDsWithin(range: "a", of: location) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let itemIDs):

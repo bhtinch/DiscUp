@@ -12,10 +12,11 @@
  -  Change Settings to Profile (MVP)
  
  TODO:
- -  Connect back end to UI (MVP)
+ -  Connect back end to UI (MVP) - had to pause to implement a login screen into the start up flow before can test back end
  -  Connect Messaging (MVP)
  -  Login Screen Update (MVP)
+ -  Update UI screens Nav bar and titles (MVP)
+ -  Edge, Error, and Loading (MVP)
  -  Improved Search (MVP)
  -  Login with Apple / Google / Facebook
- -  Edge and Error
  */

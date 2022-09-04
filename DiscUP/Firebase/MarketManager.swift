@@ -246,7 +246,9 @@ class MarketManager {
         }
     }
     
-    static func fetchOffersWithin(range: String, of location: Location, completion: @escaping(Result<[String], NetworkError>) -> Void) {
+    //  MARK: - BenDo: This method needs help... need to add range and better querying of lat AND long
+    /// returns an array of market item IDs for sale within a specified range (in miles) from the provided location
+    static func fetchOfferIDsWithin(range: String, of location: Location, completion: @escaping(Result<[String], NetworkError>) -> Void) {
         
         var itemIDs: [String] = []
         

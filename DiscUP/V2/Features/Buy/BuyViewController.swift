@@ -35,8 +35,8 @@ class BuyViewController: BaseHostingController <BuyRootView>, HasSpinner {
 extension BuyViewController {
     private func perform(uiAction: BuyCoordinator.UIAction) {
         switch uiAction {
-        case .goToDetail(let item):
-            goToDetail(for: item)
+        case .goToDetail(let item): goToDetail(for: item)
+        case .handle(let error):    handle(error)
         }
     }
     
@@ -44,5 +44,10 @@ extension BuyViewController {
         let detailVC = BuyDetailViewController(item: item)
         
         present(detailVC, animated: true)
+    }
+    
+    //  MARK: - BenDo: Handle Error
+    private func handle(_ error: Error) {
+        print(error.localizedDescription)
     }
 }

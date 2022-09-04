@@ -370,8 +370,8 @@
 			isa = PBXGroup;
 			children = (
 				6286B48228B2A1DE000F5CD1 /* Buy */,
-				6286B48E28B2A1DE000F5CD1 /* Messages */,
 				6286B49728B2A1DE000F5CD1 /* Sell */,
+				6286B48E28B2A1DE000F5CD1 /* Messages */,
 				625114F428C41992001E9D72 /* Profile */,
 				6286B4B028B2A1DE000F5CD1 /* TabBar */,
 			);

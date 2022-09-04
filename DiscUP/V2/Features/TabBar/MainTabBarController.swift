@@ -37,9 +37,7 @@ class MainTabBarController: BaseTabBarController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-//        guard !App.userLoggedIn else { return }
-//
-//        presentAuthVC()
+        checkAuth()
     }
 }
 
@@ -70,10 +68,17 @@ extension MainTabBarController {
 // MARK: - Private Methods
 
 extension MainTabBarController {
+    private func checkAuth() {
+        if !AuthManager.userLoggedIn {
+            presentAuthVC()
+        }
+    }
     private func presentAuthVC() {
         selectedIndex = 0
         
-        present(LogInViewController(), animated: true)
+        let loginVC = LoginViewController()
+        loginVC.modalPresentationStyle = .fullScreen
+        present(loginVC, animated: false)
     }
 }
 
