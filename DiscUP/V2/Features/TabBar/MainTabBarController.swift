@@ -71,8 +71,12 @@ extension MainTabBarController {
     private func checkAuth() {
         if !AuthManager.userLoggedIn {
             presentAuthVC()
+            return
         }
+        
+        LocationManager.shared.requestLcoationAuthorization()
     }
+    
     private func presentAuthVC() {
         selectedIndex = 0
         

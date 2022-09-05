@@ -5,14 +5,31 @@
 //  Created by Benjamin Tincher on 5/17/21.
 //
 
-import Foundation
+import Combine
 import CoreLocation
+import UIKit
 
-class LocationManager {
-    static let shared = CLLocationManager()
-    init() {}
+class LocationManager: CLLocationManager {
+    //  MARK: - Shared
+    static let shared = LocationManager()
+    
+    //  MARK: - Publishers
+    var authStatusChanged = PassthroughSubject<CLAuthorizationStatus, Never>()
+    
+    //  MARK: - Initialization
+    override init() {}
 }
 
+
+//  MARK: - CLLocationManagerDelegate
+extension LocationManager: CLLocationManagerDelegate {
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        authStatusChanged.send(manager.authorizationStatus)
+    }
+}
+
+
+//  MARK: - CLLocationManager Extensions
 extension CLLocationManager {
     public func getCoordinates(zipCode: String, completion: @escaping(Result<CLLocationCoordinate2D, Error>) -> Void ) {
         
@@ -48,4 +65,32 @@ extension CLLocationManager {
             }
         })
     }
-}   //  End of Extension
+    
+    func requestLcoationAuthorization() {
+        guard authorizationStatus == .notDetermined else { return }
+        
+        requestWhenInUseAuthorization()
+    }
+    
+    func confirmAuthorization(_ sender: UIViewController) -> Bool {
+        let status = authorizationStatus
+        
+        switch status {
+        case .notDetermined:
+            requestWhenInUseAuthorization()
+            return false
+            
+        case .authorizedAlways, .authorizedWhenInUse:
+            return true
+            
+        default:
+            Alerts.presentAlertWith(
+                title: "Location Services Not Enabled",
+                message: "Please update the app permissions in order to use this feature.",
+                sender: sender
+            )
+            
+            return false
+        }
+    }
+}

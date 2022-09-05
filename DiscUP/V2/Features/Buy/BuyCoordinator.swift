@@ -45,10 +45,23 @@ class BuyCoordinator: Coordinator<BuyCoordinator.Action> {
     let viewModel: BuyViewModel
     let userInterface = PassthroughSubject<UIAction, Never>()
     
+    //  MARK: - Search Properties
+    
+    /// default searching Location if no manual one is specified on property 'searchLocation'
+    var defaultSearchLocation: Location
+    
+    /// manually applied searching Location
+    var searchLocation: Location?
+    
+    /// set searching radius in miles from searching location
+    var searchRangeMiles: Int = 10
+    
     // MARK: - Initialization
     
     override init() {
         viewModel = BuyViewModel()
+        
+        defaultSearchLocation = Location.userCurrentLocation ?? Location.defaultLocation
         
         super.init()
         
@@ -59,7 +72,20 @@ class BuyCoordinator: Coordinator<BuyCoordinator.Action> {
             }
             .store(in: &cancellables)
         
+        setSubs()
         start()
+    }
+    
+    private func setSubs() {
+        LocationManager.shared.authStatusChanged
+            .sink { [weak self] in
+                if $0 == .authorizedWhenInUse || $0 == .authorizedAlways {
+                    self?.defaultSearchLocation = Location.userCurrentLocation ?? Location.defaultLocation
+                } else {
+                    self?.defaultSearchLocation = Location.defaultLocation
+                }
+            }
+            .store(in: &cancellables)
     }
 }
 
@@ -97,7 +123,12 @@ extension BuyCoordinator {
 
 extension BuyCoordinator {
     private func loadStartingItems() {
-        MarketManager.fetchOfferIDsWithin(range: "", of: Location.userCurrentLocation ?? Location.defaultLocation) { [weak self] result in
+        let searchLocation = searchLocation ?? defaultSearchLocation
+        
+        MarketManager.fetchOfferIDsWithin(
+            range: String(searchRangeMiles),
+            of: searchLocation
+        ) { [weak self] result in
             switch result {
             case .failure(let error):   self?.userInterface.send(.handle(error))
             case .success(let itemIDs): self?.fetchItems(with: itemIDs)
