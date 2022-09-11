@@ -8,6 +8,9 @@
 import UIKit
 
 struct AppUser {
+    static let unknownUserID: String = "unknownAppUser"
+    static let unknownUser = AppUser(userID: unknownUserID)
+    
     let userID: String
     
     var displayName: String?

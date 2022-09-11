@@ -12,7 +12,11 @@ import SwiftUI
 
 class BuyViewModel: ViewModel<BuyCoordinator.Action> {
     @Published var title: String = "Market Place"
-    @Published var items: [MarketItemV2] = MarketItemV2.items
+    
+    // dummy items
+//    @Published var items: [MarketItemV2] = MarketItemV2.items
+    
+    @Published var items: [MarketItemV2] = []
     @Published var searchText: String = ""
     
     @Published var selectedItem: MarketItemV2 = MarketItemV2.defaultNoItem {
@@ -140,5 +144,17 @@ extension BuyCoordinator {
     
     private func fetchItems(with itemIDs: [String]) {
         debugPrint(itemIDs.count)
+        
+        for id in itemIDs {
+            
+            MarketManager.fetchItemWith(itemID: id) { [weak self] item in
+                guard
+                    let item = item,
+                    let itemV2 = MarketItemV2(marketItem: item, type: .disc)
+                else { return }
+                
+                self?.viewModel.items.append(itemV2)
+            }
+        }
     }
 }

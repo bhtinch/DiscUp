@@ -5,6 +5,7 @@
 //  Created by Benjamin Tincher on 8/27/22.
 //
 
+import Combine
 import SwiftUI
 
 struct ItemThumbView: View {
@@ -12,8 +13,16 @@ struct ItemThumbView: View {
     let height: CGFloat
     let width: CGFloat
     
-    var thumbImage: UIImage {
-        item.images.first { $0.id == item.thumbImageID }?.uiImage ?? MarketImage.defaultNoImage.uiImage
+    @State var thumbImage: UIImage = MarketImage.defaultNoImage.uiImage
+    
+    var cancellables = Set<AnyCancellable>()
+    
+    //  MARK: - Init
+    
+    init(item: MarketItemV2, height: CGFloat, width: CGFloat) {
+        self.item = item
+        self.height = height
+        self.width = width
     }
     
     var body: some View {
@@ -28,6 +37,14 @@ struct ItemThumbView: View {
                         Path(CGRect(x: 0, y: 0, width: width, height: width))
                     )
                     .cornerRadius(10)
+                
+                    .onReceive(
+                        item.$images.receive(on: RunLoop.main)
+                    ) { images in
+                        guard let marketImage = images.first(where: { $0.isThumbImage }) else { return }
+                        
+                        self.thumbImage = marketImage.uiImage
+                    }
                 
                 Text("$\(item.price)")
                     .foregroundColor(.white)
@@ -50,5 +67,11 @@ struct ItemThumbView: View {
             }
         }
         .frame(width: width, height: height, alignment: .top)
+    }
+}
+
+extension ItemThumbView {
+    private func updateThumbImage() {
+        thumbImage = item.images.first { $0.isThumbImage }?.uiImage ?? MarketImage.defaultNoImage.uiImage
     }
 }

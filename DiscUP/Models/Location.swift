@@ -18,9 +18,10 @@ class Location {
     }
     
     /// defaultLocation is Emporia, KS
-    static var defaultLocation: Location {
-        Location(latitude: 38.404, longitude: -96.182)
-    }
+    static let defaultLocation: Location = Location(latitude: 38.404, longitude: -96.182)
+    
+    /// unknown location defined as 0 lat and 0 long
+    static let unknownLocation = Location(latitude: 0, longitude: 0)
     
     let latitude: Double
     let longitude: Double

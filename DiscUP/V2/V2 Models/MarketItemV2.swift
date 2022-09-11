@@ -23,7 +23,7 @@ enum MarketItemV2EditableValue {
 
 // MARK: - MarketItemV2
 
-struct MarketItemV2 {
+class MarketItemV2: ObservableObject {
     
     //  MARK: - Properties
     
@@ -41,7 +41,8 @@ struct MarketItemV2 {
     var description: String
     var seller: AppUser
     var imageIDs: [String]
-    var images: [MarketImage]
+    
+    @Published var images: [MarketImage]
     
     //  MARK: - Initialization
     
@@ -77,7 +78,7 @@ struct MarketItemV2 {
         self.images = images
     }
     
-    init?(marketItem: MarketItem, type: MarketItemV2Type) {
+    convenience init?(marketItem: MarketItem, type: MarketItemV2Type) {
         guard
             let ownerID = marketItem.ownerID,
             let price = marketItem.askingPrice
@@ -96,7 +97,26 @@ struct MarketItemV2 {
             itemType: type,
             description: marketItem.description,
             seller: AppUser(userID: ownerID)
-            )
+        )
+        
+        fetchImages()
+    }
+    
+    convenience init?(marketItemBasic: MarketItemBasic, type: MarketItemV2Type) {
+        self.init(
+            id: marketItemBasic.id,
+            headline: marketItemBasic.headline,
+            manufacturer: marketItemBasic.manufacturer,
+            model: marketItemBasic.model,
+            plastic: marketItemBasic.plastic ?? "",
+            weight: 0,
+            thumbImageID: marketItemBasic.thumbImageID,
+            price: 0,
+            location: Location.unknownLocation,
+            itemType: type,
+            description: "No description",
+            seller: AppUser.unknownUser
+        )
     }
     
     //  MARK: - DefaultNoItem
@@ -112,7 +132,7 @@ struct MarketItemV2 {
         price: 25,
         location: Location(latitude: 222, longitude: 333),
         itemType: .disc
-        )
+    )
     
     //  MARK: - Dummy Data
     
@@ -430,19 +450,65 @@ struct MarketItemV2 {
     ]
 }
 
-// MARK: - Equatable
+//  MARK: - Methods
 
-extension MarketItemV2: Equatable {
-    static func == (lhs: MarketItemV2, rhs: MarketItemV2) -> Bool {
-        lhs.id == rhs.id
+extension MarketItemV2 {
+    private func fetchImages() {
+        
+        let imageIDs = self.imageIDs + [thumbImageID]
+        
+        for id in imageIDs {
+            fetchImageWith(imageID: id) { [weak self] result in
+                guard let self = self else { return }
+                
+                switch result {
+                case .success(let image):
+                    let marketImage = MarketImage(uid: id, image: image, isThumbImage: id == self.thumbImageID)
+                    
+                    self.images.append(marketImage)
+                    
+                case .failure(let error):
+                    //  MARK: - BenDo: handle error?
+                    print(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    private func fetchImageWith(imageID: String, completion: @escaping (Result<UIImage, NetworkError>) -> Void) {
+        StorageManager.downloadURLFor(imageID: imageID) { result in
+            switch result {
+            case .success(let url):
+                let task = URLSession.shared.dataTask(with: url) { data, response, error in
+                    guard let data = data, error == nil else { return completion(.failure(NetworkError.databaseError)) }
+                    
+                    if let image = UIImage(data: data) {
+                        completion(.success(image))
+                    }
+                }
+                task.resume()
+                
+            case .failure(let error):
+                print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+                return completion(.failure(NetworkError.databaseError))
+            }
+        }
     }
 }
 
-// MARK: - Hashable
-
-extension MarketItemV2: Hashable {
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+    // MARK: - Equatable
+    
+    extension MarketItemV2: Equatable {
+        static func == (lhs: MarketItemV2, rhs: MarketItemV2) -> Bool {
+            lhs.id == rhs.id
+        }
     }
-}
-
+    
+    // MARK: - Hashable
+    
+    extension MarketItemV2: Hashable {
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+        }
+    }
+    
