@@ -96,10 +96,9 @@ class MarketItemV2: ObservableObject {
             location: marketItem.sellingLocation,
             itemType: type,
             description: marketItem.description,
-            seller: AppUser(userID: ownerID)
+            seller: AppUser(userID: ownerID),
+            imageIDs: marketItem.imageIDs
         )
-        
-        fetchImages()
     }
     
     convenience init?(marketItemBasic: MarketItemBasic, type: MarketItemV2Type) {
@@ -450,13 +449,22 @@ class MarketItemV2: ObservableObject {
     ]
 }
 
-//  MARK: - Methods
+//  MARK: - Internal Methods
 
 extension MarketItemV2 {
-    private func fetchImages() {
-        
-        let imageIDs = self.imageIDs + [thumbImageID]
-        
+    func fetchThumbImage() {
+        self.fetchImages(imageIDs: [thumbImageID])
+    }
+    
+    func fetchAdditionalImages() {
+        self.fetchImages(imageIDs: self.imageIDs)
+    }
+}
+
+//  MARK: - Private Methods
+
+extension MarketItemV2 {
+    private func fetchImages(imageIDs: [String]) {
         for id in imageIDs {
             fetchImageWith(imageID: id) { [weak self] result in
                 guard let self = self else { return }

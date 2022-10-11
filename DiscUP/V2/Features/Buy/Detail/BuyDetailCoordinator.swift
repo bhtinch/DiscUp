@@ -48,6 +48,8 @@ class BuyDetailCoordinator: Coordinator<BuyDetailCoordinator.Action> {
                 self?.perform(action: $0)
             }
             .store(in: &cancellables)
+        
+        start()
     }
 }
 
@@ -56,6 +58,17 @@ class BuyDetailCoordinator: Coordinator<BuyDetailCoordinator.Action> {
 extension BuyDetailCoordinator {
     func perform(action: Action) {
         switch action {}
+    }
+}
+
+//  MARK: - Private Methods
+
+extension BuyDetailCoordinator {
+    private func start() {
+        // simple check to see if additional images have been fetched yet
+        if viewModel.item.images.count < 2 {
+            viewModel.item.fetchAdditionalImages()
+        }
     }
 }
 

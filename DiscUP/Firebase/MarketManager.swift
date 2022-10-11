@@ -100,6 +100,7 @@ class MarketManager {
                 print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
                 return completion(.failure(NetworkError.databaseError))
             }
+            
             return completion(.success(true))
         }
     }
@@ -178,11 +179,11 @@ class MarketManager {
     static func fetchMarketBasicItemWith(itemID: String, completion: @escaping(MarketItemBasic) -> Void) {
         database.child(itemID).observeSingleEvent(of: .value) { itemSnap in
             
-            let headline = itemSnap.childSnapshot(forPath: MarketKeys.headline).value as? String ?? "(headline)"
-            let manufacturer = itemSnap.childSnapshot(forPath: MarketKeys.manufacturer).value as? String ?? "manufacturer unknown"
-            let model = itemSnap.childSnapshot(forPath: MarketKeys.model).value as? String ?? "model unknown"
-            let plastic = itemSnap.childSnapshot(forPath: MarketKeys.plastic).value as? String ?? "plastic unknown"
-            let thumbImageID = itemSnap.childSnapshot(forPath: MarketKeys.thumbImageID).value as? String ?? ""
+            let headline        = itemSnap.childSnapshot(forPath: MarketKeys.headline).value as? String ?? "(headline)"
+            let manufacturer    = itemSnap.childSnapshot(forPath: MarketKeys.manufacturer).value as? String ?? "manufacturer unknown"
+            let model           = itemSnap.childSnapshot(forPath: MarketKeys.model).value as? String ?? "model unknown"
+            let plastic         = itemSnap.childSnapshot(forPath: MarketKeys.plastic).value as? String ?? "plastic unknown"
+            let thumbImageID    = itemSnap.childSnapshot(forPath: MarketKeys.thumbImageID).value as? String ?? ""
             
             let itemBasic = MarketItemBasic(id: itemID, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, thumbImageID: thumbImageID)
             
@@ -191,7 +192,6 @@ class MarketManager {
     }
     
     static func fetchImageWith(imageID: String, completion: @escaping (Result<UIImage, NetworkError>) -> Void) {
-        
         StorageManager.downloadURLFor(imageID: imageID) { result in
             switch result {
             case .success(let url):
@@ -212,37 +212,8 @@ class MarketManager {
     }
     
     static func fetchItemWith(itemID: String, completion: @escaping (MarketItem?) -> Void) {
-
         database.child(itemID).observeSingleEvent(of: .value) { itemSnap in
-            
-            let description = itemSnap.childSnapshot(forPath: MarketKeys.description).value as? String ?? "(description)"
-            let headline = itemSnap.childSnapshot(forPath: MarketKeys.headline).value as? String ?? "(headline)"
-            let manufacturer = itemSnap.childSnapshot(forPath: MarketKeys.manufacturer).value as? String ?? "manufacturer unknown"
-            let model = itemSnap.childSnapshot(forPath: MarketKeys.model).value as? String ?? "model unknown"
-            let plastic = itemSnap.childSnapshot(forPath: MarketKeys.plastic).value as? String ?? "plastic unknown"
-            var weight = itemSnap.childSnapshot(forPath: MarketKeys.weight).value as? Double
-            let imageIDsString = itemSnap.childSnapshot(forPath: MarketKeys.imageIDs).value as? String ?? ""
-            let thumbImageID = itemSnap.childSnapshot(forPath: MarketKeys.thumbImageID).value as? String ?? ""
-            var askingPrice = itemSnap.childSnapshot(forPath: MarketKeys.askingPrice).value as? Int
-            let sellingLocation = itemSnap.childSnapshot(forPath: MarketKeys.sellingLocation).value as? String ?? "Unknown Location"
-            let updatedTimestampString = itemSnap.childSnapshot(forPath: MarketKeys.updatedTimestamp).value as? String
-            let inputZipCode = itemSnap.childSnapshot(forPath: MarketKeys.inputZipCode).value as? String
-            let ownerID = itemSnap.childSnapshot(forPath: MarketKeys.owner).value as? String
-            
-            let imageIDs = imageIDsString.components(separatedBy: ",")
-            
-            if askingPrice == 0 { askingPrice = nil }
-            if weight == 0 { weight = nil }
-            
-            let updatedTimestamp = updatedTimestampString?.stringToLocalDate(format: .fullNumericWithTimezone) ?? Date.distantPast
-            
-            let sellingLocationArray = sellingLocation.split(separator: ",")
-            
-            let location = Location(latitude: Double(sellingLocationArray[0]) ?? 0, longitude: Double(sellingLocationArray[1]) ?? 0)
-            
-            let item = MarketItem(id: itemID, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description, imageIDs: imageIDs, thumbImageID: thumbImageID, askingPrice: askingPrice, sellingLocation: location, updatedTimestamp: updatedTimestamp, inputZipCode: inputZipCode, ownerID: ownerID)
-            
-            completion(item)
+            completion(MarketItem(itemID: itemID, itemSnap: itemSnap))
         }
     }
     
@@ -277,4 +248,4 @@ class MarketManager {
         }
     }
     
-}   //  End of Class
+}

@@ -25,7 +25,13 @@ struct ItemDetailImagesView: View {
             ForEach(images) {
                 Image(uiImage: $0.uiImage)
                     .resizable()
-                    .scaledToFill()
+                    .scaledToFit()
+            }
+            
+            .onReceive(
+                marketItem.$images.receive(on: RunLoop.main)
+            ) { images in
+                self.images = images
             }
         }
         .tabViewStyle(.page(indexDisplayMode: indexDisplayMode))

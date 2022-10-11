@@ -146,7 +146,6 @@ extension BuyCoordinator {
         debugPrint(itemIDs.count)
         
         for id in itemIDs {
-            
             MarketManager.fetchItemWith(itemID: id) { [weak self] item in
                 guard
                     let item = item,
@@ -154,6 +153,8 @@ extension BuyCoordinator {
                 else { return }
                 
                 self?.viewModel.items.append(itemV2)
+                
+                itemV2.fetchThumbImage()
             }
         }
     }
