@@ -248,8 +248,6 @@ class MarketManager {
                             itemIDs.append(childSnap.key)
                         }
                     }
-                    
-                    itemIDs.append(childSnap.key)
                 }
                 
                 if i == snap.childrenCount {

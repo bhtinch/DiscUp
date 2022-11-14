@@ -131,10 +131,7 @@ extension BuyCoordinator {
     private func loadStartingItems() {
         let searchLocation = searchLocation ?? defaultSearchLocation
         
-        MarketManager.fetchOfferIDsWithin(
-            range: viewModel.searchRange,
-            of: searchLocation
-        ) { [weak self] result in
+        MarketManager.fetchOfferIDsWithin(range: viewModel.searchRange, of: searchLocation) { [weak self] result in
             switch result {
             case .failure(let error):   self?.userInterface.send(.handle(error))
             case .success(let itemIDs): self?.fetchItems(with: itemIDs)
