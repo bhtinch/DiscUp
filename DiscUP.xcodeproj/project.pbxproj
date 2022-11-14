@@ -107,6 +107,8 @@
 		6286B4DE28B2AE0E000F5CD1 /* SpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6286B4DD28B2AE0E000F5CD1 /* SpinnerView.swift */; };
 		628B4F2126654CF400E1A76D /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 628B4F2026654CF400E1A76D /* Event.swift */; };
 		62A06885264313CE00E80BC3 /* SwitchBagTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62A06884264313CE00E80BC3 /* SwitchBagTableViewCell.swift */; };
+		62AC762D29169A8500ECB762 /* SearchRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC762C29169A8500ECB762 /* SearchRange.swift */; };
+		62AC762F29169D4B00ECB762 /* GeoExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62AC762E29169D4B00ECB762 /* GeoExtensions.swift */; };
 		62B928182655EBFF00981232 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B928172655EBFF00981232 /* UserProfile.swift */; };
 		62C04E8625F29B0500D4F4B6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 62C04E8525F29B0500D4F4B6 /* GoogleService-Info.plist */; };
 		62C04EB925F2A5AC00D4F4B6 /* Disc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62C04EB825F2A5AC00D4F4B6 /* Disc.swift */; };
@@ -243,6 +245,8 @@
 		6286B4DD28B2AE0E000F5CD1 /* SpinnerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpinnerView.swift; sourceTree = "<group>"; };
 		628B4F2026654CF400E1A76D /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		62A06884264313CE00E80BC3 /* SwitchBagTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchBagTableViewCell.swift; sourceTree = "<group>"; };
+		62AC762C29169A8500ECB762 /* SearchRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchRange.swift; sourceTree = "<group>"; };
+		62AC762E29169D4B00ECB762 /* GeoExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoExtensions.swift; sourceTree = "<group>"; };
 		62B928172655EBFF00981232 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		62C04E8525F29B0500D4F4B6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		62C04EB825F2A5AC00D4F4B6 /* Disc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Disc.swift; sourceTree = "<group>"; };
@@ -311,6 +315,7 @@
 				6207C91328BA78FD00AC59EE /* MarketItemV2.swift */,
 				6207C91528BA79A500AC59EE /* MarketImage.swift */,
 				6207C91728BA79CF00AC59EE /* AppUser.swift */,
+				62AC762C29169A8500ECB762 /* SearchRange.swift */,
 			);
 			path = "V2 Models";
 			sourceTree = "<group>";
@@ -699,6 +704,7 @@
 				62677436264FFAF800899183 /* MediaPermissions.swift */,
 				62E27F0E2652DB5500106333 /* LocationManager.swift */,
 				62383376265741EE0043B4CA /* Alerts.swift */,
+				62AC762E29169D4B00ECB762 /* GeoExtensions.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -992,6 +998,7 @@
 				6286B47B28B2A1CD000F5CD1 /* BaseViewController.swift in Sources */,
 				6286B4C528B2A1DE000F5CD1 /* SellNewItemCoordinator.swift in Sources */,
 				62D207A8262E2BA200FF6C9F /* MarketItemDetailViewController.swift in Sources */,
+				62AC762D29169A8500ECB762 /* SearchRange.swift in Sources */,
 				62492AA125F2F80300A24A05 /* BaggedDiscTableViewCell.swift in Sources */,
 				6286B4BF28B2A1DE000F5CD1 /* SettingsCoordinator.swift in Sources */,
 				6255B5DF2622442900B3A53D /* EventTableViewCell.swift in Sources */,
@@ -1004,6 +1011,7 @@
 				6286B4CF28B2A1DE000F5CD1 /* SellDetailDescriptionView.swift in Sources */,
 				62492A9925F2CC7900A24A05 /* BagManager.swift in Sources */,
 				6255B5EC262245A400B3A53D /* DateFormatter.swift in Sources */,
+				62AC762F29169D4B00ECB762 /* GeoExtensions.swift in Sources */,
 				620D6C13265C1B1B00D42C7F /* BlockedUsersTableViewController.swift in Sources */,
 				625114F828C41ACB001E9D72 /* ProfileViewControllerV2.swift in Sources */,
 				6286B47E28B2A1CD000F5CD1 /* NavigationController.swift in Sources */,

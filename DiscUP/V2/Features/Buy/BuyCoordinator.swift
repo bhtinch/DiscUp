@@ -12,6 +12,8 @@ import SwiftUI
 
 class BuyViewModel: ViewModel<BuyCoordinator.Action> {
     @Published var title: String = "Market Place"
+    @Published var searchRangeValue: Int = 10
+    @Published var searchRange: SearchRange = .kilometers(10)
     
     // dummy items
 //    @Published var items: [MarketItemV2] = MarketItemV2.items
@@ -130,7 +132,7 @@ extension BuyCoordinator {
         let searchLocation = searchLocation ?? defaultSearchLocation
         
         MarketManager.fetchOfferIDsWithin(
-            range: String(searchRangeMiles),
+            range: viewModel.searchRange,
             of: searchLocation
         ) { [weak self] result in
             switch result {
@@ -139,8 +141,6 @@ extension BuyCoordinator {
             }
         }
     }
-
-    private func fetchItemIDs() {}
     
     private func fetchItems(with itemIDs: [String]) {
         debugPrint(itemIDs.count)

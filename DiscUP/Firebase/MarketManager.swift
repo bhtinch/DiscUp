@@ -217,16 +217,21 @@ class MarketManager {
         }
     }
     
-    //  MARK: - BenDo: This method needs help... need to add range and better querying of lat AND long
+    //  MARK: - BenDo: This method needs help... need to add range and better querying of lat AND long.  search range save for V2.1
     /// returns an array of market item IDs for sale within a specified range (in miles) from the provided location
-    static func fetchOfferIDsWithin(range: String, of location: Location, completion: @escaping(Result<[String], NetworkError>) -> Void) {
+    static func fetchOfferIDsWithin(range: SearchRange, of location: Location, completion: @escaping(Result<[String], NetworkError>) -> Void) {
         
         var itemIDs: [String] = []
         
         let buyerLatitude = location.latitude
         let buyerLongitude = location.longitude
         
-        database.child(MarketKeys.coordinates).queryOrdered(byChild: MarketKeys.latitude).queryStarting(atValue: buyerLatitude - 1 , childKey: MarketKeys.latitude).queryEnding(atValue: buyerLatitude + 1, childKey: MarketKeys.latitude).observeSingleEvent(of: .value) { snap in
+        database.child(MarketKeys.coordinates)
+            .queryOrdered(byChild: MarketKeys.latitude)
+            .queryStarting(atValue: buyerLatitude - range.latitudeDegrees , childKey: MarketKeys.latitude)
+            .queryEnding(atValue: buyerLatitude + range.latitudeDegrees, childKey: MarketKeys.latitude)
+            .observeSingleEvent(of: .value)
+        { snap in
             var i = 0
             
             if snap.childrenCount == 0 { return completion(.success(itemIDs)) }
@@ -235,10 +240,16 @@ class MarketManager {
                 i += 1
                 if let childSnap = child as? DataSnapshot {
                     if let itemLongitude = childSnap.childSnapshot(forPath: MarketKeys.longitude).value as? Double {
-                        if itemLongitude >= buyerLongitude - 1 && itemLongitude <= buyerLongitude + 1 {
+                        
+                        if
+                            itemLongitude >= buyerLongitude - range.longitudeDegrees &&
+                            itemLongitude <= buyerLongitude + range.longitudeDegrees
+                        {
                             itemIDs.append(childSnap.key)
                         }
                     }
+                    
+                    itemIDs.append(childSnap.key)
                 }
                 
                 if i == snap.childrenCount {
@@ -247,5 +258,4 @@ class MarketManager {
             }
         }
     }
-    
 }

@@ -10,6 +10,9 @@ import CoreLocation
 import CloudKit
 
 class Location {
+    
+    //  MARK: - Static Properties
+    
     /// user current location if location services are granted, otherwise returns nil
     static var userCurrentLocation: Location? {
         guard let coordinate = LocationManager.shared.location?.coordinate else { return nil }
@@ -23,11 +26,19 @@ class Location {
     /// unknown location defined as 0 lat and 0 long
     static let unknownLocation = Location(latitude: 0, longitude: 0)
     
+    //  MARK: - Internal Properties
+    
     let latitude: Double
     let longitude: Double
     var city: String = ""
     var state: String = ""
     var zipCode: String = ""
+    
+    var coordinate: CLLocationCoordinate2D {
+        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    }
+    
+    //  MARK: - Initialization
     
     init(latitude: Double, longitude: Double) {
         self.latitude = latitude
@@ -36,6 +47,8 @@ class Location {
         setGeoValues()
     }
 }
+
+//  MARK: - Private Methods
 
 extension Location {
     private func setGeoValues() {
