@@ -7,14 +7,6 @@
 
 import UIKit
 
-// MARK: - MarketItemV2Type
-
-enum MarketItemV2Type: String, CaseIterable {
-    case disc = "Disc"
-    case bag = "Bag"
-    case basket = "Basket"
-}
-
 // MARK: - MarketItemEditableValue
 
 enum MarketItemV2EditableValue {

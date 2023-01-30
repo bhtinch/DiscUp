@@ -61,9 +61,6 @@ struct PageControlButtonStackView: View {
                         case 0:
                             return newItemViewModel.item.headline.isEmpty ||
                             newItemViewModel.item.location.zipCode.isEmpty ||
-                            newItemViewModel.item.manufacturer.isEmpty ||
-                            newItemViewModel.item.model.isEmpty ||
-                            newItemViewModel.item.description.isEmpty ||
                             newItemViewModel.item.description == "Please add a description..."
 
                         case 1:
@@ -114,7 +111,7 @@ struct NextButtonView: View {
         Button(action: {
             switch newItemViewModel.pageIndex {
             case 2:
-                break
+                newItemViewModel.send(.saveTapped)
 
             default:
                 newItemViewModel.pageIndex += 1

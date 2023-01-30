@@ -8,15 +8,57 @@
 import Combine
 import Foundation
 import FirebaseDatabase
+import FirebaseFirestore
 import FirebaseAuth
 import CoreLocation
 
 class MarketManager {
+    //  MARK: - V2 Properties
+    static let marketDB = Firestore.firestore()
+    static let locationManager = LocationManager.shared
+    
+    //  MARK: - Legacy Properties
     static let database = MarketDB.shared.dbRef
     static let userID = Auth.auth().currentUser?.uid
     static let userDatabase = UserDB.shared.dbRef
     
     static let fetchedItemPublisher = PassthroughSubject<MarketItemV2, Never>()
+    
+    //  MARK: - V2 Methods
+    static func dayCollectionRef(zip: String) async -> CollectionReference {
+        guard
+            let timezone = await locationManager.placemark(zip: zip)?.timeZone else {
+            return marketDB.collection(Date().marketCollectionDateString())
+        }
+        
+        let timeZoneFormattedDate = Date().convertTo(timezone: timezone)
+        
+        return marketDB.collection(timeZoneFormattedDate.marketCollectionDateString())
+    }
+    
+    static func add(item: MarketItemV2, uploadImages: [UIImage]) async -> Bool {
+        let collectionRef = await dayCollectionRef(zip: item.location.zipCode)
+        
+        guard
+            var itemDataModel = await MarketItemDataModel(item)
+        else { return false }
+        
+        // remove dummy id from new item, FB will create id
+        itemDataModel.id = nil
+        
+        //  MARK: - BenDo: Still need to handle Images
+        
+        do {
+            let _ = try collectionRef.addDocument(from: itemDataModel)
+            return true
+            
+        } catch {
+            print(error)
+            return false
+        }
+    }
+    
+    //  MARK: - Legacy Methods
         
     static func update(item: MarketItem, uploadImages: [UIImage], deletedImageIDs: [String], completion: @escaping (Result<Bool, NetworkError>) -> Void) {
         guard let userID = userID else { return completion(.failure(NetworkError.noUser)) }

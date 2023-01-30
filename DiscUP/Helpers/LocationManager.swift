@@ -7,11 +7,14 @@
 
 import Combine
 import CoreLocation
+import GeoFire
 import UIKit
 
 class LocationManager: CLLocationManager {
     //  MARK: - Shared
     static let shared = LocationManager()
+    
+    let geoCoder = CLGeocoder()
     
     //  MARK: - Publishers
     var authStatusChanged = PassthroughSubject<CLAuthorizationStatus, Never>()
@@ -30,7 +33,25 @@ extension LocationManager: CLLocationManagerDelegate {
 
 
 //  MARK: - CLLocationManager Extensions
-extension CLLocationManager {
+extension LocationManager {
+    func placemark(zip: String) async -> CLPlacemark? {
+        guard let placemarks = try? await geoCoder.geocodeAddressString(zip) else { return nil }
+        
+        return placemarks.first
+    }
+    
+    func coordinate(zip: String) async -> CLLocationCoordinate2D? {
+        guard let placemark = await placemark(zip: zip) else { return nil }
+        
+        return placemark.location?.coordinate
+    }
+    
+    func createHash(zip: String) async -> String?  {
+        guard let coordinate = await LocationManager.shared.coordinate(zip: zip) else { return nil }
+        
+        return GFUtils.geoHash(forLocation: coordinate)
+    }
+    
     public func getCoordinates(zipCode: String, completion: @escaping(Result<CLLocationCoordinate2D, Error>) -> Void ) {
         
         let geoCoder = CLGeocoder()

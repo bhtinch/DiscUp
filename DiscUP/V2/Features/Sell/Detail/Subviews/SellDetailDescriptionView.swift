@@ -20,7 +20,7 @@ struct SellDetailDescriptionView: View {
     var body: some View {
         ScrollView {
             VStack {
-                Text(item.description)
+                Text(item.description ?? "Please add a description...")
                     .frame(width: width, alignment: .leading)
             }
         }

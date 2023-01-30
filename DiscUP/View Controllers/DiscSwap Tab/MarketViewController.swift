@@ -22,7 +22,7 @@ class MarketViewController: UIViewController {
     var deleteImageIDs: [String] = []
     var usingCurrentLocation: Bool = true
     var location: Location?
-    let locationManager = CLLocationManager()
+    let locationManager = LocationManager.shared
     
     //  MARK: - LIFECYLCES
     override func viewDidLoad() {

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Firebase
+import FirebaseDatabase
 
 struct MarketKeys {
     static let conversations = "conversations"

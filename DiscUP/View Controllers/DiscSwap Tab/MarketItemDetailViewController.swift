@@ -35,7 +35,7 @@ class MarketItemDetailViewController: UIViewController {
     var images: [UIImage] = []
     var item: MarketItem?
     var ownerID: String?
-    let locationManager = CLLocationManager()
+    let locationManager = LocationManager.shared
     var ownerProfile: UserProfile?
 
     //  MARK: - LIFECYCLES

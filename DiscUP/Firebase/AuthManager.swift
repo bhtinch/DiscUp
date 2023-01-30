@@ -124,40 +124,42 @@ class AuthManager {
     }
     
     static func deleteUser(completion: @escaping (Bool) -> Void){
-        guard let user = Auth.auth().currentUser else { return completion(false) }
+        //  MARK: - BenDo: Commented code out because an error was occuring when updating the pods
         
-        let userID = user.uid
-        
-        UserDB.shared.dbRef.child(userID).child(UserKeys.offers).observeSingleEvent(of: .value) { snap in
-            if snap.exists() {
-                if let dict = snap.value as? NSDictionary {
-                
-                    let keyEnumerator = dict.keyEnumerator()
-                
-                    for key in keyEnumerator {
-                        if let itemID = key as? String {
-                            MarketManager.deleteOfferWith(itemID: itemID) { _ in
-                                DispatchQueue.main.async {
-                                    
-                                    StorageManager.storage.child(userID).delete()
-                                    UserDB.shared.dbRef.child(userID).removeValue()
-
-                                    user.delete { error in
-                                        if let error = error {
-                                            print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
-                                            return completion(false)
-                                        }
-
-                                        print("user account with id: \(user.uid) successfully deleted")
-                                        completion(true)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+//        guard let user = Auth.auth().currentUser else { return completion(false) }
+//
+//        let userID = user.uid
+//
+//        UserDB.shared.dbRef.child(userID).child(UserKeys.offers).observeSingleEvent(of: .value) { snap in
+//            if snap.exists() {
+//                if let dict = snap.value as? NSDictionary {
+//
+//                    let keyEnumerator = dict.keyEnumerator()
+//
+//                    for key in keyEnumerator {
+//                        if let itemID = key as? String {
+//                            MarketManager.deleteOfferWith(itemID: itemID) { _ in
+//                                DispatchQueue.main.async {
+//
+//                                    StorageManager.storage.child(userID).delete()
+//                                    UserDB.shared.dbRef.child(userID).removeValue()
+//
+//                                    user.delete { error in
+//                                        if let error = error {
+//                                            print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+//                                            return completion(false)
+//                                        }
+//
+//                                        print("user account with id: \(user.uid) successfully deleted")
+//                                        completion(true)
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
     
     /// Presents an alert controller to inform user of action taken with phrase specified.  'OK' is the only action and dismisses the alert.

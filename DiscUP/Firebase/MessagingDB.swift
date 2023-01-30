@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Firebase
+import FirebaseDatabase
 
 struct ConversationKeys {
     static let messages = "messages"

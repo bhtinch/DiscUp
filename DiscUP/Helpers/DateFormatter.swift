@@ -67,6 +67,14 @@ extension Date {
         case dbSafeTimestamp = "HH-mm-ss-SSS"
         case searchedDate = "yyyy-MM-dd"
         case eventDate = "E MMM dd yyyy"
+        case yearMonthDay = "yyyy.MM.dd"
+    }
+    
+    func convertTo(timezone: TimeZone) -> Date {
+        let calendar = Calendar.current
+        var components = calendar.dateComponents(in: timezone, from: self)
+        components.timeZone = TimeZone.current
+        return calendar.date(from: components)!
     }
     
     func convertToUTCString(format: DateFormatType) -> String {
@@ -80,6 +88,10 @@ extension Date {
         let formatter = DateFormatter()
         formatter.dateFormat = format.rawValue
         return formatter.string(from: self)
+    }
+    
+    func marketCollectionDateString() -> String {
+        self.dateToString(format: .yearMonthDay)
     }
     
 }    //  End of Extension
@@ -100,6 +112,7 @@ extension String {
         case dbSafeTimestamp = "HH-mm-ss-SSS"
         case searchedDate = "yyyy-MM-dd"
         case eventDate = "E MMM dd yyyy"
+        case yearMonthDay = "yyyy.MM.dd"
     }
     
     func stringToDate(format: DateFormatType) -> Date? {

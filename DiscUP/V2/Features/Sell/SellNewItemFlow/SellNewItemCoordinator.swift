@@ -55,7 +55,7 @@ class SellNewItemCoordinator: Coordinator <SellNewItemCoordinator.Action> {
          
          */
         let newItem = MarketItemV2(
-            id: UUID().uuidString,
+            id: "",
             headline: "",
             manufacturer: "",
             model: "",
@@ -90,8 +90,16 @@ extension SellNewItemCoordinator {
             userInterface.send(.dismiss)
             
         case .saveTapped:
-            // Bendo: handle save
-            break
+            saveNewItem()
+        }
+    }
+    
+    private func saveNewItem() {
+        Task {
+            //  MARK: - BenDo: Handle failure
+            if await MarketManager.add(item: viewModel.item, uploadImages: []) {
+                userInterface.send(.dismiss)
+            }
         }
     }
 }
