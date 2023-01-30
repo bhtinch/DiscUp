@@ -52,7 +52,7 @@ class MarketItem {
         let imageIDsString              = itemSnap.childSnapshot(forPath: MarketKeys.imageIDs).value as? String ?? ""
         let thumbImageID                = itemSnap.childSnapshot(forPath: MarketKeys.thumbImageID).value as? String ?? ""
         var askingPrice                 = itemSnap.childSnapshot(forPath: MarketKeys.askingPrice).value as? Int
-        let sellingLocation             = itemSnap.childSnapshot(forPath: MarketKeys.sellingLocation).value as? String ?? "Unknown Location"
+        let sellingLocation             = itemSnap.childSnapshot(forPath: MarketKeys.sellingLocation).value as? String ?? "0,0"
         let updatedTimestampString      = itemSnap.childSnapshot(forPath: MarketKeys.updatedTimestamp).value as? String
         let inputZipCode                = itemSnap.childSnapshot(forPath: MarketKeys.inputZipCode).value as? String
         let ownerID                     = itemSnap.childSnapshot(forPath: MarketKeys.owner).value as? String

@@ -5,6 +5,7 @@
 //  Created by Benjamin Tincher on 5/10/21.
 //
 
+import Combine
 import Foundation
 import FirebaseDatabase
 import FirebaseAuth
@@ -14,6 +15,8 @@ class MarketManager {
     static let database = MarketDB.shared.dbRef
     static let userID = Auth.auth().currentUser?.uid
     static let userDatabase = UserDB.shared.dbRef
+    
+    static let fetchedItemPublisher = PassthroughSubject<MarketItemV2, Never>()
         
     static func update(item: MarketItem, uploadImages: [UIImage], deletedImageIDs: [String], completion: @escaping (Result<Bool, NetworkError>) -> Void) {
         guard let userID = userID else { return completion(.failure(NetworkError.noUser)) }
@@ -217,9 +220,19 @@ class MarketManager {
         }
     }
     
-    //  MARK: - BenDo: This method needs help... need to add range and better querying of lat AND long.  search range save for V2.1
+    static func fetchItemWith(itemID: String) {
+        database.child(itemID).observeSingleEvent(of: .value) { itemSnap in
+            let marketItem = MarketItem(itemID: itemID, itemSnap: itemSnap)
+            
+            guard let marketItemV2 = MarketItemV2(marketItem: marketItem, type: .disc) else { return }
+            
+            fetchedItemPublisher.send(marketItemV2)
+        }
+    }
+    
+    //  MARK: - BenDo:  THIS ONE OBSOLETE NOW THAT THE PUBLISHER HAS BEEN ADDED???  This method needs help... need to add range and better querying of lat AND long.  search range save for V2.1
     /// returns an array of market item IDs for sale within a specified range (in miles) from the provided location
-    static func fetchOfferIDsWithin(range: SearchRange, of location: Location, completion: @escaping(Result<[String], NetworkError>) -> Void) {
+    static func fetchOfferIDsWithin(searchTerm: String? = nil, range: SearchRange, of location: Location, completion: @escaping(Result<[String], NetworkError>) -> Void) {
         
         var itemIDs: [String] = []
         
@@ -238,6 +251,7 @@ class MarketManager {
             
             for child in snap.children {
                 i += 1
+                
                 if let childSnap = child as? DataSnapshot {
                     if let itemLongitude = childSnap.childSnapshot(forPath: MarketKeys.longitude).value as? Double {
                         
@@ -245,13 +259,69 @@ class MarketManager {
                             itemLongitude >= buyerLongitude - range.longitudeDegrees &&
                             itemLongitude <= buyerLongitude + range.longitudeDegrees
                         {
-                            itemIDs.append(childSnap.key)
+                            if let searchTerm = searchTerm {
+                                let item = MarketItem(itemID: childSnap.key, itemSnap: childSnap)
+                                
+                                guard
+                                    item.headline.localizedCaseInsensitiveContains(searchTerm) ||
+                                        item.description.localizedCaseInsensitiveContains(searchTerm)
+                                else { break }
+                                
+                                itemIDs.append(childSnap.key)
+                                
+                            } else {
+                                itemIDs.append(childSnap.key)
+                            }
                         }
                     }
                 }
                 
                 if i == snap.childrenCount {
                     completion(.success(itemIDs))
+                }
+            }
+        }
+    }
+    
+    //  MARK: - BenDo: This method needs help... need to add range and better querying of lat AND long.  CURRENTLY NOT WORKING FOR KEYWORD SEARCH
+    static func fetchOffers(searchTerm: String? = nil, within range: SearchRange, of location: Location) {
+        
+        let buyerLatitude = location.latitude
+        let buyerLongitude = location.longitude
+        
+        database.child(MarketKeys.coordinates)
+            .queryOrdered(byChild: MarketKeys.latitude)
+            .queryStarting(atValue: buyerLatitude - range.latitudeDegrees , childKey: MarketKeys.latitude)
+            .queryEnding(atValue: buyerLatitude + range.latitudeDegrees, childKey: MarketKeys.latitude)
+            .observeSingleEvent(of: .value)
+        { snap in
+            
+            if snap.childrenCount == 0 { return }
+            
+            for child in snap.children {
+                
+                if let childSnap = child as? DataSnapshot {
+                    if let itemLongitude = childSnap.childSnapshot(forPath: MarketKeys.longitude).value as? Double {
+                        
+                        if
+                            itemLongitude >= buyerLongitude - range.longitudeDegrees &&
+                            itemLongitude <= buyerLongitude + range.longitudeDegrees
+                        {
+                            if let searchTerm = searchTerm {
+                                let item = MarketItem(itemID: childSnap.key, itemSnap: childSnap)
+                                
+                                guard
+                                    item.headline.localizedCaseInsensitiveContains(searchTerm) ||
+                                        item.description.localizedCaseInsensitiveContains(searchTerm)
+                                else { break }
+                                
+                                fetchItemWith(itemID: childSnap.key)
+                                
+                            } else {
+                                fetchItemWith(itemID: childSnap.key)
+                            }
+                        }
+                    }
                 }
             }
         }

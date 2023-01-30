@@ -19,4 +19,30 @@
  -  Edge, Error, and Loading (MVP)
  -  Improved Search (MVP)
  -  Login with Apple / Google / Facebook
-  */
+ 
+ FIREBASE NOTES:
+ Realtime DB vs Firestore
+ -  RTDB's queries are too limited to support product searching (you can only sort OR filter in one query, but not both)
+ -  Firestore is pay per transaction operation (read, write, delete)
+ -  RTDB is pay per data quantity transferred, no limit on number of fetches (more or less)
+ 
+ -  RTDB is simple and efficient but limited on querying and customization
+ -  Firestore is more query-able and flexible
+ 
+ Firestore Data Structure
+ -  going to use a subcollection structure
+ 
+ -  POSTINGDAY / {itemID}    where structure is 'COLLECTION / {document} / COLLECTION / {document} / ...'
+ 
+ -  Firestore only allows a single range clause per compound query, which means performing query of lat and long within a bounding box is not possible
+    i.e. minLat < someLat < maxLat && minLong < someLong < maxLong
+ 
+ -  so have to use Geohash solution to create single string - see Firestore docs under 'solutions' section
+ -  use helper library - pod 'GeoFire/Utils'
+ -  see firestore-smoketest reference project @ /Users/btincher/Documents/Reference Projects/snippets-ios/firestore/swift
+ 
+ -  can possibly create a new collection for every new day, so that market item results can be more quickly fetched
+ 
+ -  query current day, within radius of location (geohash value), sorted by posting time... then can repeat query for previous day(s) to get more results if/when needed
+ 
+ */

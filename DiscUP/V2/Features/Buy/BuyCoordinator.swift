@@ -92,6 +92,15 @@ class BuyCoordinator: Coordinator<BuyCoordinator.Action> {
                 }
             }
             .store(in: &cancellables)
+        
+        MarketManager.fetchedItemPublisher
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in
+                self?.viewModel.items.append($0)
+                
+                $0.fetchThumbImage()
+            }
+            .store(in: &cancellables)
     }
 }
 
@@ -119,9 +128,8 @@ extension BuyCoordinator {
         guard !viewModel.searchText.isEmpty else { return }
         
         debugPrint(viewModel.searchText)
-        // BenDo: 
-        // FB search and return values
-        // update items on viewModel
+        
+        fetchItems(for: viewModel.searchText)
     }
 }
 
@@ -129,30 +137,33 @@ extension BuyCoordinator {
 
 extension BuyCoordinator {
     private func loadStartingItems() {
-        let searchLocation = searchLocation ?? defaultSearchLocation
-        
-        MarketManager.fetchOfferIDsWithin(range: viewModel.searchRange, of: searchLocation) { [weak self] result in
-            switch result {
-            case .failure(let error):   self?.userInterface.send(.handle(error))
-            case .success(let itemIDs): self?.fetchItems(with: itemIDs)
-            }
-        }
+        fetchItems(for: nil)
     }
     
-    private func fetchItems(with itemIDs: [String]) {
-        debugPrint(itemIDs.count)
-        
-        for id in itemIDs {
-            MarketManager.fetchItemWith(itemID: id) { [weak self] item in
-                guard
-                    let item = item,
-                    let itemV2 = MarketItemV2(marketItem: item, type: .disc)
-                else { return }
-                
-                self?.viewModel.items.append(itemV2)
-                
-                itemV2.fetchThumbImage()
-            }
+    private func fetchItems(for searchTerm: String?) {
+        DispatchQueue.main.async { [weak self] in
+            self?.viewModel.items = []
         }
+        
+        let searchLocation = searchLocation ?? defaultSearchLocation
+        
+        MarketManager.fetchOffers(searchTerm: searchTerm, within: viewModel.searchRange, of: searchLocation)
     }
+    
+//    private func fetchItems(with itemIDs: [String]) {
+//        debugPrint(itemIDs.count)
+//
+//        for id in itemIDs {
+//            MarketManager.fetchItemWith(itemID: id) { [weak self] item in
+//                guard
+//                    let item = item,
+//                    let itemV2 = MarketItemV2(marketItem: item, type: .disc)
+//                else { return }
+//
+//                self?.viewModel.items.append(itemV2)
+//
+//                itemV2.fetchThumbImage()
+//            }
+//        }
+//    }
 }
