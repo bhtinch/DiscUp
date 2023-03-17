@@ -51,4 +51,8 @@ struct AppUser {
             avatarImage: MarketImage(uid: UUID().uuidString, image: UIImage(named: "WoodyAvatar")!)
         )
     ]
+    
+    static var randomDummyUser: AppUser {
+        users[(0..<3).randomElement()!]
+    }
 }

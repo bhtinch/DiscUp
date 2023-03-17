@@ -36,5 +36,6 @@ struct EditPhotosRootView: View {
             
             EditPhotosView(images: $viewModel.item.images)
         }
+        .environmentObject(viewModel)
     }
 }

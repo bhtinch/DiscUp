@@ -10,6 +10,32 @@ import Foundation
 class StorageManager {
     static let storage = Storage.storage().reference()
     
+    private static var userID: String? {
+        AuthManager.auth.currentUser?.uid
+    }
+    
+    static func upload(images: [MarketImage]) async throws {
+        for i in 0..<images.count {
+            guard
+                let data = images[i].uiImage.pngData()
+            else { return }
+            
+            _ = try await storage.child("\(images[i].id)").putDataAsync(data)
+        }
+    }
+    
+    static func upload(images: [MarketImage], completion: ((Error?) -> Void)?) {
+        for i in 0..<images.count {
+            guard
+                let data = images[i].uiImage.pngData()
+            else { return }
+            
+            storage.child("\(images[i].id)").putData(data) { _, error in
+                completion?(error)
+            }
+        }
+    }
+    
     static func uploadImagesWith(images: [UIImage], completion: @escaping (Result<Bool, NetworkError>) -> Void) {
         for image in images {
             guard let filename = image.accessibilityIdentifier,
@@ -51,5 +77,4 @@ class StorageManager {
             }
         }
     }
-    
 }

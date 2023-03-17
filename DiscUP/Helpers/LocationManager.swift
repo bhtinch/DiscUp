@@ -41,7 +41,7 @@ extension LocationManager {
     }
     
     func coordinate(zip: String) async -> CLLocationCoordinate2D? {
-        guard let placemark = await placemark(zip: zip) else { return nil }
+        guard let placemark = try? await placemark(zip: zip) else { return nil }
         
         return placemark.location?.coordinate
     }

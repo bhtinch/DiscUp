@@ -60,8 +60,7 @@ struct PageControlButtonStackView: View {
                         switch newItemViewModel.pageIndex {
                         case 0:
                             return newItemViewModel.item.headline.isEmpty ||
-                            newItemViewModel.item.location.zipCode.isEmpty ||
-                            newItemViewModel.item.description == "Please add a description..."
+                            newItemViewModel.item.location.zipCode.isEmpty
 
                         case 1:
                             return newItemViewModel.item.images.isEmpty

@@ -8,7 +8,7 @@
 import UIKit
 
 class MarketImage: Identifiable {
-    let id: String
+    var id: String
     var uiImage: UIImage
     var isThumbImage: Bool
     

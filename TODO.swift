@@ -10,9 +10,13 @@
  -  BUY Screens converted over
  -  SELL Screens converted over
  -  Change Settings to Profile (MVP)
+ -  Basic write 'add' operation
  
  TODO:
- -  Connect back end to UI (MVP) - had to pause to implement a login screen into the start up flow before can test back end
+ -  Basic write 'update' operation
+ -  Delete operation
+ -  Basic read operation - fetch user's selling items
+ -  Basic read operations - fetch from buy search
  -  Connect Messaging (MVP)
  -  Login Screen Update (MVP)
  -  Update UI screens Nav bar and titles (MVP)

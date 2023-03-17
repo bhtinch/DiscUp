@@ -54,6 +54,7 @@ class SellNewItemCoordinator: Coordinator <SellNewItemCoordinator.Action> {
          - not sure if any generic uuid will do... may want some other form of a uuid later
          
          */
+        
         let newItem = MarketItemV2(
             id: "",
             headline: "",
@@ -65,7 +66,8 @@ class SellNewItemCoordinator: Coordinator <SellNewItemCoordinator.Action> {
             price: 10,
             location: Location(latitude: 29.1383, longitude: -80.9956),
             itemType: .disc,
-            description: "Please add a description..."
+            description: "Please add a description...",
+            seller: AppUser.users[1]
         )
         
         viewModel = SellNewItemViewModel(item: newItem)
@@ -97,8 +99,11 @@ extension SellNewItemCoordinator {
     private func saveNewItem() {
         Task {
             //  MARK: - BenDo: Handle failure
-            if await MarketManager.add(item: viewModel.item, uploadImages: []) {
+            do {
+                try await MarketManager.add(item: viewModel.item)
                 userInterface.send(.dismiss)
+            } catch {
+                print(error.localizedDescription)
             }
         }
     }

@@ -36,29 +36,47 @@ class MarketManager {
         return marketDB.collection(timeZoneFormattedDate.marketCollectionDateString())
     }
     
-    static func add(item: MarketItemV2, uploadImages: [UIImage]) async -> Bool {
+    static func add(item: MarketItemV2) async throws {
         let collectionRef = await dayCollectionRef(zip: item.location.zipCode)
         
         guard
-            var itemDataModel = await MarketItemDataModel(item)
-        else { return false }
+            var itemDataModel = await MarketItemDataModel(item),
+            let userID = userID
+        else { return }
         
         // remove dummy id from new item, FB will create id
         itemDataModel.id = nil
         
-        //  MARK: - BenDo: Still need to handle Images
+        let docRef = try collectionRef.addDocument(from: itemDataModel)
         
-        do {
-            let _ = try collectionRef.addDocument(from: itemDataModel)
-            return true
+        // update image ids with userID and itemID
+        item.images.forEach {
+            $0.id += ".\(docRef.documentID).\(userID)"
+        }
+        
+        // Save images to storage syncronously
+        StorageManager.upload(images: item.images) { error in
+            //  MARK: - BenDo: Handle Error
             
-        } catch {
-            print(error)
-            return false
+            if let error = error {
+                print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+            }
         }
     }
     
-    //  MARK: - Legacy Methods
+    //  MARK: - BenDo: Fetch is successfully working like this to decode into data model... will need to handle images fetch along with
+    static func testFetch() async {
+        let docRef = marketDB.collection("2023.01.30").document("fruFbRFy8oBDqW508669")
+        
+        let item = try? await docRef.getDocument(as: MarketItemDataModel.self)
+        
+        print(item)
+    }
+    
+    
+    
+    
+    //  MARK: - *************************** Legacy Methods ***********************
         
     static func update(item: MarketItem, uploadImages: [UIImage], deletedImageIDs: [String], completion: @escaping (Result<Bool, NetworkError>) -> Void) {
         guard let userID = userID else { return completion(.failure(NetworkError.noUser)) }

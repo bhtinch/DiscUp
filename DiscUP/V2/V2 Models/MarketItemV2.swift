@@ -34,7 +34,12 @@ class MarketItemV2: ObservableObject {
     var seller: AppUser
     var imageIDs: [String]
     
-    @Published var images: [MarketImage]
+    @Published var images: [MarketImage] {
+        didSet {
+            imageIDs = images.map { $0.id }
+            thumbImageID = images.first(where: { $0.isThumbImage })?.id ?? ""
+        }
+    }
     
     //  MARK: - Initialization
     
@@ -50,7 +55,7 @@ class MarketItemV2: ObservableObject {
         location: Location,
         itemType: MarketItemV2Type,
         description: String = "No description provided.",
-        seller: AppUser = AppUser.users[1],
+        seller: AppUser,
         imageIDs: [String] = [],
         images: [MarketImage] = []
     ) {
@@ -122,7 +127,8 @@ class MarketItemV2: ObservableObject {
         thumbImageID: "N/A",
         price: 25,
         location: Location(latitude: 222, longitude: 333),
-        itemType: .disc
+        itemType: .disc,
+        seller: AppUser.randomDummyUser
     )
     
     //  MARK: - Dummy Data
@@ -143,6 +149,7 @@ class MarketItemV2: ObservableObject {
                     price: 25,
                     location: Location(latitude: 222, longitude: 333),
                     itemType: .disc,
+                    seller: AppUser.randomDummyUser,
                     images: {
                         ["usedItem\(i)"].map { MarketImage(uid: $0, image: UIImage(named: $0) ?? UIImage())}
                     }()
@@ -202,7 +209,8 @@ class MarketItemV2: ObservableObject {
             thumbImageID: "logo2",
             price: 25,
             location: Location(latitude: 222, longitude: 333),
-            itemType: .disc
+            itemType: .disc,
+            seller: AppUser.randomDummyUser
         ),
         
         MarketItemV2(
@@ -215,7 +223,8 @@ class MarketItemV2: ObservableObject {
             thumbImageID: "pdgaLogo",
             price: 20,
             location: Location(latitude: 111, longitude: 222),
-            itemType: .bag
+            itemType: .bag,
+            seller: AppUser.randomDummyUser
         ),
         
         MarketItemV2(
@@ -228,7 +237,8 @@ class MarketItemV2: ObservableObject {
             thumbImageID: "logo2",
             price: 25,
             location: Location(latitude: 222, longitude: 333),
-            itemType: .disc
+            itemType: .disc,
+            seller: AppUser.randomDummyUser
         ),
         
         MarketItemV2(
@@ -241,7 +251,8 @@ class MarketItemV2: ObservableObject {
             thumbImageID: "pdgaLogo",
             price: 20,
             location: Location(latitude: 111, longitude: 222),
-            itemType: .bag
+            itemType: .bag,
+            seller: AppUser.randomDummyUser
         ),
         
         MarketItemV2(
@@ -254,7 +265,8 @@ class MarketItemV2: ObservableObject {
             thumbImageID: "colorDiscs",
             price: 15,
             location: Location(latitude: 123, longitude: 245),
-            itemType: .disc
+            itemType: .disc,
+            seller: AppUser.randomDummyUser
         ),
         
         MarketItemV2(
@@ -267,7 +279,8 @@ class MarketItemV2: ObservableObject {
             thumbImageID: "logo2",
             price: 25,
             location: Location(latitude: 222, longitude: 333),
-            itemType: .disc
+            itemType: .disc,
+            seller: AppUser.randomDummyUser
         ),
         
         MarketItemV2(
@@ -280,7 +293,8 @@ class MarketItemV2: ObservableObject {
             thumbImageID: "pdgaLogo",
             price: 20,
             location: Location(latitude: 111, longitude: 222),
-            itemType: .bag
+            itemType: .bag,
+            seller: AppUser.randomDummyUser
         ),
         
         MarketItemV2(
@@ -293,7 +307,8 @@ class MarketItemV2: ObservableObject {
             thumbImageID: "colorDiscs",
             price: 15,
             location: Location(latitude: 123, longitude: 245),
-            itemType: .disc
+            itemType: .disc,
+            seller: AppUser.randomDummyUser
         ),
         
         MarketItemV2(
@@ -306,7 +321,8 @@ class MarketItemV2: ObservableObject {
             thumbImageID: "logo2",
             price: 25,
             location: Location(latitude: 222, longitude: 333),
-            itemType: .disc
+            itemType: .disc,
+            seller: AppUser.randomDummyUser
         ),
         
         MarketItemV2(
@@ -319,7 +335,8 @@ class MarketItemV2: ObservableObject {
             thumbImageID: "pdgaLogo",
             price: 20,
             location: Location(latitude: 111, longitude: 222),
-            itemType: .bag
+            itemType: .bag,
+            seller: AppUser.randomDummyUser
         ),
         
         MarketItemV2(
@@ -332,7 +349,8 @@ class MarketItemV2: ObservableObject {
             thumbImageID: "colorDiscs",
             price: 15,
             location: Location(latitude: 123, longitude: 245),
-            itemType: .disc
+            itemType: .disc,
+            seller: AppUser.randomDummyUser
         ),
         
         MarketItemV2(
@@ -345,85 +363,8 @@ class MarketItemV2: ObservableObject {
             thumbImageID: "logo2",
             price: 25,
             location: Location(latitude: 222, longitude: 333),
-            itemType: .disc
-        ),
-        
-        MarketItemV2(
-            id: UUID().uuidString,
-            headline: "Brand New DD Trooper",
-            manufacturer: "Dynamic Discs",
-            model: "Trooper",
-            plastic: "N/A",
-            weight: 0,
-            thumbImageID: "pdgaLogo",
-            price: 20,
-            location: Location(latitude: 111, longitude: 222),
-            itemType: .bag
-        ),
-        
-        MarketItemV2(
-            id: UUID().uuidString,
-            headline: "Star Destroyer",
-            manufacturer: "Innova",
-            model: "Destroyer",
-            plastic: "Star",
-            weight: 175,
-            thumbImageID: "colorDiscs",
-            price: 15,
-            location: Location(latitude: 123, longitude: 245),
-            itemType: .disc
-        ),
-        
-        MarketItemV2(
-            id: UUID().uuidString,
-            headline: "Ricky Wysocki Robot Star Destroyer - brand new",
-            manufacturer: "Innova",
-            model: "Destroyer",
-            plastic: "Star",
-            weight: 175,
-            thumbImageID: "logo2",
-            price: 25,
-            location: Location(latitude: 222, longitude: 333),
-            itemType: .disc
-        ),
-        
-        MarketItemV2(
-            id: UUID().uuidString,
-            headline: "Brand New DD Trooper",
-            manufacturer: "Dynamic Discs",
-            model: "Trooper",
-            plastic: "N/A",
-            weight: 175,
-            thumbImageID: "pdgaLogo",
-            price: 20,
-            location: Location(latitude: 111, longitude: 222),
-            itemType: .bag
-        ),
-        
-        MarketItemV2(
-            id: UUID().uuidString,
-            headline: "Star Destroyer",
-            manufacturer: "Innova",
-            model: "Destroyer",
-            plastic: "Star",
-            weight: 175,
-            thumbImageID: "colorDiscs",
-            price: 15,
-            location: Location(latitude: 123, longitude: 245),
-            itemType: .disc
-        ),
-        
-        MarketItemV2(
-            id: UUID().uuidString,
-            headline: "Ricky Wysocki Robot Star Destroyer - brand new",
-            manufacturer: "Innova",
-            model: "Destroyer",
-            plastic: "Star",
-            weight: 175,
-            thumbImageID: "logo2",
-            price: 25,
-            location: Location(latitude: 222, longitude: 333),
-            itemType: .disc
+            itemType: .disc,
+            seller: AppUser.randomDummyUser
         ),
         
         MarketItemV2(
@@ -436,7 +377,92 @@ class MarketItemV2: ObservableObject {
             thumbImageID: "pdgaLogo",
             price: 20,
             location: Location(latitude: 111, longitude: 222),
-            itemType: .bag
+            itemType: .bag,
+            seller: AppUser.randomDummyUser
+        ),
+        
+        MarketItemV2(
+            id: UUID().uuidString,
+            headline: "Star Destroyer",
+            manufacturer: "Innova",
+            model: "Destroyer",
+            plastic: "Star",
+            weight: 175,
+            thumbImageID: "colorDiscs",
+            price: 15,
+            location: Location(latitude: 123, longitude: 245),
+            itemType: .disc,
+            seller: AppUser.randomDummyUser
+        ),
+        
+        MarketItemV2(
+            id: UUID().uuidString,
+            headline: "Ricky Wysocki Robot Star Destroyer - brand new",
+            manufacturer: "Innova",
+            model: "Destroyer",
+            plastic: "Star",
+            weight: 175,
+            thumbImageID: "logo2",
+            price: 25,
+            location: Location(latitude: 222, longitude: 333),
+            itemType: .disc,
+            seller: AppUser.randomDummyUser
+        ),
+        
+        MarketItemV2(
+            id: UUID().uuidString,
+            headline: "Brand New DD Trooper",
+            manufacturer: "Dynamic Discs",
+            model: "Trooper",
+            plastic: "N/A",
+            weight: 175,
+            thumbImageID: "pdgaLogo",
+            price: 20,
+            location: Location(latitude: 111, longitude: 222),
+            itemType: .bag,
+            seller: AppUser.randomDummyUser
+        ),
+        
+        MarketItemV2(
+            id: UUID().uuidString,
+            headline: "Star Destroyer",
+            manufacturer: "Innova",
+            model: "Destroyer",
+            plastic: "Star",
+            weight: 175,
+            thumbImageID: "colorDiscs",
+            price: 15,
+            location: Location(latitude: 123, longitude: 245),
+            itemType: .disc,
+            seller: AppUser.randomDummyUser
+        ),
+        
+        MarketItemV2(
+            id: UUID().uuidString,
+            headline: "Ricky Wysocki Robot Star Destroyer - brand new",
+            manufacturer: "Innova",
+            model: "Destroyer",
+            plastic: "Star",
+            weight: 175,
+            thumbImageID: "logo2",
+            price: 25,
+            location: Location(latitude: 222, longitude: 333),
+            itemType: .disc,
+            seller: AppUser.randomDummyUser
+        ),
+        
+        MarketItemV2(
+            id: UUID().uuidString,
+            headline: "Brand New DD Trooper",
+            manufacturer: "Dynamic Discs",
+            model: "Trooper",
+            plastic: "N/A",
+            weight: 0,
+            thumbImageID: "pdgaLogo",
+            price: 20,
+            location: Location(latitude: 111, longitude: 222),
+            itemType: .bag,
+            seller: AppUser.randomDummyUser
         )
     ]
 }

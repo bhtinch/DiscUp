@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct EditPhotosView: View {
-    
     @State private var showingImagePicker = false
     @State private var imageSelected: UIImage?
     
@@ -134,7 +133,7 @@ struct EditPhotosView: View {
         .onChange(of: imageSelected) { _ in
             guard let imageSelected = imageSelected else { return }
             
-            // bendo: need to figure out exactly how image uids are going to be set
+            // bendo: set temporary uid... uid will be set later in save function with respect to userID, itemID, imageID
             let uid = UUID().uuidString
             
             imagesState.append(MarketImage(uid: uid, image: imageSelected))
