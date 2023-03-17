@@ -15,8 +15,8 @@ class SellNewItemViewController: BaseHostingController <SellNewItemView> {
     
     // MARK: - Initialization
     
-    init() {
-        coordinator = SellNewItemCoordinator()
+    init(appUser: AppUser) {
+        coordinator = SellNewItemCoordinator(appUser: appUser)
         let rootView = SellNewItemView(viewModel: coordinator.viewModel)
         
         super.init(rootView: rootView)

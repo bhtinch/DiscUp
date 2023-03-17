@@ -34,6 +34,12 @@ class MainTabBarController: BaseTabBarController {
     
     //  MARK: - Life Cycle
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        AppUser.setCurrentUser()
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -56,19 +62,22 @@ extension MainTabBarController {
     }
     
     private func setSubs() {
-//        App.authManager.userSignedOutPublisher
-//            .receive(on: RunLoop.main)
-//            .sink { [weak self] in
-//                self?.presentAuthVC()
-//            }
-//            .store(in: &cancellables)
+        AuthManager.userSignedOutPublisher
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in
+                self?.presentAuthVC()
+            }
+            .store(in: &cancellables)
     }
 }
 
 // MARK: - Private Methods
 
 extension MainTabBarController {
+    
     private func checkAuth() {
+        // Handle not connected to network
+        
         if !AuthManager.userLoggedIn {
             presentAuthVC()
             return

@@ -62,13 +62,26 @@ class AuthManager {
     static func loginUserWith(email: String, password: String, completion: @escaping (Bool) -> Void) {
         Auth.auth().signIn(withEmail: email, password: password) { (authResult, error) in
             guard error == nil, authResult != nil else {
-                DispatchQueue.main.async {
-                    completion(false)
-                }
-                return
+                return completion(false)
             }
             
-            DispatchQueue.main.async {
+            // check if logged in user is not the user saved in defaults, if it is return... no need to update defaults
+            guard authResult?.user.uid != Default.userID.value as? String else { return completion(true) }
+            
+            // update AppUser info in UserDefaults
+            Default.userID.updateValue(authResult?.user.uid)
+            Default.userDisplayName.updateValue(authResult?.user.displayName)
+            
+            if let userProfileImageURL = authResult?.user.photoURL {
+                let task = URLSession.shared.dataTask(with: userProfileImageURL) { data, _, error in
+                    if let data = data, error == nil {
+                        Default.userDisplayName.updateValue(data)
+                        return completion(true)
+                    }
+                }
+                task.resume()
+                
+            } else {
                 return completion(true)
             }
         }

@@ -37,8 +37,9 @@ struct SettingsRootView_Previews: PreviewProvider {
 extension SettingsRootView {
     private func performAction(setting: SettingType) {
         switch setting {
-        case .notifications:    break
-        case .feedback:         break
+        case .notifications:    break // update notification settings in user defaults and? in firebase
+        case .feedback:         break // link to app store review or developer feeback
+        case .sellingLocation:  break // updates defaultSelling Location in user defaults
         }
     }
 }

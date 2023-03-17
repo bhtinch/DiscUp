@@ -26,6 +26,15 @@ class Location {
     /// unknown location defined as 0 lat and 0 long
     static let unknownLocation = Location(latitude: 0, longitude: 0)
     
+    static var defaultSellingLocation: Location? {
+        guard
+            let defaultLat = Default.defaultSellingLocationLat.value as? Double,
+            let defaultLong = Default.defaultSellingLocationLong.value as? Double
+        else { return nil }
+        
+        return Location(latitude: defaultLat, longitude: defaultLong)
+    }
+    
     //  MARK: - Internal Properties
     
     let latitude: Double

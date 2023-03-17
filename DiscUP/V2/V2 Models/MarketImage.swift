@@ -19,4 +19,5 @@ class MarketImage: Identifiable {
     }
     
     static var defaultNoImage = MarketImage (uid: "defaultNoImageUID", image: UIImage(named: "logo2") ?? UIImage(), isThumbImage: true)
+    static let userAvatarID = "userAvatarID"
 }

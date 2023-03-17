@@ -50,7 +50,16 @@ extension SellViewController {
     }
     
     private func goToNewItemVC() {
-        let newItemVC = SellNewItemViewController()
+        guard let currentUser = AppUser.currentUser else {
+            Alerts.presentAlertWith(
+                title: "There was an error",
+                message: "Error: Unknown user.\nPlease try logging out and logging back in.",
+                sender: self
+            )
+            return
+        }
+        
+        let newItemVC = SellNewItemViewController(appUser: currentUser)
         
         present(newItemVC, animated: true)
     }

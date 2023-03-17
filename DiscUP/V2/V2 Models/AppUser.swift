@@ -56,3 +56,28 @@ struct AppUser {
         users[(0..<3).randomElement()!]
     }
 }
+
+extension AppUser {
+    static var currentUser: AppUser?
+    
+    // setCurrentUser() called in vdl of MainTabBarController
+    static func setCurrentUser() {
+        guard let id = Default.userID.value as? String else { return }
+        
+        var marketImage: MarketImage?
+                
+        if
+            let imageData = Default.userAvatarImage.value as? Data,
+            let image = UIImage(data: imageData)
+        {
+            marketImage = MarketImage(uid: MarketImage.userAvatarID, image: image)
+        }
+        
+        currentUser = AppUser(
+            userID: id,
+            displayName: Default.userDisplayName.value as? String,
+            avatarID: nil,
+            avatarImage: marketImage
+        )
+    }
+}

@@ -47,7 +47,7 @@ class SellNewItemCoordinator: Coordinator <SellNewItemCoordinator.Action> {
     
     // MARK: - Initialization
     
-    override init() {
+    init(appUser: AppUser) {
         /* Ben do:
          - need to set default seller prop as current user (user defaults)
          - need to get current users default selling location (user defaults)
@@ -64,10 +64,10 @@ class SellNewItemCoordinator: Coordinator <SellNewItemCoordinator.Action> {
             weight: 0,
             thumbImageID: "",
             price: 10,
-            location: Location(latitude: 29.1383, longitude: -80.9956),
+            location: Location.defaultSellingLocation ?? Location.userCurrentLocation ?? Location.defaultLocation,
             itemType: .disc,
             description: "Please add a description...",
-            seller: AppUser.users[1]
+            seller: appUser
         )
         
         viewModel = SellNewItemViewModel(item: newItem)
