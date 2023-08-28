@@ -22,7 +22,7 @@ class MarketViewController: UIViewController {
     var deleteImageIDs: [String] = []
     var usingCurrentLocation: Bool = true
     var location: Location?
-    let locationManager = CLLocationManager()
+    let locationManager = LocationManager.shared
     
     //  MARK: - LIFECYLCES
     override func viewDidLoad() {
@@ -151,8 +151,7 @@ class MarketViewController: UIViewController {
     }
     
     func fetchItemIDsWith(location: Location) {
-        
-        MarketManager.fetchOffersWithin(range: "a", of: location) { result in
+        MarketManager.fetchOfferIDsWithin(range: .kilometers(10), of: location) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let itemIDs):

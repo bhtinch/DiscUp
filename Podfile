@@ -7,10 +7,13 @@ target 'DiscUP' do
 
   # Pods for DiscUP
 
-  pod 'Firebase/Core'
-  pod 'Firebase/Auth'
-  pod 'Firebase/Database'
-  pod 'Firebase/Storage'
+  pod 'FirebaseCore'
+  pod 'FirebaseAuth'
+  pod 'FirebaseDatabase'
+  pod 'FirebaseStorage'
+  pod 'FirebaseFirestore'
+  pod 'FirebaseFirestoreSwift'
+  pod 'GeoFire/Utils'
 
   #MessageKit
   pod 'MessageKit'

@@ -5,15 +5,89 @@
 //  Created by Benjamin Tincher on 5/10/21.
 //
 
+import Combine
 import Foundation
 import FirebaseDatabase
+import FirebaseFirestore
 import FirebaseAuth
 import CoreLocation
 
 class MarketManager {
+    //  MARK: - V2 Properties
+    static let marketDB = Firestore.firestore()
+    static let locationManager = LocationManager.shared
+    
+    static let propertiesCollectionID = "propertiesCollection"
+    
+    //  MARK: - Legacy Properties
     static let database = MarketDB.shared.dbRef
     static let userID = Auth.auth().currentUser?.uid
     static let userDatabase = UserDB.shared.dbRef
+    
+    static let fetchedItemPublisher = PassthroughSubject<MarketItemV2, Never>()
+    
+    //  MARK: - V2 Methods
+    static func dayCollectionRef(zip: String) async -> CollectionReference {
+        guard
+            let timezone = await locationManager.placemark(zip: zip)?.timeZone else {
+            return marketDB.collection(Date().marketCollectionDateString())
+        }
+        
+        let timeZoneFormattedDate = Date().convertTo(timezone: timezone)
+        
+        return marketDB.collection(timeZoneFormattedDate.marketCollectionDateString())
+    }
+    
+    static func add(item: MarketItemV2) async throws {
+        let collectionRef = await dayCollectionRef(zip: item.location.zipCode)
+        
+        guard
+            var itemDataModel = await MarketItemDataModel(item),
+            let userID = userID
+        else { return }
+        
+        // remove dummy id from new item, FB will create id
+        itemDataModel.id = nil
+        
+        // create document to host properties collection for collectionGroup querying
+        let itemDocRef = collectionRef.document()
+        try await itemDocRef.setData([:])
+        
+        // create properties collection ref and add new document from data
+        let docRef = try itemDocRef.collection(propertiesCollectionID).addDocument(from: itemDataModel)
+        
+        // update image ids with userID and itemID
+        item.images.forEach {
+            $0.id += ".\(docRef.documentID).\(userID)"
+        }
+        
+        // Save images to storage syncronously
+        StorageManager.upload(images: item.images) { error in
+            //  MARK: - BenDo: Handle Error
+            
+            if let error = error {
+                print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    //  MARK: - BenDo: Fetch is successfully working like this to decode into data model... will need to handle images fetch along with
+    static func testFetch() async {
+        let docRef = marketDB.collection("2023.01.30").document("fruFbRFy8oBDqW508669")
+        
+        let item = try? await docRef.getDocument(as: MarketItemDataModel.self)
+        
+        print(item)
+    }
+    
+    static func fetchItems(searchText: String? = nil, sellerID: String? = nil, radiusMeters: Int = 10000) {
+//        marketDB.collection(<#T##collectionPath: String##String#>)
+    }
+    
+    
+    
+    
+    //  MARK: - *************************** Legacy Methods ***********************
         
     static func update(item: MarketItem, uploadImages: [UIImage], deletedImageIDs: [String], completion: @escaping (Result<Bool, NetworkError>) -> Void) {
         guard let userID = userID else { return completion(.failure(NetworkError.noUser)) }
@@ -100,6 +174,7 @@ class MarketManager {
                 print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
                 return completion(.failure(NetworkError.databaseError))
             }
+            
             return completion(.success(true))
         }
     }
@@ -178,11 +253,11 @@ class MarketManager {
     static func fetchMarketBasicItemWith(itemID: String, completion: @escaping(MarketItemBasic) -> Void) {
         database.child(itemID).observeSingleEvent(of: .value) { itemSnap in
             
-            let headline = itemSnap.childSnapshot(forPath: MarketKeys.headline).value as? String ?? "(headline)"
-            let manufacturer = itemSnap.childSnapshot(forPath: MarketKeys.manufacturer).value as? String ?? "manufacturer unknown"
-            let model = itemSnap.childSnapshot(forPath: MarketKeys.model).value as? String ?? "model unknown"
-            let plastic = itemSnap.childSnapshot(forPath: MarketKeys.plastic).value as? String ?? "plastic unknown"
-            let thumbImageID = itemSnap.childSnapshot(forPath: MarketKeys.thumbImageID).value as? String ?? ""
+            let headline        = itemSnap.childSnapshot(forPath: MarketKeys.headline).value as? String ?? "(headline)"
+            let manufacturer    = itemSnap.childSnapshot(forPath: MarketKeys.manufacturer).value as? String ?? "manufacturer unknown"
+            let model           = itemSnap.childSnapshot(forPath: MarketKeys.model).value as? String ?? "model unknown"
+            let plastic         = itemSnap.childSnapshot(forPath: MarketKeys.plastic).value as? String ?? "plastic unknown"
+            let thumbImageID    = itemSnap.childSnapshot(forPath: MarketKeys.thumbImageID).value as? String ?? ""
             
             let itemBasic = MarketItemBasic(id: itemID, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, thumbImageID: thumbImageID)
             
@@ -191,7 +266,6 @@ class MarketManager {
     }
     
     static func fetchImageWith(imageID: String, completion: @escaping (Result<UIImage, NetworkError>) -> Void) {
-        
         StorageManager.downloadURLFor(imageID: imageID) { result in
             switch result {
             case .success(let url):
@@ -212,58 +286,63 @@ class MarketManager {
     }
     
     static func fetchItemWith(itemID: String, completion: @escaping (MarketItem?) -> Void) {
-
         database.child(itemID).observeSingleEvent(of: .value) { itemSnap in
-            
-            let description = itemSnap.childSnapshot(forPath: MarketKeys.description).value as? String ?? "(description)"
-            let headline = itemSnap.childSnapshot(forPath: MarketKeys.headline).value as? String ?? "(headline)"
-            let manufacturer = itemSnap.childSnapshot(forPath: MarketKeys.manufacturer).value as? String ?? "manufacturer unknown"
-            let model = itemSnap.childSnapshot(forPath: MarketKeys.model).value as? String ?? "model unknown"
-            let plastic = itemSnap.childSnapshot(forPath: MarketKeys.plastic).value as? String ?? "plastic unknown"
-            var weight = itemSnap.childSnapshot(forPath: MarketKeys.weight).value as? Double
-            let imageIDsString = itemSnap.childSnapshot(forPath: MarketKeys.imageIDs).value as? String ?? ""
-            let thumbImageID = itemSnap.childSnapshot(forPath: MarketKeys.thumbImageID).value as? String ?? ""
-            var askingPrice = itemSnap.childSnapshot(forPath: MarketKeys.askingPrice).value as? Int
-            let sellingLocation = itemSnap.childSnapshot(forPath: MarketKeys.sellingLocation).value as? String ?? "Unknown Location"
-            let updatedTimestampString = itemSnap.childSnapshot(forPath: MarketKeys.updatedTimestamp).value as? String
-            let inputZipCode = itemSnap.childSnapshot(forPath: MarketKeys.inputZipCode).value as? String
-            let ownerID = itemSnap.childSnapshot(forPath: MarketKeys.owner).value as? String
-            
-            let imageIDs = imageIDsString.components(separatedBy: ",")
-            
-            if askingPrice == 0 { askingPrice = nil }
-            if weight == 0 { weight = nil }
-            
-            let updatedTimestamp = updatedTimestampString?.stringToLocalDate(format: .fullNumericWithTimezone) ?? Date.distantPast
-            
-            let sellingLocationArray = sellingLocation.split(separator: ",")
-            
-            let location = Location(latitude: Double(sellingLocationArray[0]) ?? 0, longitude: Double(sellingLocationArray[1]) ?? 0)
-            
-            let item = MarketItem(id: itemID, headline: headline, manufacturer: manufacturer, model: model, plastic: plastic, weight: weight, description: description, imageIDs: imageIDs, thumbImageID: thumbImageID, askingPrice: askingPrice, sellingLocation: location, updatedTimestamp: updatedTimestamp, inputZipCode: inputZipCode, ownerID: ownerID)
-            
-            completion(item)
+            completion(MarketItem(itemID: itemID, itemSnap: itemSnap))
         }
     }
     
-    static func fetchOffersWithin(range: String, of location: Location, completion: @escaping(Result<[String], NetworkError>) -> Void) {
+    static func fetchItemWith(itemID: String) {
+        database.child(itemID).observeSingleEvent(of: .value) { itemSnap in
+            let marketItem = MarketItem(itemID: itemID, itemSnap: itemSnap)
+            
+            guard let marketItemV2 = MarketItemV2(marketItem: marketItem, type: .disc) else { return }
+            
+            fetchedItemPublisher.send(marketItemV2)
+        }
+    }
+    
+    //  MARK: - BenDo:  THIS ONE OBSOLETE NOW THAT THE PUBLISHER HAS BEEN ADDED???  This method needs help... need to add range and better querying of lat AND long.  search range save for V2.1
+    /// returns an array of market item IDs for sale within a specified range (in miles) from the provided location
+    static func fetchOfferIDsWithin(searchTerm: String? = nil, range: SearchRange, of location: Location, completion: @escaping(Result<[String], NetworkError>) -> Void) {
         
         var itemIDs: [String] = []
         
         let buyerLatitude = location.latitude
         let buyerLongitude = location.longitude
         
-        database.child(MarketKeys.coordinates).queryOrdered(byChild: MarketKeys.latitude).queryStarting(atValue: buyerLatitude - 1 , childKey: MarketKeys.latitude).queryEnding(atValue: buyerLatitude + 1, childKey: MarketKeys.latitude).observeSingleEvent(of: .value) { snap in
+        database.child(MarketKeys.coordinates)
+            .queryOrdered(byChild: MarketKeys.latitude)
+            .queryStarting(atValue: buyerLatitude - range.latitudeDegrees , childKey: MarketKeys.latitude)
+            .queryEnding(atValue: buyerLatitude + range.latitudeDegrees, childKey: MarketKeys.latitude)
+            .observeSingleEvent(of: .value)
+        { snap in
             var i = 0
             
             if snap.childrenCount == 0 { return completion(.success(itemIDs)) }
             
             for child in snap.children {
                 i += 1
+                
                 if let childSnap = child as? DataSnapshot {
                     if let itemLongitude = childSnap.childSnapshot(forPath: MarketKeys.longitude).value as? Double {
-                        if itemLongitude >= buyerLongitude - 1 && itemLongitude <= buyerLongitude + 1 {
-                            itemIDs.append(childSnap.key)
+                        
+                        if
+                            itemLongitude >= buyerLongitude - range.longitudeDegrees &&
+                            itemLongitude <= buyerLongitude + range.longitudeDegrees
+                        {
+                            if let searchTerm = searchTerm {
+                                let item = MarketItem(itemID: childSnap.key, itemSnap: childSnap)
+                                
+                                guard
+                                    item.headline.localizedCaseInsensitiveContains(searchTerm) ||
+                                        item.description.localizedCaseInsensitiveContains(searchTerm)
+                                else { break }
+                                
+                                itemIDs.append(childSnap.key)
+                                
+                            } else {
+                                itemIDs.append(childSnap.key)
+                            }
                         }
                     }
                 }
@@ -275,4 +354,47 @@ class MarketManager {
         }
     }
     
-}   //  End of Class
+    //  MARK: - BenDo: This method needs help... need to add range and better querying of lat AND long.  CURRENTLY NOT WORKING FOR KEYWORD SEARCH
+    static func fetchOffers(searchTerm: String? = nil, within range: SearchRange, of location: Location) {
+        
+        let buyerLatitude = location.latitude
+        let buyerLongitude = location.longitude
+        
+        database.child(MarketKeys.coordinates)
+            .queryOrdered(byChild: MarketKeys.latitude)
+            .queryStarting(atValue: buyerLatitude - range.latitudeDegrees , childKey: MarketKeys.latitude)
+            .queryEnding(atValue: buyerLatitude + range.latitudeDegrees, childKey: MarketKeys.latitude)
+            .observeSingleEvent(of: .value)
+        { snap in
+            
+            if snap.childrenCount == 0 { return }
+            
+            for child in snap.children {
+                
+                if let childSnap = child as? DataSnapshot {
+                    if let itemLongitude = childSnap.childSnapshot(forPath: MarketKeys.longitude).value as? Double {
+                        
+                        if
+                            itemLongitude >= buyerLongitude - range.longitudeDegrees &&
+                            itemLongitude <= buyerLongitude + range.longitudeDegrees
+                        {
+                            if let searchTerm = searchTerm {
+                                let item = MarketItem(itemID: childSnap.key, itemSnap: childSnap)
+                                
+                                guard
+                                    item.headline.localizedCaseInsensitiveContains(searchTerm) ||
+                                        item.description.localizedCaseInsensitiveContains(searchTerm)
+                                else { break }
+                                
+                                fetchItemWith(itemID: childSnap.key)
+                                
+                            } else {
+                                fetchItemWith(itemID: childSnap.key)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

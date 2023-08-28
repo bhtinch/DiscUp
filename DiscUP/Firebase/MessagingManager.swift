@@ -6,7 +6,8 @@
 //
 
 import Foundation
-import Firebase
+import FirebaseAuth
+import FirebaseDatabase
 import MessageKit
 
 enum ConversationType: String {
