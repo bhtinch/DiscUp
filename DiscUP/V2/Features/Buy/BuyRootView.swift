@@ -17,8 +17,6 @@ struct BuyRootView: View {
     @Environment(\.isSearching)
     private var isSearching: Bool
     
-    @State var searchText: String = ""
-    
     // MARK: - Body
     
     var body: some View {

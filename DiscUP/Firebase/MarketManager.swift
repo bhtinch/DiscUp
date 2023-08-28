@@ -17,6 +17,8 @@ class MarketManager {
     static let marketDB = Firestore.firestore()
     static let locationManager = LocationManager.shared
     
+    static let propertiesCollectionID = "propertiesCollection"
+    
     //  MARK: - Legacy Properties
     static let database = MarketDB.shared.dbRef
     static let userID = Auth.auth().currentUser?.uid
@@ -47,7 +49,12 @@ class MarketManager {
         // remove dummy id from new item, FB will create id
         itemDataModel.id = nil
         
-        let docRef = try collectionRef.addDocument(from: itemDataModel)
+        // create document to host properties collection for collectionGroup querying
+        let itemDocRef = collectionRef.document()
+        try await itemDocRef.setData([:])
+        
+        // create properties collection ref and add new document from data
+        let docRef = try itemDocRef.collection(propertiesCollectionID).addDocument(from: itemDataModel)
         
         // update image ids with userID and itemID
         item.images.forEach {
@@ -71,6 +78,10 @@ class MarketManager {
         let item = try? await docRef.getDocument(as: MarketItemDataModel.self)
         
         print(item)
+    }
+    
+    static func fetchItems(searchText: String? = nil, sellerID: String? = nil, radiusMeters: Int = 10000) {
+//        marketDB.collection(<#T##collectionPath: String##String#>)
     }
     
     

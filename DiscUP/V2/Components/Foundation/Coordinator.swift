@@ -25,7 +25,6 @@ class Coordinator<Output>: NSObject, ObservableObject, Identifiable, Publisher {
     override init() {}
 
     // MARK: -
-
     public func send(_ input: Output) {
         action.send(input)
     }

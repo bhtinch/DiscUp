@@ -52,4 +52,6 @@
  -  All day collections will be written to and read based on the user provided timezone (timezone provided in the fetch query, or timezone of the item location being saved)
  
  -  In this way, a user will see the current items that are available for the timezone that is applicable (usually will just be the user's current location timezone, but user could do a custom search in a different timezone or add an item to a timezone that is not their current physical location.
+ 
+ - To search across multiple days in one query, use a collection group query on the propertiesCollection  ********  RESTART HERE  ************
  */
