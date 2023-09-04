@@ -34,24 +34,10 @@ public protocol MediaItem {
     /// The image.
     var image: UIImage? { get }
 
-    /// A placeholder image for when the image is obtained asychronously.
+    /// A placeholder image for when the image is obtained asynchronously.
     var placeholderImage: UIImage { get }
 
     /// The size of the media item.
     var size: CGSize { get }
 
-}
-
-extension UIImage: MediaItem {
-    public var url: URL? {
-        nil
-    }
-    
-    public var image: UIImage? {
-        self
-    }
-    
-    public var placeholderImage: UIImage {
-        UIImage(systemName: "arrow.triangle.2.circlepath.camera") ?? UIImage()
-    }
 }

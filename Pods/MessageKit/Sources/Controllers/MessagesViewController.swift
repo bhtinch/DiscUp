@@ -349,25 +349,45 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
 
         switch message.kind {
         case .text, .attributedText, .emoji:
-            let cell = messagesCollectionView.dequeueReusableCell(TextMessageCell.self, for: indexPath)
-            cell.configure(with: message, at: indexPath, and: messagesCollectionView)
-            return cell
+            if let cell = messagesDataSource.textCell(for: message, at: indexPath, in: messagesCollectionView) {
+                return cell
+            } else {
+                let cell = messagesCollectionView.dequeueReusableCell(TextMessageCell.self, for: indexPath)
+                cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+                return cell
+            }
         case .photo, .video:
-            let cell = messagesCollectionView.dequeueReusableCell(MediaMessageCell.self, for: indexPath)
-            cell.configure(with: message, at: indexPath, and: messagesCollectionView)
-            return cell
+            if let cell = messagesDataSource.photoCell(for: message, at: indexPath, in: messagesCollectionView) {
+                return cell
+            } else {
+                let cell = messagesCollectionView.dequeueReusableCell(MediaMessageCell.self, for: indexPath)
+                cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+                return cell
+            }
         case .location:
-            let cell = messagesCollectionView.dequeueReusableCell(LocationMessageCell.self, for: indexPath)
-            cell.configure(with: message, at: indexPath, and: messagesCollectionView)
-            return cell
+            if let cell = messagesDataSource.locationCell(for: message, at: indexPath, in: messagesCollectionView) {
+                return cell
+            } else {
+                let cell = messagesCollectionView.dequeueReusableCell(LocationMessageCell.self, for: indexPath)
+                cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+                return cell
+            }
         case .audio:
-            let cell = messagesCollectionView.dequeueReusableCell(AudioMessageCell.self, for: indexPath)
-            cell.configure(with: message, at: indexPath, and: messagesCollectionView)
-            return cell
+            if let cell = messagesDataSource.audioCell(for: message, at: indexPath, in: messagesCollectionView) {
+                return cell
+            } else {
+                let cell = messagesCollectionView.dequeueReusableCell(AudioMessageCell.self, for: indexPath)
+                cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+                return cell
+            }
         case .contact:
-            let cell = messagesCollectionView.dequeueReusableCell(ContactMessageCell.self, for: indexPath)
-            cell.configure(with: message, at: indexPath, and: messagesCollectionView)
-            return cell
+            if let cell = messagesDataSource.contactCell(for: message, at: indexPath, in: messagesCollectionView) {
+                return cell
+            } else {
+                let cell = messagesCollectionView.dequeueReusableCell(ContactMessageCell.self, for: indexPath)
+                cell.configure(with: message, at: indexPath, and: messagesCollectionView)
+                return cell
+            }
         case .linkPreview:
             let cell = messagesCollectionView.dequeueReusableCell(LinkPreviewMessageCell.self, for: indexPath)
             cell.configure(with: message, at: indexPath, and: messagesCollectionView)
@@ -496,13 +516,36 @@ UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UIGestureRecogni
     }
 
     // MARK: - UIGestureRecognizerDelegate
-
-    /// check pan gesture direction
-    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+           
+    /// Check Pan Gesture Direction:
+    open func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         guard let panGesture = gestureRecognizer as? UIPanGestureRecognizer else {
             return false
         }
         let velocity = panGesture.velocity(in: messagesCollectionView)
         return abs(velocity.x) > abs(velocity.y)
     }
+}
+
+        // MARK: - UIScrollViewDelegate
+
+extension MessagesViewController: UIScrollViewDelegate{
+    
+    open func scrollViewDidScroll(_ scrollView: UIScrollView) { }
+    
+    open func scrollViewWillBeginDragging(_ scrollView: UIScrollView){ }
+    
+    open func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>){ }
+    
+    open func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool){ }
+    
+    open func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView){ }
+    
+    open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) { }
+    
+    open func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) { }
+    
+    open func scrollViewDidScrollToTop(_ scrollView: UIScrollView){ }
+    
+    open func scrollViewDidChangeAdjustedContentInset(_ scrollView: UIScrollView) { }
 }

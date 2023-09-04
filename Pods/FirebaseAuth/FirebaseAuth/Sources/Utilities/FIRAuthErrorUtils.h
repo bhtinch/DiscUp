@@ -15,8 +15,8 @@
  */
 
 #import <Foundation/Foundation.h>
+#import "FirebaseAuth/Sources/Public/FirebaseAuth/FIRAuth.h"
 #import "FirebaseAuth/Sources/Public/FirebaseAuth/FIRMultiFactorInfo.h"
-
 #import "FirebaseAuth/Sources/Utilities/FIRAuthInternalErrors.h"
 
 @class FIRAuthCredential;
@@ -489,9 +489,10 @@ NS_ASSUME_NONNULL_BEGIN
     @brief Constructs an @c NSError with the @c FIRAuthErrorCodeSecondFactorRequired code.
     @return The NSError instance associated with the given FIRAuthError.
  */
-+ (NSError *)secondFactorRequiredErrorWithPendingCredential:(NSString *)MFAPendingCredential
-                                                      hints:(NSArray<FIRMultiFactorInfo *> *)
-                                                                multiFactorInfo;
++ (NSError *)
+    secondFactorRequiredErrorWithPendingCredential:(NSString *)MFAPendingCredential
+                                             hints:(NSArray<FIRMultiFactorInfo *> *)multiFactorInfo
+                                              auth:(FIRAuth *)auth;
 #endif
 
 /** @fn appNotVerifiedErrorWithMessage:
@@ -507,6 +508,13 @@ NS_ASSUME_NONNULL_BEGIN
     @return The NSError instance associated with the given FIRAuthError.
  */
 + (NSError *)missingClientIdentifierErrorWithMessage:(nullable NSString *)message;
+
+/** @fn missingClientTypeErrorWithMessage:
+    @brief Constructs an @c NSError with the @c FIRAuthErrorCodeMissingClientType code.
+    @param message Error message from the backend, if any.
+    @return The NSError instance associated with the given FIRAuthError.
+ */
++ (NSError *)missingClientTypeErrorWithMessage:(nullable NSString *)message;
 
 /** @fn captchaCheckFailedErrorWithMessage:
     @brief Constructs an @c NSError with the @c FIRAuthErrorCaptchaCheckFailed code.
@@ -606,6 +614,12 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSError *)unsupportedTenantOperationError;
 
 + (NSError *)blockingCloudFunctionServerResponseWithMessage:(nullable NSString *)message;
+
+/** @fn recaptchaSDKNotLinkedError
+   @brief Constructs an @c NSError with the @c FIRAuthErrorCodeRecaptchaSDKNotLinked code.
+   @return The NSError instance associated with the given FIRAuthError.
+ */
++ (NSError *)recaptchaSDKNotLinkedError;
 
 @end
 

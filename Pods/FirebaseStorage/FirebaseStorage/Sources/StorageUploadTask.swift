@@ -28,7 +28,6 @@ import Foundation
  * Uploads can be initialized from `Data` in memory, or a URL to a file on disk.
  * Uploads are performed on a background queue, and callbacks are raised on the developer
  * specified `callbackQueue` in Storage, or the main queue if unspecified.
- * Currently all uploads must be initiated and managed on the main queue.
  */
 @objc(FIRStorageUploadTask) open class StorageUploadTask: StorageObservableTask,
   StorageTaskManagement {
@@ -76,7 +75,7 @@ import Foundation
       let uploadFetcher = GTMSessionUploadFetcher(
         request: request,
         uploadMIMEType: contentType,
-        chunkSize: Int64.max,
+        chunkSize: self.reference.storage.uploadChunkSizeBytes,
         fetcherService: self.fetcherService
       )
       if let data = self.uploadData {
