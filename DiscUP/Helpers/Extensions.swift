@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MessageKit
 
 extension UIView {
     
@@ -54,5 +55,11 @@ extension String {
             
             return [first, last]
         }
+    }
+}
+
+extension UIImage {
+    func asMediaItem() -> MediaItem {
+        ImageMediaItem(image: self)
     }
 }

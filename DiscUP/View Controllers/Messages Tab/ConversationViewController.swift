@@ -249,7 +249,7 @@ class ConversationViewController: MessagesViewController {
                     switch result {
                     
                     case .success(let image):
-                        let message = MKmessage(text: "", mediaItem: image, user: proto.sender, messageId: proto.messageID, date: proto.sentDate)
+                        let message = MKmessage(text: "", mediaItem: image.asMediaItem(), user: proto.sender, messageId: proto.messageID, date: proto.sentDate)
                         
                         if proto.convoIndex >= self.messages.count {
                             self.messages.append(message)
@@ -430,7 +430,7 @@ extension ConversationViewController: CameraInputBarAccessoryViewDelegate {
 
 // MARK: - Messages DataSource & Delegates
 extension ConversationViewController: MessagesDataSource, MessagesDisplayDelegate {
-    func currentSender() -> SenderType {
+    var currentSender: MessageKit.SenderType {
         return sender
     }
     

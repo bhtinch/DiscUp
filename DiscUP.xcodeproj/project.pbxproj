@@ -719,6 +719,7 @@
 				62E27F0E2652DB5500106333 /* LocationManager.swift */,
 				62383376265741EE0043B4CA /* Alerts.swift */,
 				62AC762E29169D4B00ECB762 /* GeoExtensions.swift */,
+				62E4481B2AA025EB004EA6C9 /* ImageMediaItem.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -1006,6 +1007,7 @@
 				62C04ECE25F2A6E400D4F4B6 /* Extensions.swift in Sources */,
 				62C04EE725F2A86C00D4F4B6 /* RegistrationViewController.swift in Sources */,
 				6286B4B928B2A1DE000F5CD1 /* BuyDetailRootView.swift in Sources */,
+				62E4481C2AA025EB004EA6C9 /* ImageMediaItem.swift in Sources */,
 				6286B48028B2A1CD000F5CD1 /* ViewModel.swift in Sources */,
 				62C04F0125F2A97E00D4F4B6 /* CreateNewBagViewController.swift in Sources */,
 				6207C92C28BA91D100AC59EE /* TODO.swift in Sources */,
