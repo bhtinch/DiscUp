@@ -430,8 +430,8 @@ extension ConversationViewController: CameraInputBarAccessoryViewDelegate {
 
 // MARK: - Messages DataSource & Delegates
 extension ConversationViewController: MessagesDataSource, MessagesDisplayDelegate {
-    var currentSender: MessageKit.SenderType {
-        return sender
+    func currentSender() -> MessageKit.SenderType {
+        sender
     }
     
     func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
