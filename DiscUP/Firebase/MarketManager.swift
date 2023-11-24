@@ -41,7 +41,7 @@ class MarketManager {
         else { return }
         
         // remove dummy id from new item, FB will create id
-        if itemDataModel.id = "" {
+        if itemDataModel.id == "" {
             itemDataModel.id = nil
         }
         
