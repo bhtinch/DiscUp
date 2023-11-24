@@ -127,8 +127,6 @@ extension BuyCoordinator {
     private func searchSubmittedAction() {
         guard !viewModel.searchText.isEmpty else { return }
         
-        debugPrint(viewModel.searchText)
-        
         fetchItems(for: viewModel.searchText)
     }
 }
@@ -147,23 +145,12 @@ extension BuyCoordinator {
         
         let searchLocation = searchLocation ?? defaultSearchLocation
         
-        MarketManager.fetchOffers(searchTerm: searchTerm, within: viewModel.searchRange, of: searchLocation)
+        MarketManager.fetchItems(
+            searchText: searchTerm,
+            searchPostingDate: Date(),
+            searchLocation: searchLocation,
+            radiusMeters: viewModel.searchRange.convertToMeters,
+            sellerID: nil
+        )
     }
-    
-//    private func fetchItems(with itemIDs: [String]) {
-//        debugPrint(itemIDs.count)
-//
-//        for id in itemIDs {
-//            MarketManager.fetchItemWith(itemID: id) { [weak self] item in
-//                guard
-//                    let item = item,
-//                    let itemV2 = MarketItemV2(marketItem: item, type: .disc)
-//                else { return }
-//
-//                self?.viewModel.items.append(itemV2)
-//
-//                itemV2.fetchThumbImage()
-//            }
-//        }
-//    }
 }

@@ -56,6 +56,10 @@ extension String {
             return [first, last]
         }
     }
+    
+    func nsString() -> NSString {
+        self as NSString
+    }
 }
 
 extension UIImage {
