@@ -32717,6 +32717,23 @@
 			};
 			name = Release;
 		};
+		3F6487801BB53686443807BEDE659A82 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CCF55DD015FBA54CBE4D83E806AFEC85 /* gRPC-C++.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/gRPC-C++";
+				IBSC_MODULE = grpcpp;
+				INFOPLIST_FILE = "Target Support Files/gRPC-C++/ResourceBundle-gRPCCertificates-Cpp-gRPC-C++-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				PRODUCT_NAME = "gRPCCertificates-Cpp";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
 		43CD8D46D92792C5A8A3B12AC7EC2E68 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E7674CCE3C363544847247F37FB216F4 /* FirebaseFirestore.release.xcconfig */;
@@ -32751,22 +32768,6 @@
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
-		};
-		4A4ED93A20ACA67098892595169E9959 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = CCF55DD015FBA54CBE4D83E806AFEC85 /* gRPC-C++.debug.xcconfig */;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/gRPC-C++";
-				IBSC_MODULE = grpcpp;
-				INFOPLIST_FILE = "Target Support Files/gRPC-C++/ResourceBundle-gRPCCertificates-Cpp-gRPC-C++-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
-				PRODUCT_NAME = "gRPCCertificates-Cpp";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Debug;
 		};
 		53BA57953ADFC1CFE97B395C97A783F6 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -33046,6 +33047,23 @@
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
+		};
+		7C072B8FD483ADFD511952F6F730653A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 518832713C589BB3CC0F2774637ECE12 /* gRPC-C++.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/gRPC-C++";
+				IBSC_MODULE = grpcpp;
+				INFOPLIST_FILE = "Target Support Files/gRPC-C++/ResourceBundle-gRPCCertificates-Cpp-gRPC-C++-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				PRODUCT_NAME = "gRPCCertificates-Cpp";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
 		};
 		7EE81A4B793C59E842E4C62D7636A93B /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -33695,22 +33713,6 @@
 			};
 			name = Debug;
 		};
-		C697B0BEA615240649FD739456DDEA3A /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 518832713C589BB3CC0F2774637ECE12 /* gRPC-C++.release.xcconfig */;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/gRPC-C++";
-				IBSC_MODULE = grpcpp;
-				INFOPLIST_FILE = "Target Support Files/gRPC-C++/ResourceBundle-gRPCCertificates-Cpp-gRPC-C++-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
-				PRODUCT_NAME = "gRPCCertificates-Cpp";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				WRAPPER_EXTENSION = bundle;
-			};
-			name = Release;
-		};
 		CDCAC935DEBC626B8E733C5CD94D6323 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0BB7BBB7AB8DA8C82C8D4D1A7FFF0626 /* GTMSessionFetcher.debug.xcconfig */;
@@ -34346,8 +34348,8 @@
 		7E6E253DED5480AC36BD4FB39B20D27C /* Build configuration list for PBXNativeTarget "gRPC-C++-gRPCCertificates-Cpp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				4A4ED93A20ACA67098892595169E9959 /* Debug */,
-				C697B0BEA615240649FD739456DDEA3A /* Release */,
+				3F6487801BB53686443807BEDE659A82 /* Debug */,
+				7C072B8FD483ADFD511952F6F730653A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

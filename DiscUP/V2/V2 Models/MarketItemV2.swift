@@ -33,6 +33,7 @@ class MarketItemV2: ObservableObject {
     var description: String
     var seller: AppUser
     var imageIDs: [String]
+    var listDate: Date
     
     @Published var images: [MarketImage] {
         didSet {
@@ -57,7 +58,8 @@ class MarketItemV2: ObservableObject {
         description: String = "No description provided.",
         seller: AppUser,
         imageIDs: [String] = [],
-        images: [MarketImage] = []
+        images: [MarketImage] = [],
+        listDate: Date = Date()
     ) {
         self.id = id
         self.headline = headline
@@ -73,6 +75,7 @@ class MarketItemV2: ObservableObject {
         self.seller = seller
         self.imageIDs = imageIDs
         self.images = images
+        self.listDate = listDate
     }
     
     convenience init?(marketItem: MarketItem, type: MarketItemV2Type) {

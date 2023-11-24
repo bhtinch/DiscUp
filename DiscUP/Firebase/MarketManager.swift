@@ -11,6 +11,7 @@ import FirebaseDatabase
 import FirebaseFirestore
 import FirebaseAuth
 import CoreLocation
+import GeoFire
 
 class MarketManager {
     //  MARK: - V2 Properties
@@ -26,20 +27,13 @@ class MarketManager {
     
     static let fetchedItemPublisher = PassthroughSubject<MarketItemV2, Never>()
     
-    //  MARK: - V2 Methods
-    static func dayCollectionRef(zip: String) async -> CollectionReference {
-        guard
-            let timezone = await locationManager.placemark(zip: zip)?.timeZone else {
-            return marketDB.collection(Date().marketCollectionDateString())
-        }
-        
-        let timeZoneFormattedDate = Date().convertTo(timezone: timezone)
-        
-        return marketDB.collection(timeZoneFormattedDate.marketCollectionDateString())
-    }
+    static var itemCache = ItemCache.shared
     
+    static var cancellables = Set<AnyCancellable>()
+    
+    //  MARK: - V2 Methods
     static func add(item: MarketItemV2) async throws {
-        let collectionRef = await dayCollectionRef(zip: item.location.zipCode)
+        let collectionRef = marketDB.collection("items")
         
         guard
             var itemDataModel = await MarketItemDataModel(item),
@@ -47,14 +41,12 @@ class MarketManager {
         else { return }
         
         // remove dummy id from new item, FB will create id
-        itemDataModel.id = nil
-        
-        // create document to host properties collection for collectionGroup querying
-        let itemDocRef = collectionRef.document()
-        try await itemDocRef.setData([:])
+        if itemDataModel.id = "" {
+            itemDataModel.id = nil
+        }
         
         // create properties collection ref and add new document from data
-        let docRef = try itemDocRef.collection(propertiesCollectionID).addDocument(from: itemDataModel)
+        let docRef = try collectionRef.addDocument(from: itemDataModel)
         
         // update image ids with userID and itemID
         item.images.forEach {
@@ -71,20 +63,92 @@ class MarketManager {
         }
     }
     
-    //  MARK: - BenDo: Fetch is successfully working like this to decode into data model... will need to handle images fetch along with
-    static func testFetch() async {
-        let docRef = marketDB.collection("2023.01.30").document("fruFbRFy8oBDqW508669")
-        
-        let item = try? await docRef.getDocument(as: MarketItemDataModel.self)
-        
-        print(item)
+    static func fetch(docRef: DocumentReference, errorHandler: ((Error) -> Void)? = nil) {
+        docRef.getDocument(as: MarketItemDataModel.self) { result in
+            result.publisher
+                .sink { completion in
+                    switch completion {
+                    case .finished:             break
+                    case .failure(let error):   errorHandler?(error)
+                    }
+                } receiveValue: { itemDataModel in
+                    guard
+                        let item = MarketItemV2(itemDataModel)
+                    else {
+                        errorHandler?(DescriptiveError.couldNotCreateMarketItemModelFromDataModel)
+                        return
+                    }
+                    
+                    fetchedItemPublisher.send(item)
+                    itemCache.insert(item)
+                }
+                .store(in: &cancellables)
+        }
     }
-    
-    static func fetchItems(searchText: String? = nil, sellerID: String? = nil, radiusMeters: Int = 10000) {
-//        marketDB.collection(<#T##collectionPath: String##String#>)
+        
+    static func fetchItems(
+        searchText: String? = nil,
+        searchPostingDate: Date = Date(),
+        searchLocation: Location = Location.userCurrentLocation ?? Location.defaultLocation,
+        radiusMeters: Int,
+        sellerID: String? = nil
+    ) {
+        let searchDateString = searchPostingDate.dateToString(format: .yearMonthDay)
+        let searchCoordinate = searchLocation.coordinate
+        let radiusMetersDouble = Double(radiusMeters)
+        
+        // Each item in 'bounds' represents a startAt/endAt pair. We have to issue
+        // a separate query for each pair. There can be up to 9 pairs of bounds
+        // depending on overlap, but in most cases there are 4.
+        let queryBounds = GFUtils.queryBounds(forLocation: searchCoordinate, withRadius: radiusMetersDouble)
+        
+        let queries = queryBounds.map { bound -> Query in
+            return marketDB.collection("items")
+                .order(by: "geohash")
+                .start(at: [bound.startValue])
+                .end(at: [bound.endValue])
+        }
+        
+        queries.forEach { query in
+            query.getDocuments { snapshot, error in
+                guard var documents = snapshot?.documents else {
+                    print("Unable to fetch snapshot data. \(String(describing: error))")
+                    return
+                }
+                
+                // TODO: Typesense filtering
+                if let searchText = searchText {
+                    documents.filter { _ in
+                        true
+                    }
+                }
+                
+                for document in documents {
+                    // check cache to see if item is already fetched
+                    if let cachedItem = itemCache.getItem(with: document.documentID) {
+                        fetchedItemPublisher.send(cachedItem)
+                        continue
+                    }
+                    
+                    let docData = document.data()
+                    let lat = docData["lat"] as? Double ?? 0
+                    let lng = docData["long"] as? Double ?? 0
+                    let coordinates = CLLocation(latitude: lat, longitude: lng)
+                    let centerPoint = CLLocation(latitude: searchLocation.latitude, longitude: searchLocation.longitude)
+                    
+                    // We have to filter out a few false positives due to GeoHash accuracy, but
+                    // most will match
+                    let distance = GFUtils.distance(from: centerPoint, to: coordinates)
+                    
+                    guard
+                        distance <= radiusMetersDouble
+                    else { continue }
+                    
+                    fetch(docRef: document.reference)
+                }
+            }
+        }
     }
-    
-    
     
     
     //  MARK: - *************************** Legacy Methods ***********************
