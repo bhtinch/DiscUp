@@ -11,7 +11,7 @@ import SwiftUI
 
 // MARK: - View Model
 
-class SellNewItemViewModel: ViewModel <SellNewItemCoordinator.Action> {
+class SellNewItemViewModel: ViewModel<SellNewItemCoordinator.Action> {
     @Published var pageIndex = 0
     
     @Published var nextButtonDisabled = true
@@ -25,7 +25,7 @@ class SellNewItemViewModel: ViewModel <SellNewItemCoordinator.Action> {
 
 // MARK: - Coordinator
 
-class SellNewItemCoordinator: Coordinator <SellNewItemCoordinator.Action> {
+class SellNewItemCoordinator: Coordinator<SellNewItemCoordinator.Action> {
     
     // MARK: - UIActions
     
@@ -47,28 +47,13 @@ class SellNewItemCoordinator: Coordinator <SellNewItemCoordinator.Action> {
     
     // MARK: - Initialization
     
-    init(appUser: AppUser) {
+    init(_ newItem: MarketItemV2) {
         /* Ben do:
          - need to set default seller prop as current user (user defaults)
          - need to get current users default selling location (user defaults)
          - not sure if any generic uuid will do... may want some other form of a uuid later
          
          */
-        
-        let newItem = MarketItemV2(
-            id: "",
-            headline: "",
-            manufacturer: "",
-            model: "",
-            plastic: "",
-            weight: 0,
-            thumbImageID: "",
-            price: 10,
-            location: Location.defaultSellingLocation ?? Location.userCurrentLocation ?? Location.defaultLocation,
-            itemType: .disc,
-            description: "Please add a description...",
-            seller: appUser
-        )
         
         viewModel = SellNewItemViewModel(item: newItem)
         
@@ -89,6 +74,7 @@ extension SellNewItemCoordinator {
     private func perform(action: Action) {
         switch action {
         case .cancelTapped:
+            viewModel.item = MarketItemV2.defaultNoItem
             userInterface.send(.dismiss)
             
         case .saveTapped:
@@ -97,6 +83,12 @@ extension SellNewItemCoordinator {
     }
     
     private func saveNewItem() {
+        if viewModel.item.thumbImageID == "" {
+            DispatchQueue.main.async { [weak self] in
+                self?.viewModel.item.thumbImageID = self?.viewModel.item.imageIDs.first ?? ""
+            }
+        }
+        
         Task {
             //  MARK: - BenDo: Handle failure
             do {

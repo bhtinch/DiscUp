@@ -9,19 +9,19 @@ import UIKit
 
 struct AppUser {
     static let unknownUserID: String = "unknownAppUser"
-    static let unknownUser = AppUser(userID: unknownUserID)
+    static let unknownUser = AppUser(userID: unknownUserID, avatarImage: AvatarImage(id: UUID().uuidString, imageURL: nil))
     
     let userID: String
     
     var displayName: String?
     var avatarID: String?
-    var avatarImage: MarketImage?
+    var avatarImage: AvatarImage
     
     init(
         userID: String,
         displayName: String? = nil,
         avatarID: String? = nil,
-        avatarImage: MarketImage? = nil
+        avatarImage: AvatarImage
     ) {
         self.userID = userID
         self.displayName = displayName
@@ -34,21 +34,21 @@ struct AppUser {
             userID: "dummyUser1",
             displayName: "Ben Tincher",
             avatarID: "BenAvatar",
-            avatarImage: MarketImage(uid: UUID().uuidString, image: UIImage(named: "BenAvatar")!)
+            avatarImage: AvatarImage(id: UUID().uuidString, imageURL: nil)
         ),
         
         AppUser(
             userID: "dummyUser2",
             displayName: "Steve Blue",
             avatarID: "SteveAvatar",
-            avatarImage: MarketImage(uid: UUID().uuidString, image: UIImage(named: "SteveAvatar")!)
+            avatarImage: AvatarImage(id: UUID().uuidString, imageURL: nil)
         ),
         
         AppUser(
             userID: "dummyUser3",
             displayName: "Woody Pride",
             avatarID: "WoodyAvatar",
-            avatarImage: MarketImage(uid: UUID().uuidString, image: UIImage(named: "WoodyAvatar")!)
+            avatarImage: AvatarImage(id: UUID().uuidString, imageURL: nil)
         )
     ]
     
@@ -64,20 +64,24 @@ extension AppUser {
     static func setCurrentUser() {
         guard let id = Default.userID.value as? String else { return }
         
-        var marketImage: MarketImage?
+        StorageManager.downloadURLFor(imageID: id) { result in
+            switch result {
+            case .success(let url):
+                currentUser = AppUser(
+                    userID: id,
+                    displayName: Default.userDisplayName.value as? String,
+                    avatarID: nil,
+                    avatarImage: AvatarImage(id: id, imageURL: url)
+                )
                 
-        if
-            let imageData = Default.userAvatarImage.value as? Data,
-            let image = UIImage(data: imageData)
-        {
-            marketImage = MarketImage(uid: MarketImage.userAvatarID, image: image)
+            case .failure(let failure):
+                currentUser = AppUser(
+                    userID: id,
+                    displayName: Default.userDisplayName.value as? String,
+                    avatarID: nil,
+                    avatarImage: AvatarImage(id: id, imageURL: nil)
+                )
+            }
         }
-        
-        currentUser = AppUser(
-            userID: id,
-            displayName: Default.userDisplayName.value as? String,
-            avatarID: nil,
-            avatarImage: marketImage
-        )
     }
 }

@@ -8,12 +8,11 @@
 import SwiftUI
 
 struct SellDetailDescriptionView: View {
-    @Binding var item: MarketItemV2
+    @Environment(MarketItemV2.self) private var item
     
     let width: Double
         
-    init(marketItem: Binding<MarketItemV2>, width: Double) {
-        self._item = marketItem
+    init(width: Double) {
         self.width = width
     }
     

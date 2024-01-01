@@ -6,13 +6,10 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct SellDetailHeadlineView: View {
-    @Binding var item: MarketItemV2
-        
-    init(marketItem: Binding<MarketItemV2>) {
-        self._item = marketItem
-    }
+    @Environment(MarketItemV2.self) private var item
     
     var body: some View {
         HStack {
@@ -28,9 +25,7 @@ struct SellDetailHeadlineView: View {
             Spacer()
             
             VStack {
-                Image(uiImage: item.seller.avatarImage?.uiImage ?? UIImage(systemName: "person") ?? UIImage())
-                    .resizable()
-                    .scaledToFill()
+                item.seller.avatarImage.imageView
                     .frame(width: 60, height: 60)
                     .clipShape(Circle())
                     .clipped()

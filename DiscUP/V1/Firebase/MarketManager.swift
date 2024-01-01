@@ -150,6 +150,27 @@ class MarketManager {
         }
     }
     
+    static func fetchAllItemsSoldByUser(sellerID: String) {
+        let query = marketDB.collection("items").whereField("sellerID", isEqualTo: sellerID)
+        
+        query.getDocuments { snapshot, error in
+            guard var documents = snapshot?.documents else {
+                print("Unable to fetch snapshot data. \(String(describing: error))")
+                return
+            }
+            
+            for document in documents {
+                // check cache to see if item is already fetched
+                if let cachedItem = itemCache.getItem(with: document.documentID) {
+                    fetchedItemPublisher.send(cachedItem)
+                    continue
+                }
+                
+                fetch(docRef: document.reference)
+            }
+        }
+    }
+    
     
     //  MARK: - *************************** Legacy Methods ***********************
         

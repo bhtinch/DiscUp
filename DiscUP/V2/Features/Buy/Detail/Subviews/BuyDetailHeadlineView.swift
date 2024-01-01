@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct BuyDetailHeadlineView: View {
     
@@ -29,9 +30,7 @@ struct BuyDetailHeadlineView: View {
             Spacer()
             
             VStack {
-                Image(uiImage: item.seller.avatarImage?.uiImage ?? UIImage(systemName: "person") ?? UIImage())
-                    .resizable()
-                    .scaledToFill()
+                item.seller.avatarImage.imageView
                     .frame(width: 60, height: 60)
                     .clipShape(Circle())
                     .clipped()

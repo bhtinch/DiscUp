@@ -51,8 +51,16 @@ struct SellRootView: View {
                 items: $viewModel.items,
                 itemSelected: $viewModel.selectedItem
             )
-            
             .navigationBarHidden(true)
+            .onAppear {
+                guard
+                    let newItem = viewModel.newItem,
+                    newItem != MarketItemV2.defaultNoItem
+                else { return }
+                
+                viewModel.items.append(newItem)
+                viewModel.newItem = nil
+            }
             
             .searchable(
                 text: $viewModel.searchText,

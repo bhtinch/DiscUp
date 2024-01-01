@@ -74,7 +74,6 @@ extension MainTabBarController {
 // MARK: - Private Methods
 
 extension MainTabBarController {
-    
     private func checkAuth() {
         // Handle not connected to network
         

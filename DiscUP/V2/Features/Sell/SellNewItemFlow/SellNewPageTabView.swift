@@ -14,7 +14,7 @@ struct SellNewPageTabView: View {
         TabView(selection: $newItemViewModel.pageIndex) {
             SellNewDetailsPageView().tag(0)
             SellNewPhotosPageView().tag(1)
-            SellNewPreviewPageView(marketItem: $newItemViewModel.item).tag(2)
+            SellNewPreviewPageView(marketItem: newItemViewModel.item).tag(2)
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
     }

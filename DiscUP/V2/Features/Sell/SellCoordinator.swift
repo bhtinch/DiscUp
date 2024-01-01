@@ -11,13 +11,17 @@ import Combine
 // MARK: - ViewController
 
 class SellViewModel: ViewModel<SellCoordinator.Action> {
-    @Published var items: [MarketItemV2] = {
-        var arr = Array(MarketItemV2.items.prefix(3))
-        
-        arr.append(contentsOf: MarketItemV2.goodItems.prefix(2))
-        
-        return arr
-    }()
+//    @Published var items: [MarketItemV2] = {
+//        var arr = Array(MarketItemV2.items.prefix(3))
+//        
+//        arr.append(contentsOf: MarketItemV2.goodItems.prefix(2))
+//        
+//        return arr
+//    }()
+    
+    @Published var items: [MarketItemV2] = []
+    
+    @Published var newItem: MarketItemV2?
     
     @Published var searchText: String = ""
     
@@ -37,6 +41,7 @@ class SellCoordinator: Coordinator<SellCoordinator.Action> {
     enum UIAction {
         case goToDetail(MarketItemV2)
         case presentNewItemVC
+        case presentCommonAlert(Alerts.Common)
     }
     
     // MARK: - UIActions
@@ -59,10 +64,28 @@ class SellCoordinator: Coordinator<SellCoordinator.Action> {
         
         super.init()
         
+        setUpSubs()
+        start()
+    }
+    
+    private func start() {
+        fetchItems()
+    }
+    
+    private func setUpSubs() {
         merge(with: viewModel)
             .receive(on: dispatchQueue)
             .sink { [weak self] in
                 self?.perform(action: $0)
+            }
+            .store(in: &cancellables)
+        
+        MarketManager.fetchedItemPublisher
+            .receive(on: RunLoop.main)
+            .sink { [weak self] in
+                self?.viewModel.items.append($0)
+                
+                $0.fetchThumbImage()
             }
             .store(in: &cancellables)
     }
@@ -93,7 +116,38 @@ extension SellCoordinator {
     }
     
     private func createNewAction() {
+        guard let currentUser = AppUser.currentUser else {
+            userInterface.send(.presentCommonAlert(Alerts.Common.noCurrentUser))
+            return
+        }
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.viewModel.newItem = MarketItemV2(
+                id: "",
+                headline: "",
+                manufacturer: "",
+                model: "",
+                plastic: "",
+                weight: 0,
+                thumbImageID: "",
+                price: 10,
+                location: Location.defaultSellingLocation ?? Location.userCurrentLocation ?? Location.defaultLocation,
+                itemType: .disc,
+                description: "Please add a description...",
+                seller: currentUser
+            )
+        }
+        
         userInterface.send(.presentNewItemVC)
+    }
+}
+
+//  MARK: - Private Methods
+
+extension SellCoordinator {
+    private func fetchItems() {
+        guard let currentUser = AppUser.currentUser else { return }
+        MarketManager.fetchAllItemsSoldByUser(sellerID: currentUser.userID)
     }
 }
 

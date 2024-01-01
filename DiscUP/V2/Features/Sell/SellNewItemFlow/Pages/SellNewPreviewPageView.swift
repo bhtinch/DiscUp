@@ -8,11 +8,7 @@
 import SwiftUI
 
 struct SellNewPreviewPageView: View {
-    @Binding var marketItem: MarketItemV2
-        
-    init(marketItem: Binding<MarketItemV2>) {
-        self._marketItem = marketItem
-    }
+    @State var marketItem: MarketItemV2
     
     var body: some View {
         GeometryReader { geo in
@@ -23,7 +19,7 @@ struct SellNewPreviewPageView: View {
             
             ScrollView {
                 VStack {
-                    ItemDetailImagesView(marketItem: $marketItem)
+                    ItemDetailImagesView()
                         .frame(width: constraint, height: constraint, alignment: .top)
                         .clipped()
                         .contentShape(
@@ -31,12 +27,13 @@ struct SellNewPreviewPageView: View {
                         )
                     
                     VStack(alignment: .leading) {
-                        SellDetailHeadlineView(marketItem: $marketItem)
+                        SellDetailHeadlineView()
                         
-                        SellDetailDescriptionView(marketItem: $marketItem, width: geo.size.width * 0.95)
+                        SellDetailDescriptionView(width: geo.size.width * 0.95)
                     }
                     .frame(width: geo.size.width * 0.95, alignment: .leading)
                 }
+                .environment(marketItem)
             }
         }
     }

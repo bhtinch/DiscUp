@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Observation
 
 // MARK: - MarketItemEditableValue
 
@@ -15,7 +16,8 @@ enum MarketItemV2EditableValue {
 
 // MARK: - MarketItemV2
 
-class MarketItemV2: ObservableObject {
+@Observable
+class MarketItemV2 {
     
     //  MARK: - Properties
     
@@ -35,11 +37,14 @@ class MarketItemV2: ObservableObject {
     var imageIDs: [String]
     var listDate: Date
     
-    @Published var images: [MarketImage] {
+    var images: [MarketImage] {
         didSet {
             imageIDs = images.map { $0.id }
-            thumbImageID = images.first(where: { $0.isThumbImage })?.id ?? ""
         }
+    }
+    
+    var thumbImage: MarketImage {
+        images.first(where: { imageIsThumbnail($0) }) ?? images.first ?? MarketImage.defaultNoImage
     }
     
     //  MARK: - Initialization
@@ -96,7 +101,7 @@ class MarketItemV2: ObservableObject {
             location: marketItem.sellingLocation,
             itemType: type,
             description: marketItem.description,
-            seller: AppUser(userID: ownerID),
+            seller: AppUser(userID: ownerID, avatarImage: AvatarImage(id: ownerID, imageURL: nil)),
             imageIDs: marketItem.imageIDs
         )
     }
@@ -121,7 +126,7 @@ class MarketItemV2: ObservableObject {
     //  MARK: - DefaultNoItem
     
     static var defaultNoItem: MarketItemV2 = MarketItemV2(
-        id: UUID().uuidString,
+        id: "defaultNoItemID",
         headline: "No Item Selected",
         manufacturer: "N/A",
         model: "N/A",
@@ -133,9 +138,94 @@ class MarketItemV2: ObservableObject {
         itemType: .disc,
         seller: AppUser.randomDummyUser
     )
+}
+
+//  MARK: - Internal Methods
+
+extension MarketItemV2 {
+    func fetchThumbImage() {
+        self.fetchImages(imageIDs: [thumbImageID])
+    }
     
-    //  MARK: - Dummy Data
+    func fetchAdditionalImages() {
+        self.fetchImages(imageIDs: self.imageIDs)
+    }
+}
+
+//  MARK: - Private Methods
+
+extension MarketItemV2 {
+    private func fetchImages(imageIDs: [String]) {
+        let storageImageIDs = imageIDs.map { $0 + ".\(id).\(seller.userID)" }
+        
+        for id in storageImageIDs {
+            StorageManager.downloadURLFor(imageID: id) { result in
+                switch result {
+                case .success(let url):
+                    let marketImage = MarketImage(uid: id, imageURL: url)
+                    
+                    self.images.append(marketImage)
+                    
+                case .failure(let error):
+                    //  MARK: - BenDo: handle error?
+                    print(error.localizedDescription)
+                }
+            }
+            
+//            fetchImageWith(imageID: id) { [weak self] result in
+//                guard let self = self else { return }
+//                
+//                switch result {
+//                case .success(let url):
+//                    let marketImage = MarketImage(uid: id, imageURL: url, isThumbImage: id == self.thumbImageID)
+//                    
+//                    self.images.append(marketImage)
+//                    
+//                case .failure(let error):
+//                    //  MARK: - BenDo: handle error?
+//                    print(error.localizedDescription)
+//                }
+//            }
+        }
+    }
     
+    private func imageIsThumbnail(_ image: MarketImage) -> Bool {
+        image.id == thumbImageID
+    }
+    
+//    private func fetchImageWith(imageID: String, completion: @escaping (Result<URL, NetworkError>) -> Void) {
+//        StorageManager.downloadURLFor(imageID: imageID) { result in
+//            switch result {
+//            case .success(let url):
+//                return completion(.success(url))
+//                
+//            case .failure(let error):
+//                print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
+//                return completion(.failure(NetworkError.databaseError))
+//            }
+//        }
+//    }
+}
+
+// MARK: - Equatable
+
+extension MarketItemV2: Equatable {
+    static func == (lhs: MarketItemV2, rhs: MarketItemV2) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
+// MARK: - Hashable
+
+extension MarketItemV2: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+}
+
+//  MARK: - Dummy Data
+
+extension MarketItemV2 {
     private static var usedItems: [MarketItemV2] {
         var arr = [MarketItemV2]()
         
@@ -154,7 +244,7 @@ class MarketItemV2: ObservableObject {
                     itemType: .disc,
                     seller: AppUser.randomDummyUser,
                     images: {
-                        ["usedItem\(i)"].map { MarketImage(uid: $0, image: UIImage(named: $0) ?? UIImage())}
+                        ["usedItem\(i)"].map { MarketImage(uid: $0, imageURL: nil) }
                     }()
                 )
             )
@@ -198,7 +288,7 @@ class MarketItemV2: ObservableObject {
             seller: AppUser.users[2],
             imageIDs: ["Trespass1", "logo2"],
             images: {
-                ["Trespass2","Trespass1","logo2"].map { MarketImage(uid: $0, image: UIImage(named: $0) ?? UIImage())}
+                ["Trespass2","Trespass1","logo2"].map { MarketImage(uid: $0, imageURL: nil) }
             }()
         ),
         
@@ -469,75 +559,4 @@ class MarketItemV2: ObservableObject {
         )
     ]
 }
-
-//  MARK: - Internal Methods
-
-extension MarketItemV2 {
-    func fetchThumbImage() {
-        self.fetchImages(imageIDs: [thumbImageID])
-    }
-    
-    func fetchAdditionalImages() {
-        self.fetchImages(imageIDs: self.imageIDs)
-    }
-}
-
-//  MARK: - Private Methods
-
-extension MarketItemV2 {
-    private func fetchImages(imageIDs: [String]) {
-        for id in imageIDs {
-            fetchImageWith(imageID: id) { [weak self] result in
-                guard let self = self else { return }
-                
-                switch result {
-                case .success(let image):
-                    let marketImage = MarketImage(uid: id, image: image, isThumbImage: id == self.thumbImageID)
-                    
-                    self.images.append(marketImage)
-                    
-                case .failure(let error):
-                    //  MARK: - BenDo: handle error?
-                    print(error.localizedDescription)
-                }
-            }
-        }
-    }
-    
-    private func fetchImageWith(imageID: String, completion: @escaping (Result<UIImage, NetworkError>) -> Void) {
-        StorageManager.downloadURLFor(imageID: imageID) { result in
-            switch result {
-            case .success(let url):
-                let task = URLSession.shared.dataTask(with: url) { data, response, error in
-                    guard let data = data, error == nil else { return completion(.failure(NetworkError.databaseError)) }
-                    
-                    if let image = UIImage(data: data) {
-                        completion(.success(image))
-                    }
-                }
-                task.resume()
-                
-            case .failure(let error):
-                print("***Error*** in Function: \(#function)\n\nError: \(error)\n\nDescription: \(error.localizedDescription)")
-                return completion(.failure(NetworkError.databaseError))
-            }
-        }
-    }
-}
-
-    // MARK: - Equatable
-    
-    extension MarketItemV2: Equatable {
-        static func == (lhs: MarketItemV2, rhs: MarketItemV2) -> Bool {
-            lhs.id == rhs.id
-        }
-    }
-    
-    // MARK: - Hashable
-    
-    extension MarketItemV2: Hashable {
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(id)
-        }
-    }
     

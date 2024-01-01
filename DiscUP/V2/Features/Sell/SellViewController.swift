@@ -40,6 +40,9 @@ extension SellViewController {
             
         case .presentNewItemVC:
             goToNewItemVC()
+            
+        case .presentCommonAlert(let commonAlert):
+            presentAlert(commonAlert)
         }
     }
     
@@ -50,17 +53,15 @@ extension SellViewController {
     }
     
     private func goToNewItemVC() {
-        guard let currentUser = AppUser.currentUser else {
-            Alerts.presentAlertWith(
-                title: "There was an error",
-                message: "Error: Unknown user.\nPlease try logging out and logging back in.",
-                sender: self
-            )
-            return
-        }
+        guard let newItem = coordinator.viewModel.newItem else { return }
         
-        let newItemVC = SellNewItemViewController(appUser: currentUser)
+        let newItemVC = SellNewItemViewController(newItem)
         
-        present(newItemVC, animated: true)
+//        present(newItemVC, animated: true)
+        navigationController?.pushViewController(newItemVC, animated: true)
+    }
+    
+    private func presentAlert(_ commonAlert: Alerts.Common) {
+        Alerts.presentCommonAlert(commonAlert, sender: self)
     }
 }

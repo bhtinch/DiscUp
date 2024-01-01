@@ -15,8 +15,8 @@ class SellNewItemViewController: BaseHostingController <SellNewItemView> {
     
     // MARK: - Initialization
     
-    init(appUser: AppUser) {
-        coordinator = SellNewItemCoordinator(appUser: appUser)
+    init(_ newItem: MarketItemV2) {
+        coordinator = SellNewItemCoordinator(newItem)
         let rootView = SellNewItemView(viewModel: coordinator.viewModel)
         
         super.init(rootView: rootView)
@@ -36,6 +36,7 @@ private extension SellNewItemViewController {
     func perform(action: SellNewItemCoordinator.UIAction) {
         switch action {
         case .dismiss:
+            self.navigationController?.popViewController(animated: true)
             dismiss(animated: true)
         }
     }

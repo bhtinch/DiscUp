@@ -64,7 +64,7 @@ extension MarketItemV2 {
     convenience init?(_ itemDataModel: MarketItemDataModel) {
         guard let id = itemDataModel.id else { return nil }
         
-        let appUser = AppUser(userID: itemDataModel.sellerID)
+        let appUser = AppUser(userID: itemDataModel.sellerID, avatarImage: AvatarImage(id: itemDataModel.sellerID))
         
         self.init(
             id: id,

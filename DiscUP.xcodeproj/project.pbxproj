@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		620412FF2B35FC4800AD240A /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 620412FE2B35FC4800AD240A /* Kingfisher */; };
+		620413012B35FCD100AD240A /* ItemImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 620413002B35FCD100AD240A /* ItemImageView.swift */; };
+		620413042B35FD4900AD240A /* CombineExt in Frameworks */ = {isa = PBXBuildFile; productRef = 620413032B35FD4900AD240A /* CombineExt */; };
 		6207C91428BA78FD00AC59EE /* MarketItemV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6207C91328BA78FD00AC59EE /* MarketItemV2.swift */; };
 		6207C91628BA79A500AC59EE /* MarketImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6207C91528BA79A500AC59EE /* MarketImage.swift */; };
 		6207C91828BA79CF00AC59EE /* AppUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6207C91728BA79CF00AC59EE /* AppUser.swift */; };
@@ -148,6 +151,7 @@
 
 /* Begin PBXFileReference section */
 		346F05CA14D0A82C1D2C41C4 /* Pods-DiscUP.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DiscUP.debug.xcconfig"; path = "Target Support Files/Pods-DiscUP/Pods-DiscUP.debug.xcconfig"; sourceTree = "<group>"; };
+		620413002B35FCD100AD240A /* ItemImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemImageView.swift; sourceTree = "<group>"; };
 		6207C91328BA78FD00AC59EE /* MarketItemV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketItemV2.swift; sourceTree = "<group>"; };
 		6207C91528BA79A500AC59EE /* MarketImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketImage.swift; sourceTree = "<group>"; };
 		6207C91728BA79CF00AC59EE /* AppUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUser.swift; sourceTree = "<group>"; };
@@ -295,6 +299,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				620412FF2B35FC4800AD240A /* Kingfisher in Frameworks */,
+				620413042B35FD4900AD240A /* CombineExt in Frameworks */,
 				C97407DB3D3FB52E6859EF35 /* Pods_DiscUP.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -357,6 +363,7 @@
 				6207C92528BA8DA000AC59EE /* ImagePicker.swift */,
 				6207C92728BA8DB200AC59EE /* EditItemDetailsView.swift */,
 				6207C92928BA8DBA00AC59EE /* EditPhotosView.swift */,
+				620413002B35FCD100AD240A /* ItemImageView.swift */,
 			);
 			path = "SwiftUI Views";
 			sourceTree = "<group>";
@@ -859,6 +866,10 @@
 			dependencies = (
 			);
 			name = DiscUP;
+			packageProductDependencies = (
+				620412FE2B35FC4800AD240A /* Kingfisher */,
+				620413032B35FD4900AD240A /* CombineExt */,
+			);
 			productName = DiscUP;
 			productReference = 62518D4925F1648400A6753B /* DiscUP.app */;
 			productType = "com.apple.product-type.application";
@@ -886,6 +897,10 @@
 				Base,
 			);
 			mainGroup = 62518D4025F1648400A6753B;
+			packageReferences = (
+				620412FD2B35FC4800AD240A /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				620413022B35FD4900AD240A /* XCRemoteSwiftPackageReference "CombineExt" */,
+			);
 			productRefGroup = 62518D4A25F1648400A6753B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1050,6 +1065,7 @@
 				620D6C13265C1B1B00D42C7F /* BlockedUsersTableViewController.swift in Sources */,
 				625114F828C41ACB001E9D72 /* ProfileViewControllerV2.swift in Sources */,
 				6286B47E28B2A1CD000F5CD1 /* NavigationController.swift in Sources */,
+				620413012B35FCD100AD240A /* ItemImageView.swift in Sources */,
 				6286B4C028B2A1DE000F5CD1 /* Settings.swift in Sources */,
 				62C04EFE25F2A96D00D4F4B6 /* SwitchBagTableViewController.swift in Sources */,
 				6207C91628BA79A500AC59EE /* MarketImage.swift in Sources */,
@@ -1164,7 +1180,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1219,7 +1235,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -1293,6 +1309,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		620412FD2B35FC4800AD240A /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.10.1;
+			};
+		};
+		620413022B35FD4900AD240A /* XCRemoteSwiftPackageReference "CombineExt" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/CombineCommunity/CombineExt.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.8.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		620412FE2B35FC4800AD240A /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 620412FD2B35FC4800AD240A /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+		620413032B35FD4900AD240A /* CombineExt */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 620413022B35FD4900AD240A /* XCRemoteSwiftPackageReference "CombineExt" */;
+			productName = CombineExt;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 62518D4125F1648400A6753B /* Project object */;
 }

@@ -6,18 +6,40 @@
 //
 
 import UIKit
+import Observation
 
-class MarketImage: Identifiable {
+class MarketImage: Observable, Identifiable {
     var id: String
-    var uiImage: UIImage
-    var isThumbImage: Bool
+    var imageURL: URL?
+    var imageData: Data?
+//    var isThumbImage: Bool
     
-    init(uid: String, image: UIImage, isThumbImage: Bool = false) {
-        id = uid
-        uiImage = image
-        self.isThumbImage = isThumbImage
+    var itemImageView: ItemImageView {
+        ItemImageView(imageURL: imageURL)
     }
     
-    static var defaultNoImage = MarketImage (uid: "defaultNoImageUID", image: UIImage(named: "logo2") ?? UIImage(), isThumbImage: true)
+    init(uid: String, imageURL: URL? = nil, imageData: Data? = nil) {
+        id = uid
+        self.imageURL = imageURL
+        self.imageData = imageData
+    }
+    
+    static var defaultNoImage = MarketImage (uid: "defaultNoImageUID", imageURL: nil)
     static let userAvatarID = "userAvatarID"
+}
+
+class AvatarImage: Identifiable {
+    var id: String
+    var imageURL: URL?
+    var imageData: Data?
+    
+    var imageView: AvatarImageView {
+        AvatarImageView(imageURL: imageURL)
+    }
+    
+    init(id: String, imageURL: URL? = nil, imageData: Data? = nil) {
+        self.id = id
+        self.imageURL = imageURL
+        self.imageData = imageData
+    }
 }

@@ -34,8 +34,9 @@ struct EditPhotosRootView: View {
             
             Divider()
             
-            EditPhotosView(images: $viewModel.item.images)
+            EditPhotosView()
         }
+        .environment(viewModel.item)
         .environmentObject(viewModel)
     }
 }

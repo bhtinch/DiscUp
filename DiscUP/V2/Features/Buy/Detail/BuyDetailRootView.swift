@@ -29,7 +29,7 @@ struct BuyDetailRootView: View {
             
             ScrollView {
                 VStack {
-                    ItemDetailImagesView(marketItem: $viewModel.item)
+                    ItemDetailImagesView()
                         .frame(width: constraint, height: constraint, alignment: .top)
                         .clipped()
                         .contentShape(
@@ -60,6 +60,7 @@ struct BuyDetailRootView: View {
                     }
                     .frame(width: geo.size.width * 0.95, alignment: .leading)
                 }
+                .environment(viewModel.item)
             }
         }
         .environmentObject(viewModel)

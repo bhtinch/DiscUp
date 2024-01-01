@@ -9,11 +9,9 @@ import Combine
 import SwiftUI
 
 struct ItemThumbView: View {
-    let item: MarketItemV2
+    @State var item: MarketItemV2
     let height: CGFloat
     let width: CGFloat
-    
-    @State var thumbImage: UIImage = MarketImage.defaultNoImage.uiImage
     
     var cancellables = Set<AnyCancellable>()
     
@@ -28,23 +26,13 @@ struct ItemThumbView: View {
     var body: some View {
         VStack {
             ZStack(alignment: .bottomTrailing) {
-                Image(uiImage: thumbImage)
-                    .resizable()
-                    .scaledToFill()
+                item.thumbImage.itemImageView
                     .frame(width: width, height: width, alignment: .top)
                     .clipped()
                     .contentShape(
                         Path(CGRect(x: 0, y: 0, width: width, height: width))
                     )
                     .cornerRadius(10)
-                
-                    .onReceive(
-                        item.$images.receive(on: RunLoop.main)
-                    ) { images in
-                        guard let marketImage = images.first(where: { $0.isThumbImage }) else { return }
-                        
-                        self.thumbImage = marketImage.uiImage
-                    }
                 
                 Text("$\(item.price)")
                     .foregroundColor(.white)
@@ -70,8 +58,8 @@ struct ItemThumbView: View {
     }
 }
 
-extension ItemThumbView {
-    private func updateThumbImage() {
-        thumbImage = item.images.first { $0.isThumbImage }?.uiImage ?? MarketImage.defaultNoImage.uiImage
-    }
-}
+//extension ItemThumbView {
+//    private func updateThumbImage() {
+//        thumbImage = item.images.first { $0.isThumbImage }?.uiImage ?? MarketImage.defaultNoImage.uiImage
+//    }
+//}

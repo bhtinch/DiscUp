@@ -6,42 +6,13 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct EditPhotosView: View {
+    @Environment(MarketItemV2.self) var item
+    
     @State private var showingImagePicker = false
     @State private var imageSelected: UIImage?
-    
-    @Binding var images: [MarketImage]
-    
-    @State private var imagesState: [MarketImage] {
-        didSet {
-            images = imagesState
-
-            if imagesState.isEmpty {
-                return
-            }
-            
-            if !imagesState.contains(where: { $0.id == thumbImageID}) {
-                imagesState.first?.isThumbImage = true
-            }
-        }
-    }
-    
-    @State private var thumbImageID: String = MarketImage.defaultNoImage.id {
-        didSet {
-            if let index = imagesState.firstIndex(where: { $0.id == thumbImageID }) {
-                let image = imagesState.remove(at: index)
-                imagesState.insert(image, at: 0)
-            }
-
-            images.forEach { $0.isThumbImage = $0.id == thumbImageID }
-        }
-    }
-    
-    init(images: Binding<[MarketImage]>) {
-        _images = images
-        imagesState = images.wrappedValue
-    }
     
     var body: some View {
         GeometryReader { geo in
@@ -67,12 +38,12 @@ struct EditPhotosView: View {
                         ),
                         spacing: 10
                     ) {
-                        ForEach(imagesState) { image in
+                        ForEach(item.images) { image in
                             ZStack(alignment: .topLeading) {
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(.secondary)
                                 
-                                Image(uiImage: image.uiImage)
+                                Image(uiImage: UIImage(data: image.imageData ?? Data()) ?? UIImage(systemName: "person")!)
                                     .resizable()
                                     .scaledToFill()
                                     .frame(
@@ -86,7 +57,7 @@ struct EditPhotosView: View {
                                 
                                 HStack {
                                     Button() {
-                                        let _ = imagesState.removeAll { $0.id == image.id }
+                                        let _ = item.images.removeAll { $0.id == image.id }
                                     } label: {
                                         Image(systemName: "trash")
                                     }
@@ -98,13 +69,13 @@ struct EditPhotosView: View {
                                     Spacer()
                                     
                                     Button() {
-                                        thumbImageID = image.id
+                                        item.thumbImageID = image.id
                                     } label: {
                                         Image(systemName: "photo.on.rectangle")
                                     }
                                     .buttonStyle(.borderedProminent)
                                     .tint(
-                                        image.isThumbImage ? .green : .gray
+                                        item.thumbImageID == image.id ? .green : .gray
                                     )
                                     .shadow(radius: 2)
                                     .padding([.top, .leading, .trailing], 4)
@@ -126,9 +97,6 @@ struct EditPhotosView: View {
             }
             .padding(constraint * 0.02)
         }
-        .onAppear()  {
-            thumbImageID = images.first { $0.isThumbImage }?.id ?? images.first?.id ?? MarketImage.defaultNoImage.id
-        }
         
         .onChange(of: imageSelected) { _ in
             guard let imageSelected = imageSelected else { return }
@@ -136,7 +104,9 @@ struct EditPhotosView: View {
             // bendo: set temporary uid... uid will be set later in save function with respect to userID, itemID, imageID
             let uid = UUID().uuidString
             
-            imagesState.append(MarketImage(uid: uid, image: imageSelected))
+            item.images.append(
+                MarketImage(uid: uid, imageData: imageSelected.pngData())
+            )
         }
         
         .sheet(isPresented: $showingImagePicker) {

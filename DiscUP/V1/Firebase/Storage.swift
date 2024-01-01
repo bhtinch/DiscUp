@@ -17,7 +17,7 @@ class StorageManager {
     static func upload(images: [MarketImage]) async throws {
         for i in 0..<images.count {
             guard
-                let data = images[i].uiImage.pngData()
+                let data = images[i].imageData
             else { return }
             
             _ = try await storage.child("\(images[i].id)").putDataAsync(data)
@@ -27,7 +27,7 @@ class StorageManager {
     static func upload(images: [MarketImage], completion: ((Error?) -> Void)?) {
         for i in 0..<images.count {
             guard
-                let data = images[i].uiImage.pngData()
+                let data = images[i].imageData
             else { return }
             
             storage.child("\(images[i].id)").putData(data) { _, error in

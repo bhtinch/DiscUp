@@ -26,7 +26,7 @@ struct SellDetailRootView: View {
             ScrollView {
                 VStack {
                     ZStack(alignment: .topTrailing) {
-                        ItemDetailImagesView(marketItem: $viewModel.item)
+                        ItemDetailImagesView()
                             .frame(width: constraint, height: constraint, alignment: .top)
                             .clipped()
                             .contentShape(
@@ -37,14 +37,15 @@ struct SellDetailRootView: View {
                     }
                     
                     VStack(alignment: .leading) {
-                        SellDetailHeadlineView(marketItem: $viewModel.item)
+                        SellDetailHeadlineView()
                         
                         SellDetailButtonsView()
                         
-                        SellDetailDescriptionView(marketItem: $viewModel.item, width: geo.size.width * 0.95)
+                        SellDetailDescriptionView(width: geo.size.width * 0.95)
                     }
                     .frame(width: geo.size.width * 0.95, alignment: .leading)
                 }
+                .environment(viewModel.item)
             }
         }
         .environmentObject(viewModel)

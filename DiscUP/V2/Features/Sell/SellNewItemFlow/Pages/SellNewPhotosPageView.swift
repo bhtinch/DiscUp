@@ -11,7 +11,8 @@ struct SellNewPhotosPageView: View {
     @EnvironmentObject var viewModel: SellNewItemViewModel
         
     var body: some View {
-        EditPhotosView(images: $viewModel.item.images)
+        EditPhotosView()
+            .environment(viewModel.item)
     }
 }
 
